@@ -8,7 +8,7 @@
 
 https://github.com/user-attachments/assets/2b6200ed-39b8-4ce7-b981-41bd609c6ea0
 
-<p align="center">A 60-second tour of the four lenses: Surface, Work, Evolution and Knowledge. Project names, card titles and paths in it are simulated. <a href="docs/media/glmps-2.0-tour.mp4">Download the tour</a>.</p>
+<p align="center">A 60-second tour of the four lenses: Surface, Work, Evolution and Knowledge. <a href="docs/media/glmps-2.0-tour.mp4">Download the tour</a>.</p>
 
 GLMPS 2.0 watches the coding-agent sessions on your computer (Claude Code, Antigravity, Gemini CLI, Codex and others) by reading the session logs those tools already write. It never proxies them or sits between an agent and its model. It shows what each session is touching, doing and learning, runs the work itself from a board (a queue runner launches cards, a merge queue tests and lands their pull requests), and turns the moments an agent should have used a skill, subagent or hook into guards you approve.
 

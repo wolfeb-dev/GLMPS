@@ -1,22 +1,22 @@
 {
   "schema": 1,
-  "commit": "56046bf0e91fde0206537239d2eab8a9cae9df3e",
-  "treeSha": "bb35a8a5e2ada146d17f0fa4e6c6981e17ea1d4c",
+  "commit": "b5d9b708f1b9c1d8e3e34f30b810234a3c4d5362",
+  "treeSha": "8103bf2c8a0f93aaa21f4a68bd3541250b58850f",
   "target": "mirror",
   "public": true,
   "untested": false,
   "testedTree": {
-    "ts": "2026-11-16T19:59:08.959Z",
+    "ts": "2026-11-16T23:12:30.205Z",
     "source": "main-suite",
-    "sha": "56046bf0e91fde0206537239d2eab8a9cae9df3e",
-    "treeSha": "bb35a8a5e2ada146d17f0fa4e6c6981e17ea1d4c",
+    "sha": "b5d9b708f1b9c1d8e3e34f30b810234a3c4d5362",
+    "treeSha": "8103bf2c8a0f93aaa21f4a68bd3541250b58850f",
     "verdict": "pass",
     "status": "pass",
     "repo": "wolfeb-dev/glmps-2.0",
     "base": "main",
     "key": "wolfeb-dev/glmps-2.0@main",
     "command": "npm test",
-    "durationMs": 388206
+    "durationMs": 467210
   },
   "files": [
     {
@@ -43,7 +43,7 @@
     },
     {
       "path": "README.md",
-      "sha256": "16d2e961dda40b9de83cfe1e68d896dfad084f414558cfe4d17669cee8e79cb1"
+      "sha256": "ed65abe347a556dfc9b13bd477c2a4e225928ec5480d653f18a59ec4426f4604"
     },
     {
       "path": "THIRD_PARTY_NOTICES.md",
@@ -826,12 +826,8 @@
       "sha256": "a202f38b38cc91013d4f84d500dd9621a11c4b60c7c65482251c8f1c82f479a2"
     },
     {
-      "path": "docs/media/glmps-2.0-surface.jpg",
-      "sha256": "5bba4f47d850dc172a2865ecd3c64cefee72495348c8bed4ee874bba2532eb37"
-    },
-    {
       "path": "docs/media/glmps-2.0-tour.mp4",
-      "sha256": "dde98f6d3b067c0a52d01c50eefa7fffaba920d85dc73dec9b6f8326db35b95d"
+      "sha256": "3be2116dd6f8dc7845c3f6811e88238c22353e631e2162ba620f4a87be306870"
     },
     {
       "path": "docs/offering/ai-readiness-governance-audit.md",
@@ -4847,7 +4843,7 @@
     },
     {
       "path": "server/test/gepa-route.test.js",
-      "sha256": "85e3125c38961c86d04c1235195415a91d7d89ad32de60309eb63575e815f80a"
+      "sha256": "a1e3ca336c351298c75a00b8a12ea73c95e7687a5fc7c8abc430a1c01bdc7c4f"
     },
     {
       "path": "server/test/git-common-dir.test.js",
@@ -5955,7 +5951,7 @@
     },
     {
       "path": "server/test/release-builder.test.js",
-      "sha256": "13b4b07ed545a19bd28da0c601e8d112a99f6188e8b7d587306b46305d4209e0"
+      "sha256": "5577012c3da6a1c1743ca0b06674ad92df82622d3ddb3d7bdccd17588ac16ebf"
     },
     {
       "path": "server/test/release-scripts.test.js",
@@ -8237,5 +8233,5 @@
       "web/wiki-assets/mermaid.min.js drive path *"
     ]
   },
-  "builtAt": "2026-11-16T20:01:35.806Z"
+  "builtAt": "2026-11-16T23:13:27.570Z"
 }

@@ -23,6 +23,7 @@ import os from 'node:os';
 import path from 'node:path';
 import { startServer } from '../server.js';
 import * as learningStore from '../lib/evaluation/learning-store.js';
+import { waitFor } from './helpers/wait-for.js';
 
 function tmp(prefix) { return fs.mkdtempSync(path.join(os.tmpdir(), prefix)); }
 
@@ -156,9 +157,12 @@ test('POST /api/plugins/gepa/run: 202 started, then 409 while in flight; the CLI
     assert.equal(learning.items[0].source, 'gap');
     const again = await fetch(`${base}/api/plugins/gepa/run`, { method: 'POST' });
     assert.equal(again.status, 202);
+    // The second run spawns a real Python child that holds stateDir open; on
+    // Windows tearing down under it fails rmSync with EPERM (card glmps-2-0-233).
+    await waitFor(() => !h.loopRegistry.isRunning('guard-proposals'), { message: 'the second guard-proposals run to finish' });
   } finally {
     await h.close?.();
-    fs.rmSync(stateDir, { recursive: true, force: true });
+    fs.rmSync(stateDir, { recursive: true, force: true, maxRetries: 10, retryDelay: 100 });
   }
 });
 

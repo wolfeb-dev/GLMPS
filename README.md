@@ -2,13 +2,13 @@
 
 **Watch your agents. Catch the misses.**
 
-<p align="center">
-  <a href="docs/media/glmps-2.0-tour.mp4"><img src="docs/media/glmps-2.0-surface.jpg" alt="The GLMPS 2.0 Surface lens zoomed in on a platform, with its data held and live sessions beside the globe" width="100%"></a>
-</p>
-
-<p align="center"><a href="docs/media/glmps-2.0-tour.mp4">Watch the 60-second tour</a> of the four lenses: Surface, Work, Evolution and Knowledge. Project names, card titles and paths in it are simulated.</p>
-
 **A local control plane for your coding agents.**
+
+<img width="1226" height="1148" alt="The GLMPS 2.0 Surface lens: live sessions on the globe above the fleet board" src="https://github.com/user-attachments/assets/8add446a-8686-4d33-bd4b-e2450f08425a" />
+
+https://github.com/user-attachments/assets/2b6200ed-39b8-4ce7-b981-41bd609c6ea0
+
+<p align="center">A 60-second tour of the four lenses: Surface, Work, Evolution and Knowledge. Project names, card titles and paths in it are simulated. <a href="docs/media/glmps-2.0-tour.mp4">Download the tour</a>.</p>
 
 GLMPS 2.0 watches the coding-agent sessions on your computer (Claude Code, Antigravity, Gemini CLI, Codex and others) by reading the session logs those tools already write. It never proxies them or sits between an agent and its model. It shows what each session is touching, doing and learning, runs the work itself from a board (a queue runner launches cards, a merge queue tests and lands their pull requests), and turns the moments an agent should have used a skill, subagent or hook into guards you approve.
 

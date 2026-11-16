@@ -302,10 +302,21 @@ test('no tracked dashboard file under web/ is dropped by a global deny rule', ()
 
 // The README is the mirror's front page, so every local file it shows or links
 // must ship there, and its media stays out of the installer (card glmps-2-0-212).
+// An upload made in this private repo answers 404 to anyone outside it, so the
+// mirror's README would show a broken hero (card glmps-2-0-231). GitHub plays a
+// video inline only from an upload, so the README may use uploads made in the
+// public repo wolfeb-dev/glmps; nothing offline can tell which repo an upload
+// belongs to, so each one is listed here after it is uploaded there (card glmps-2-0-226).
+const PUBLIC_REPO_UPLOADS = new Set([
+  '8add446a-8686-4d33-bd4b-e2450f08425a',
+  '2b6200ed-39b8-4ce7-b981-41bd609c6ea0',
+]);
 test('every local file the README references ships in the mirror, and README media stays out of the kernel', () => {
   const repo = path.resolve(import.meta.dirname, '..', '..');
   const readme = fs.readFileSync(path.join(repo, 'README.md'), 'utf8');
-  const refs = [...readme.matchAll(/(?:src="|\]\()([^"):#?]+)(?=[")#?])/g)].map((m) => m[1]).filter((r) => !/^[a-z]+:/i.test(r) && !r.startsWith('#'));
+  const uploads = [...readme.matchAll(/github\.com\/user-attachments\/assets\/([0-9a-f-]+)/g)].map((m) => m[1]);
+  for (const id of uploads) assert.ok(PUBLIC_REPO_UPLOADS.has(id), `README upload ${id} must be uploaded in wolfeb-dev/glmps and listed in PUBLIC_REPO_UPLOADS`);
+  const refs = [...readme.matchAll(/(?:src="|href="|\]\()([^"):#?]+)(?=[")#?])/g)].map((m) => m[1]).filter((r) => !/^[a-z]+:/i.test(r) && !r.startsWith('#'));
   assert.ok(refs.some((r) => r.startsWith('docs/media/')), 'README shows media from docs/media');
   for (const r of refs) {
     assert.ok(fs.existsSync(path.join(repo, r)), `${r} exists`);

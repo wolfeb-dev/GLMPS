@@ -1,0 +1,98 @@
+/* web/observability/qa-trends.css - QA Trends view.
+   Reuses .an-root / .an-totals / .an-stat / .an-panel / .an-panel-title /
+   .an-panel-body / .an-empty from the analytics system (styles.css). Only
+   QA-Trends-specific extensions live here - same split as map.css / wiki.css /
+   alerts.css (feature CSS owns its own #view-* container + new classes; the
+   shared .an-* component set stays in styles.css, untouched). */
+
+/* #view-qa-trends retargeted, not deleted - its layout
+   (padding, a scroll boundary) is real and still needed. qa-trends.js's
+   only live caller, web/work/lens.js, renders into the Gates band's body
+   (buildBands, web/shared/bands.js), a bare .lens-band-body div with no
+   padding or overflow handling of its own. The retargeted rule lives in
+   web/work/work.css instead of here, alongside that file's other per-band
+   overrides (#band-board) - work.css, not this file, owns the
+   container Work's bands render into. */
+
+.qat-root { display: flex; flex-direction: column; gap: var(--sp-3); }
+
+/* Stat strip: value + signed delta on one line (see marks-and-anatomy: delta is
+   signed, colored by direction x whether up is good). Status accents extend
+   .an-stat the same way scoreboard.css's .sb-kpi--rejected does. */
+.qat-stat-value-row { display: flex; align-items: baseline; gap: 6px; }
+.qat-stat-delta { font-family: ui-monospace, SFMono-Regular, Menlo, Consolas, monospace; font-size: var(--fs-micro); color: var(--muted-fg); }
+.qat-stat-good .an-stat-value { color: var(--success); }
+.qat-stat-bad .an-stat-value { color: var(--destructive); } /* destructive token */
+.qat-stat-warn .an-stat-value { color: var(--warning); }
+
+/* Chart panel: the vega-embed mount point. Fluid width (Vega's width:'container'
+   resizes via ResizeObserver); horizontal overflow is contained here, never on
+   the page body. Vega renders its own SVG - no extra height reservation needed
+   beyond the panel's natural flow (mark-and-anatomy: never fix a height that
+   excludes the x-axis band). */
+.qat-chart-panel { padding-bottom: var(--sp-2); }
+.qat-chart-body { width: 100%; overflow-x: auto; }
+.qat-chart-body .vega-embed { width: 100%; }
+.qat-chart-body summary { display: none; } /* vega-embed's own action menu is disabled (actions:false); belt-and-suspenders */
+
+.qat-empty-panel { min-height: 120px; justify-content: center; }
+
+/* Raw-data table - the accessible fallback so every value is reachable without
+   hovering the chart (dataviz: "no table view / color-only encoding"). Collapsed
+   by default so it doesn't compete with the chart for attention. */
+.qat-table-panel { padding: var(--sp-2) var(--sp-3); }
+.qat-table-summary {
+  cursor: pointer;
+  font-size: var(--fs-small);
+  color: var(--muted-fg);
+  font-weight: 600;
+  padding: var(--sp-1) 0;
+}
+.qat-table-summary:hover { color: var(--fg); }
+.qat-table-summary:focus-visible { outline: 2px solid var(--primary); outline-offset: 2px; }
+.qat-table-scroll { max-height: 320px; overflow-y: auto; margin-top: var(--sp-2); }
+.qat-table { width: 100%; border-collapse: collapse; font-size: var(--fs-small); }
+.qat-table th {
+  position: sticky; top: 0;
+  text-align: left;
+  font-size: var(--fs-micro);
+  text-transform: uppercase;
+  letter-spacing: 0.06em;
+  color: var(--muted-fg);
+  background: var(--card);
+  padding: 6px var(--sp-2);
+  border-bottom: 1px solid var(--border);
+}
+.qat-table td {
+  padding: 5px var(--sp-2);
+  color: var(--fg);
+  font-family: ui-monospace, SFMono-Regular, Menlo, Consolas, monospace;
+  border-bottom: 1px solid var(--border);
+  white-space: nowrap;
+}
+.qat-table tbody tr:hover { background: var(--muted); }
+/* Higher specificity than .qat-table td so the status color actually wins. */
+.qat-table td.qat-cell-bad { color: var(--destructive); }
+.qat-table td.qat-cell-good { color: var(--success); }
+
+/* the run's date is a real <button> (its own click handler,
+   keyboard-focusable, an aria-label) so the row it sits in keeps its plain
+   table-row semantics - styled to read as the same monospace cell text as
+   its neighbours, not as chrome, with only a focus/hover affordance to mark
+   it interactive. */
+.qat-row-toggle {
+  font: inherit;
+  color: inherit;
+  background: none;
+  border: none;
+  min-height: 24px;
+  padding: 0;
+  cursor: pointer;
+  text-align: left;
+}
+.qat-row-toggle:hover, .qat-row-toggle:focus-visible { color: var(--primary); }
+.qat-row-toggle:focus-visible { outline: 2px solid var(--primary); outline-offset: 2px; }
+
+@media (max-width: 640px) {
+  .qat-table-scroll { max-height: 240px; }
+}

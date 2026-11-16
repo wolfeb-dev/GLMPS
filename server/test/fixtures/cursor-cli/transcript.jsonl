@@ -1,0 +1,8 @@
+{"role":"user","message":{"content":[{"type":"text","text":"<user_query>\nadd a health check endpoint to the server\n</user_query>"}]}}
+{"role":"assistant","message":{"content":[{"type":"text","text":"I'll look at the server entry first."},{"type":"tool_use","name":"Read","input":{"path":"/home/ada/proj/server.js"}}]}}
+{"role":"assistant","message":{"content":[{"type":"tool_use","name":"StrReplace","input":{"path":"/home/ada/proj/server.js","old_string":"app.listen","new_string":"app.get('/health', ok);\napp.listen"}}]}}
+{"role":"assistant","message":{"content":[{"type":"tool_use","name":"Shell","input":{"command":"npm test","description":"Run the test suite"}}]}}
+{"role":"assistant","message":{"content":[{"type":"tool_use","name":"Shell","input":{"command":"git commit -m \"feat: add health endpoint\""}}]}}
+{"role":"assistant","message":{"content":[{"type":"text","text":"Done, the endpoint is live at /health."}]}}
+{"role":"user","message":{"content":"<user_query>now document it in the README</user_query>"}}
+{"role":"assistant","message":{"content":"Sure."}}

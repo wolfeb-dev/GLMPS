@@ -1,0 +1,502 @@
+/* web/shared/roster.css
+   Styles for web/shared/roster.js's two exports (fillRoster, fillProjectNav)
+   and the scope strip it renders per session row. Moved out of the retired
+   1.x dashboard view's stylesheet (D24, Task 14): these selectors render on
+   two live routes today - web/orchestration/board.js's kanban rail on /work,
+   and web/observability/map.js's Surface graph panel rail on /surface - so
+   deleting that stylesheet without migrating them would leave both unstyled.
+   (This file and its link in web/index.html are additions beyond the
+   brief's literal file list; see the task report's deviations.) */
+
+.dash-scope {
+  display: flex;
+  align-items: center;
+  flex-wrap: wrap;
+  gap: 5px;
+  margin: var(--sp-1) 0 var(--sp-2);
+  padding: var(--sp-1) var(--sp-2);
+  border: 1px solid var(--border);
+  border-left: 2px solid rgba(63,184,127,.4);
+  border-radius: 7px;
+  background: rgba(255,255,255,.02);
+  cursor: pointer;
+  transition: border-color .12s, background .12s;
+  /* Reset any button styling if ever switched to <button> */
+  font: inherit;
+  color: inherit;
+  text-align: left;
+  width: 100%;
+  box-sizing: border-box;
+}
+.dash-scope:hover {
+  border-color: rgba(63,184,127,.45);
+  background: rgba(63,184,127,.04);
+}
+.dash-scope:focus-visible {
+  outline: 2px solid var(--info);
+  outline-offset: 2px;
+}
+
+/* Zone chip */
+.dash-zchip {
+  display: inline-flex;
+  align-items: center;
+  gap: 4px;
+  font-family: ui-monospace, SFMono-Regular, Menlo, Consolas, monospace;
+  font-size: var(--fs-micro);
+  font-weight: 600;
+  padding: 1px 7px;
+  border-radius: 999px;
+  border: 1px solid var(--border);
+  white-space: nowrap;
+}
+.dash-zchip-dev {
+  color: var(--link-hover);
+  background: rgba(212,164,55,.08);
+  border-color: rgba(212,164,55,.35);
+}
+.dash-zchip-prod {
+  color: var(--destructive);
+  background: rgba(224,86,86,.08);
+  border-color: rgba(224,86,86,.35);
+}
+.dash-zname {
+  max-width: 18ch;
+  overflow: hidden;
+  text-overflow: ellipsis;
+}
+.dash-zcount {
+  font-size: var(--fs-micro);
+  font-weight: 400;
+}
+.dash-zcount::before { content: '\b7 '; margin-right: 2px; }
+
+/* Guard pill */
+.dash-guard {
+  margin-left: auto;
+  font-family: ui-monospace, SFMono-Regular, Menlo, Consolas, monospace;
+  font-size: var(--fs-micro);
+  font-weight: 700;
+  padding: 1px 8px;
+  border-radius: 999px;
+  border: 1px solid;
+  white-space: nowrap;
+  flex-shrink: 0;
+}
+.dash-guard.ok {
+  color: var(--success);
+  background: rgba(63,184,127,.08);
+  border-color: rgba(63,184,127,.4);
+}
+.dash-guard.warn {
+  color: var(--destructive);
+  background: rgba(224,86,86,.08);
+  border-color: rgba(224,86,86,.4);
+}
+
+/* Roster rail: renders today as web/observability/map.js's Surface graph
+   panel rail on /surface. */
+.dash-roster-rail {
+  flex: 0 0 264px;
+  width: 264px;
+  position: sticky;
+  top: 0;
+  height: 100%;
+  overflow-y: auto;
+  background: var(--sunk);
+  border-right: 1px solid var(--border);
+  display: flex;
+  flex-direction: column;
+  scrollbar-width: thin;
+  scrollbar-color: var(--border) transparent;
+}
+.dash-roster-rail::-webkit-scrollbar { width: 3px; }
+.dash-roster-rail::-webkit-scrollbar-thumb { background: var(--border); border-radius: 2px; }
+
+.dash-roster-header { padding: 14px 14px 10px; border-bottom: 1px solid var(--border); flex-shrink: 0; }
+.dash-roster-title {
+  font-family: ui-monospace, SFMono-Regular, Menlo, Consolas, monospace;
+  font-size: var(--fs-micro); font-weight: 700; text-transform: uppercase; letter-spacing: 0.2em;
+  color: var(--muted-fg); display: flex; align-items: center; gap: 6px;
+}
+.dash-roster-title > [aria-hidden] {
+  width: 2px; height: 10px; background: var(--primary); border-radius: 1px; flex-shrink: 0; display: inline-block;
+}
+.dash-roster-live-count {
+  font-family: ui-monospace, SFMono-Regular, Menlo, Consolas, monospace;
+  font-size: var(--fs-micro); font-weight: 700; padding: 1px 6px; border-radius: 999px;
+  color: var(--success); background: rgba(63,184,127,.10); border: 1px solid rgba(63,184,127,.3); margin-left: auto;
+}
+
+.dash-roster-list { padding: 8px 0; flex: 0 1 auto; }
+.dash-roster-empty { padding: 16px 14px; color: var(--muted-fg); font-size: var(--fs-micro); font-style: italic; }
+
+/* Session row - telemetry strip */
+.dash-roster-row {
+  position: relative; display: flex; align-items: stretch;
+  border: 1px solid var(--border);
+  border-left: 3px solid var(--session-color, var(--info));
+  border-radius: 20px;
+  background: var(--muted);
+  backdrop-filter: blur(24px);
+  -webkit-backdrop-filter: blur(24px);
+  cursor: pointer; transition: background .12s, border-color .12s; margin: 4px 8px;
+}
+.dash-roster-row:hover { background: rgba(2, 73, 80, 0.7); }
+.dash-roster-row:focus-visible { outline: 2px solid var(--info); outline-offset: 2px; }
+.dash-roster-row.is-focused { background: rgba(2, 73, 80, 0.9); border-color: var(--session-color, var(--info)); }
+.dash-roster-row.is-focused::after {
+  display: none;
+}
+.dash-roster-inner { flex: 1; padding: 7px 6px 7px 9px; display: flex; flex-direction: column; gap: 3px; min-width: 0; }
+.dash-roster-top { display: flex; align-items: center; gap: 5px; }
+.dash-roster-dot {
+  width: 6px; height: 6px; border-radius: 50%;
+  background: var(--session-color, var(--info)); flex-shrink: 0;
+  /* Live-activity pulse - an expanding ring, mirroring the Map's node pulse.
+     Every roster row is a live session, so every dot pulses. */
+  animation: dash-roster-pulse 1.9s ease-out infinite;
+}
+.dash-roster-row:not(.is-focused) .dash-roster-dot { opacity: .7; }
+/* Ended sessions (Detail rail) are static - no live pulse. */
+.dash-roster-row.is-ended .dash-roster-dot { animation: none; opacity: .45; }
+@keyframes dash-roster-pulse {
+  0%   { box-shadow: 0 0 0 0 color-mix(in srgb, var(--session-color, var(--info)) 75%, transparent); }
+  70%  { box-shadow: 0 0 0 11px transparent; }
+  100% { box-shadow: 0 0 0 0 transparent; }
+}
+@media (prefers-reduced-motion: reduce) {
+  .dash-roster-dot { animation: none; }
+}
+/* "Recent" (ended sessions) section in the Detail rail */
+.dash-roster-subhead {
+  padding: 11px 14px 4px;
+  font-family: ui-monospace, SFMono-Regular, Menlo, Consolas, monospace;
+  font-size: var(--fs-micro); font-weight: 700; text-transform: uppercase; letter-spacing: .2em;
+  color: var(--muted-fg); opacity: .65;
+  border-top: 1px solid var(--border); margin-top: 4px;
+}
+.dash-roster-row.is-ended { opacity: .6; }
+.dash-roster-row.is-ended .dash-roster-name { color: var(--muted-fg); font-weight: 500; }
+/* glmps-8b: an internal (GLMPS worker) session, honestly
+   deprioritized without claiming it has stopped. Distinct from is-ended so a
+   still-running internal spawn's dot keeps pulsing (it really is live) while
+   the row itself reads as muted background activity, not a real live session. */
+.dash-roster-row.is-internal { opacity: .6; }
+.dash-roster-row.is-internal .dash-roster-name { color: var(--muted-fg); font-weight: 500; }
+.dash-roster-name {
+  font-size: var(--fs-micro); font-weight: 600; color: var(--fg);
+  white-space: nowrap; overflow: hidden; text-overflow: ellipsis; flex: 1; min-width: 0;
+}
+.dash-roster-row:not(.is-focused) .dash-roster-name { color: var(--muted-fg); font-weight: 500; }
+.dash-roster-elapsed {
+  font-family: ui-monospace, SFMono-Regular, Menlo, Consolas, monospace;
+  font-size: var(--fs-micro); color: var(--muted-fg); flex-shrink: 0; letter-spacing: .03em;
+}
+/* The session colour is data-driven and fails 4.5:1 on the teal focus fill for
+   reds and blues, so focused-row text stays --fg; the colour rides the border. */
+.dash-roster-row.is-focused .dash-roster-elapsed,
+.dash-roster-row.is-focused .dash-zchip-dev { color: var(--fg); }
+.dash-roster-meta { display: flex; align-items: center; gap: 5px; flex-wrap: wrap; }
+.dash-roster-step {
+  font-family: ui-monospace, SFMono-Regular, Menlo, Consolas, monospace;
+  font-size: var(--fs-micro); font-weight: 700; text-transform: uppercase; letter-spacing: .08em;
+  padding: 1px 6px; border-radius: 999px; background: rgba(255,255,255,.04);
+  border: 1px solid rgba(255,255,255,.08); color: var(--muted-fg); white-space: nowrap;
+}
+.dash-roster-row.is-focused .dash-roster-step {
+  color: var(--fg);
+  background: color-mix(in srgb, var(--session-color, var(--info)) 12%, transparent);
+  border-color: color-mix(in srgb, var(--session-color, var(--info)) 35%, transparent);
+}
+/* glmps-8b: same pill recipe as .dash-roster-step above (reused
+   tokens, not a new pattern), own class so an "internal worker" label is
+   never confused with a workflow-stage badge. Only rendered in the "Recent"
+   section, on rows tagged internal: true (see fillRoster's includeEnded
+   branch), so it never competes visually with real live rows above it. */
+.dash-roster-internal-badge {
+  font-family: ui-monospace, SFMono-Regular, Menlo, Consolas, monospace;
+  font-size: var(--fs-micro); font-weight: 700; text-transform: uppercase; letter-spacing: .08em;
+  padding: 1px 6px; border-radius: 999px; background: rgba(255,255,255,.04);
+  border: 1px solid rgba(255,255,255,.08); color: var(--muted-fg); white-space: nowrap;
+}
+.dash-roster-agent {
+  font-family: ui-monospace, SFMono-Regular, Menlo, Consolas, monospace;
+  font-size: var(--fs-micro); color: var(--muted-fg); white-space: nowrap; overflow: hidden; text-overflow: ellipsis;
+}
+.dash-roster-scope { margin-top: 3px; }
+.dash-roster-open {
+  flex-shrink: 0; width: 24px; display: flex; align-items: center; justify-content: center;
+  background: none; border: none; border-left: 1px solid var(--border);
+  color: var(--muted-fg); cursor: pointer; font-size: var(--fs-base); transition: color .12s, background .12s;
+}
+.dash-roster-open:hover { color: var(--fg); background: rgba(255,255,255,.04); }
+.dash-roster-row.is-focused .dash-roster-open { color: var(--fg); }
+
+/* Narrow: stack the roster above whatever sits beside it */
+@media (max-width: 760px) {
+  .dash-roster-rail {
+    flex-basis: auto; width: 100%; position: static; height: auto; max-height: 320px;
+    border-right: none; border-bottom: 1px solid var(--border);
+  }
+}
+
+/* Project navigator, appended below the Live Sessions roster list
+   Uses the same .dash-roster-row/.dash-roster-step pill family. */
+
+/* Nav section occupies remaining rail height; scrolls independently */
+.dash-nav-section {
+  flex: 1 1 auto;
+  min-height: 0;
+  overflow-y: auto;
+  display: flex;
+  flex-direction: column;
+  border-top: 1px solid var(--border);
+  scrollbar-width: thin;
+  scrollbar-color: var(--border) transparent;
+}
+.dash-nav-section::-webkit-scrollbar { width: 3px; }
+.dash-nav-section::-webkit-scrollbar-thumb { background: var(--border); border-radius: 2px; }
+
+/* Header row - same rhythm as .dash-roster-header */
+.dash-nav-header {
+  flex-shrink: 0;
+  padding: 10px 14px 8px;
+  border-bottom: 1px solid var(--border);
+  background: var(--sunk);
+  position: sticky;
+  top: 0;
+  z-index: 1;
+}
+.dash-nav-title-row {
+  display: flex;
+  align-items: center;
+  gap: 6px;
+}
+/* Accent pip - mirrors the one in .dash-roster-title */
+.dash-nav-accent-bar {
+  display: inline-block;
+  width: 2px;
+  height: 10px;
+  background: var(--primary);
+  border-radius: 1px;
+  flex-shrink: 0;
+}
+.dash-nav-title {
+  font-family: ui-monospace, SFMono-Regular, Menlo, Consolas, monospace;
+  font-size: var(--fs-micro);
+  font-weight: 700;
+  text-transform: uppercase;
+  letter-spacing: 0.2em;
+  color: var(--muted-fg);
+  flex: 1;
+}
+/* Count badge reuses .dash-roster-live-count but in a neutral tone */
+.dash-nav-count {
+  color: var(--muted-fg);
+  background: rgba(255,255,255,.04);
+  border-color: rgba(255,255,255,.1);
+}
+/* Collapse toggle */
+.dash-nav-toggle {
+  background: none;
+  border: none;
+  color: var(--muted-fg);
+  font-size: var(--fs-micro);
+  cursor: pointer;
+  min-width: 24px;
+  min-height: 24px;
+  padding: 0 2px;
+  line-height: 1;
+  transition: color .12s;
+  flex-shrink: 0;
+}
+.dash-nav-toggle:hover { color: var(--fg); }
+.dash-nav-toggle:focus-visible { outline: 2px solid var(--info); outline-offset: 2px; border-radius: 2px; }
+
+/* Project list container */
+.dash-nav-list {
+  padding: 6px 0;
+}
+
+/* Project rows: full-outline cards, matching the dashboard agent-card idiom.
+   The 3px colored left edge is part of the border, so it lines up with the
+   rounded outline instead of floating as a separate strip. */
+.dash-nav-row {
+  align-items: stretch;
+  border: 1px solid var(--border);
+  border-left-width: 3px;
+  border-left-color: var(--session-color, var(--info));
+  border-radius: 10px;
+  background: var(--card);
+  margin: 5px 8px;
+  transition: border-color .12s, background .12s, box-shadow .12s;
+}
+.dash-nav-row.is-focused::after { display: none; } /* outline carries the accent; drop the roster right-bar */
+.dash-nav-row:hover { background: var(--raise-1); border-color: var(--edge-strong); }
+.dash-nav-row.is-focused {
+  background: var(--raise-2);
+  border-color: var(--session-color, var(--primary));
+  box-shadow: 0 0 0 1px var(--session-color, var(--primary)) inset, 0 2px 10px rgba(0,0,0,.4);
+}
+/* Compact inner: tighter padding + gaps keep the card short. */
+.dash-nav-row .dash-roster-inner { padding: 6px 9px; gap: 3px; }
+
+/* Select mode (Kanban): rows act as a project filter for the board. */
+.dash-nav-selectable { cursor: pointer; }
+.dash-nav-selectable:focus-visible { outline: 2px solid var(--info); outline-offset: -2px; }
+
+/* "All projects" reset row - a quiet filter control above the list. */
+.dash-nav-all .dash-roster-name { font-weight: 600; }
+.dash-nav-all .dash-roster-elapsed { font-style: italic; opacity: .7; }
+
+/* Pill row spacing */
+.dash-nav-pills {
+  margin-top: 2px;
+  flex-wrap: wrap;
+}
+/* Keep long values (e.g. a long branch name) from blowing out the card. */
+.dash-nav-pills .dash-roster-step {
+  max-width: 150px;
+  overflow: hidden;
+  text-overflow: ellipsis;
+}
+
+/* Live count pill - success tint */
+.dash-nav-pill-live {
+  color: var(--success);
+  background: rgba(63,184,127,.10);
+  border-color: rgba(63,184,127,.3);
+}
+
+/* Backlog open pill - info tint */
+.dash-nav-pill-backlog {
+  color: var(--info);
+  background: rgba(74,140,216,.08);
+  border-color: rgba(74,140,216,.3);
+}
+
+/* Graph-stale pill - warning tint */
+.dash-nav-pill-stale {
+  color: var(--warning);
+  background: rgba(224,162,58,.10);
+  border-color: rgba(224,162,58,.35);
+}
+
+/* Build graph pill - info tint (project has no graph yet) */
+.dash-nav-pill-build {
+  color: var(--info);
+  background: rgba(74,140,216,.08);
+  border-color: rgba(74,140,216,.3);
+}
+
+/* Clickable pill buttons (stale + build) - reset button chrome, add interactivity */
+.dash-nav-pill-btn {
+  cursor: pointer;
+  font-family: ui-monospace, SFMono-Regular, Menlo, Consolas, monospace;
+  transition: background .12s, border-color .12s, color .12s, opacity .12s;
+}
+.dash-nav-pill-stale.dash-nav-pill-btn:hover {
+  background: rgba(224,162,58,.20);
+  border-color: rgba(224,162,58,.6);
+}
+.dash-nav-pill-build.dash-nav-pill-btn:hover {
+  background: rgba(74,140,216,.16);
+  border-color: rgba(74,140,216,.6);
+}
+.dash-nav-pill-btn:disabled {
+  opacity: .55;
+  cursor: default;
+}
+.dash-nav-pill-btn:focus-visible {
+  outline: 2px solid var(--info);
+  outline-offset: 1px;
+}
+
+.dash-nav-term-wrap {
+  position: relative;
+  margin-left: 4px;
+  flex-shrink: 0;
+}
+.dash-nav-term-btn {
+  font-family: ui-monospace, SFMono-Regular, Menlo, Consolas, monospace;
+  font-size: var(--fs-micro);
+  font-weight: 700;
+  padding: 2px 8px;
+  border-radius: 999px;
+  border: 1px solid var(--border);
+  background: rgba(255,255,255,.03);
+  color: var(--muted-fg);
+  cursor: pointer;
+  letter-spacing: .06em;
+  transition: color .12s, border-color .12s, background .12s;
+}
+.dash-nav-term-btn:hover {
+  color: var(--fg);
+  border-color: rgba(255,255,255,.2);
+  background: rgba(255,255,255,.06);
+}
+.dash-nav-term-btn:focus-visible { outline: 2px solid var(--info); outline-offset: 2px; }
+
+/* Terminal flyout menu */
+.dash-nav-term-menu {
+  position: absolute;
+  right: 0;
+  left: auto;
+  top: calc(100% + 4px);
+  z-index: 40;
+  background: var(--card);
+  border: 1px solid var(--border);
+  border-radius: 8px;
+  min-width: 140px;
+  box-shadow: 0 4px 18px rgba(0,0,0,.55);
+  overflow: hidden;
+}
+.dash-nav-term-item {
+  display: block;
+  width: 100%;
+  text-align: left;
+  background: none;
+  border: none;
+  padding: 7px 12px;
+  font-family: ui-monospace, SFMono-Regular, Menlo, Consolas, monospace;
+  font-size: var(--fs-micro);
+  color: var(--muted-fg);
+  cursor: pointer;
+  transition: background .1s, color .1s;
+}
+.dash-nav-term-item:hover {
+  background: rgba(255,255,255,.04);
+  color: var(--fg);
+}
+.dash-nav-term-item:focus-visible { outline: 2px solid var(--info); outline-offset: -2px; }
+.dash-nav-term-item + .dash-nav-term-item { border-top: 1px solid var(--border); }
+
+.dash-nav-qa-wrap {
+  margin-top: 5px;
+}
+.dash-nav-qa-input {
+  width: 100%;
+  box-sizing: border-box;
+  background: transparent;
+  border: none;
+  border-bottom: 1px solid rgba(255,255,255,.08);
+  border-radius: 0;
+  min-height: 24px;
+  padding: 3px 0;
+  font-family: ui-monospace, SFMono-Regular, Menlo, Consolas, monospace;
+  font-size: var(--fs-micro);
+  color: var(--fg);
+  outline: none;
+  transition: border-color .15s;
+}
+.dash-nav-qa-input::placeholder { color: var(--muted-fg); opacity: .55; }
+.dash-nav-qa-input:focus {
+  border-bottom-color: var(--primary);
+}
+
+@media (prefers-reduced-motion: reduce) {
+  .dash-nav-term-btn,
+  .dash-nav-term-item,
+  .dash-nav-toggle { transition: none !important; }
+}

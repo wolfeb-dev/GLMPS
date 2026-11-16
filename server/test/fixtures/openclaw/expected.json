@@ -1,0 +1,22 @@
+{
+  "events": [
+    {
+      "kind": "tool",
+      "lane": "feed",
+      "tool": "user",
+      "path": null,
+      "ts": 1751400000000,
+      "sessionId": "golden",
+      "label": "User: Summarize the open pull requests"
+    },
+    {
+      "kind": "tool",
+      "lane": "feed",
+      "tool": "web_fetch",
+      "path": null,
+      "ts": 1751400001000,
+      "sessionId": "golden",
+      "label": "web_fetch"
+    }
+  ]
+}

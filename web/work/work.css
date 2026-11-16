@@ -1,0 +1,82 @@
+/* web/work/work.css: Work lens (Board, History, QA trends, Cost tabs). */
+
+/* Tab panels fill the pillar: the lens root is a flex column, so the panel
+   wrapper and each panel are flex columns too and the board can take a real
+   height (card glmps-2-0-137 phase 4). */
+.work-root .pillar-tabs-panels { flex: 1 1 auto; min-height: 0; display: flex; flex-direction: column; }
+#wk-panel-board:not([hidden]),
+#wk-panel-history:not([hidden]),
+#wk-panel-qa:not([hidden]),
+#wk-panel-cost:not([hidden]) { flex: 1 1 auto; min-height: 0; display: flex; padding-top: var(--sp-2); }
+
+/* Board tab (carry C1). board.js's renderBacklog() appends the main column
+   (.kanban-main) straight into its container; it sizes itself with
+   height: 100% (board.css), so the panel gives it a real, bounded height
+   instead of an ancestor chain that no longer provides one. Project scope is
+   a chip strip in the board bar, not a side rail (glmps-2-0-148), so the
+   columns get the full panel width. */
+#wk-panel-board:not([hidden]) { min-height: 460px; overflow: hidden; }
+.work-board-bar { flex-shrink: 0; display: flex; flex-wrap: wrap; align-items: center; gap: var(--sp-2); padding: 0 0 var(--sp-2); min-width: 0; }
+
+@media (max-width: 760px) {
+  #wk-panel-board:not([hidden]) { min-height: 0; flex-direction: column; overflow: visible; }
+  #wk-panel-board .kanban-main { height: auto; }
+}
+
+/* History, QA trends and Cost scroll inside their panel. qa-trends.js and
+   analytics.js render with no padding or scroll boundary of their own; the
+   column direction is what makes .qat-root's own flex-direction meaningful. */
+#wk-panel-history:not([hidden]),
+#wk-panel-qa:not([hidden]),
+#wk-panel-cost:not([hidden]) { flex-direction: column; overflow-y: auto; }
+#wk-panel-qa:not([hidden]) { padding: var(--sp-3) var(--sp-4); background: var(--card); border: 1px solid var(--border); border-radius: 8px; margin-top: var(--sp-2); }
+
+/* -- CI-run detail (D17): the run's counts and conclusion, in a second,
+   full-width table row right below the run it belongs to ----------------- */
+.qat-row-detail { font-size: var(--fs-small); font-family: 'Fira Code', monospace; padding: var(--sp-1) var(--sp-3); background: var(--muted); }
+
+/* -- Header: title and the CI chip, which opens the QA trends tab. ------- */
+.work-head {
+  flex-shrink: 0;
+  display: flex;
+  flex-wrap: wrap;
+  align-items: center;
+  gap: var(--sp-2);
+  padding: var(--sp-2) 0 var(--sp-2);
+  min-width: 0;
+}
+.work-title { font-size: var(--fs-lg); font-weight: 600; margin: 0 var(--sp-1) 0 0; color: var(--fg); }
+.work-chip {
+  display: inline-flex;
+  align-items: center;
+  gap: var(--sp-2);
+  max-width: 100%;
+  min-height: 28px;
+  padding: 0 var(--sp-2);
+  background: none;
+  border: 1px solid var(--border);
+  border-radius: 4px;
+  color: var(--fg);
+  font-family: ui-monospace, Menlo, Consolas, monospace;
+  font-size: var(--fs-small);
+  text-align: left;
+  cursor: pointer;
+}
+.work-chip:hover { border-color: var(--info); }
+.work-chip:focus-visible { outline: 2px solid var(--info); outline-offset: 2px; }
+.work-chip-text { overflow: hidden; text-overflow: ellipsis; white-space: nowrap; min-width: 0; }
+.work-chip--warn { color: var(--warning); border-color: color-mix(in srgb, var(--warning) 55%, transparent); background: color-mix(in srgb, var(--warning) 10%, transparent); }
+.work-chip--ok { color: var(--success); border-color: color-mix(in srgb, var(--success) 55%, transparent); }
+.work-chip--bad { color: var(--destructive); border-color: color-mix(in srgb, var(--destructive) 60%, transparent); }
+
+/* History: the most recently ended sessions lead under their own label. */
+.hist-group-recent { color: var(--fg); }
+.hist-row-recent { background: color-mix(in srgb, var(--info) 6%, transparent); }
+
+@media (max-width: 560px) {
+  .work-chip { min-height: 44px; white-space: normal; }
+  .work-chip-text { white-space: normal; }
+  .work-title { flex-basis: 100%; }
+  .board-runner { flex-wrap: wrap; }
+  .board-runner .backlog-pause, .board-runner .backlog-runner { height: 44px; }
+}

@@ -1,0 +1,10 @@
+{
+  "name": "judge",
+  "contract": "judge@1",
+  "upstream": [
+    { "kind": "npm", "name": "openevals", "version": "0.2.2", "files": ["package.json", "dist/prompts/**/*.js", "dist/llm.js"], "license": "MIT" }
+  ],
+  "shims": {},
+  "patches": [],
+  "allowCreateRequire": []
+}

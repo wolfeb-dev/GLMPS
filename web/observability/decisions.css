@@ -1,0 +1,126 @@
+/* web/observability/decisions.css - architectural decision log timeline (glmps-143).
+   Reuses the house tokens from styles.css (--sp-1..4, --fs-*, palette). The
+   layout problem here is density: 200+ rows across 16 repos. The date rail plus
+   a left border per row gives a scan line for the eye, so a reader can skim
+   dates without reading any subject text. */
+
+/* Fix round 1, M2 (Task 14, closing the pointer Task 13's fix round 1 left
+   here): every rule below was still scoped under the dead #view-decisions
+   id (the 1.x view container, confirmed by grep to no longer exist
+   anywhere), while decisions.js has gone on building .dl-toolbar/.dl-filter/
+   .dl-day/.dl-chip/.dl-showmore etc. the whole time - renderDecisions is
+   embedded directly in the Surface decisions panel now (no wrapping id at
+   all), so none of this had actually applied since that move. Unscoped
+   every selector here, the same move Task 13's fix round already made for
+   .dl-why below. */
+/* One row per decision: repo and sha are muted metadata ahead of the subject,
+   which carries the weight. */
+.dl-entry-head { display: flex; flex-wrap: wrap; align-items: baseline; gap: var(--sp-1) var(--sp-2); }
+.dl-repo { color: var(--muted-fg); font-size: var(--fs-small); font-weight: 500; }
+.dl-sha { color: var(--muted-fg); font-family: ui-monospace, SFMono-Regular, Menlo, Consolas, monospace; font-size: var(--fs-small); }
+.dl-what { color: var(--fg); font-weight: 500; flex: 1 1 20ch; min-width: 0; }
+
+.dl-toolbar {
+  display: flex;
+  flex-wrap: wrap;
+  gap: var(--sp-2);
+  align-items: center;
+  margin-bottom: var(--sp-3);
+}
+
+.dl-filter {
+  font: inherit;
+  font-size: var(--fs-small);
+  color: var(--fg);
+  background: var(--panel);
+  border: 1px solid var(--border);
+  border-radius: 6px;
+  padding: var(--sp-1) var(--sp-2);
+  min-height: 34px;
+}
+.dl-filter:focus-visible {
+  outline: 2px solid var(--primary);
+  outline-offset: 1px;
+}
+.dl-search { min-width: 240px; flex: 1 1 240px; }
+
+.dl-count {
+  font-size: var(--fs-micro);
+  color: var(--muted-fg);
+  margin-left: auto;
+  white-space: nowrap;
+}
+
+/* Date group: the scan rail. */
+.dl-day {
+  display: grid;
+  grid-template-columns: 96px 1fr;
+  gap: var(--sp-3);
+  padding: var(--sp-2) 0;
+  border-top: 1px solid var(--border);
+}
+.dl-day-date {
+  font-size: var(--fs-micro);
+  color: var(--muted-fg);
+  font-variant-numeric: tabular-nums;
+  position: sticky;
+  top: var(--sp-2);
+  align-self: start;
+  padding-top: 2px;
+}
+
+.dl-entries { display: flex; flex-direction: column; gap: var(--sp-2); min-width: 0; }
+
+.dl-entry:not(.dl-entry--open) .dl-why { display: -webkit-box; -webkit-line-clamp: 2; -webkit-box-orient: vertical; overflow: hidden; }
+
+.dl-more {
+  margin-top: 2px;
+  font: inherit;
+  font-size: var(--fs-micro);
+  color: var(--primary);
+  background: none;
+  border: 0;
+  padding: 2px 0;
+  cursor: pointer;
+  min-height: 24px;
+}
+.dl-more:hover { text-decoration: underline; }
+.dl-more:focus-visible { outline: 2px solid var(--primary); outline-offset: 2px; border-radius: 3px; }
+
+/* settings.json key deltas */
+.dl-sections { display: flex; flex-wrap: wrap; gap: var(--sp-1); margin-top: var(--sp-1); }
+.dl-chip {
+  font-size: var(--fs-micro);
+  font-family: var(--mono, ui-monospace, monospace);
+  border: 1px solid var(--border);
+  border-radius: 999px;
+  padding: 1px var(--sp-1);
+  color: var(--muted-fg);
+}
+.dl-chip--add { color: var(--primary); border-color: color-mix(in srgb, var(--primary) 45%, var(--border)); }
+.dl-chip--rem { color: var(--danger-ink); border-color: color-mix(in srgb, var(--danger-ink) 45%, var(--border)); }
+
+.dl-empty { color: var(--muted-fg); font-size: var(--fs-small); padding: var(--sp-4) 0; }
+
+.dl-showmore {
+  display: block;
+  width: 100%;
+  margin-top: var(--sp-3);
+  padding: var(--sp-2);
+  font: inherit;
+  font-size: var(--fs-small);
+  color: var(--fg);
+  background: var(--panel);
+  border: 1px solid var(--border);
+  border-radius: 6px;
+  cursor: pointer;
+  min-height: 44px;
+}
+.dl-showmore:hover { border-color: var(--primary); }
+.dl-showmore:focus-visible { outline: 2px solid var(--primary); outline-offset: 2px; }
+
+@media (max-width: 760px) {
+  .dl-day { grid-template-columns: 1fr; gap: var(--sp-1); }
+  .dl-day-date { position: static; }
+  .dl-count { margin-left: 0; flex-basis: 100%; }
+}

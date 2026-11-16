@@ -1,0 +1,5 @@
+{"timestamp":"2026-07-01T09:00:00.000Z","type":"session_meta","payload":{"id":"golden","cwd":"D:\\proj","model_provider":"openai","cli_version":"0.139.0"}}
+{"timestamp":"2026-07-01T09:00:00.100Z","type":"turn_context","payload":{"turn_id":"t1","cwd":"D:\\proj","model":"gpt-5.5"}}
+{"timestamp":"2026-07-01T09:00:01.000Z","type":"response_item","payload":{"type":"message","role":"user","content":[{"type":"input_text","text":"Run the linter and commit"}]}}
+{"timestamp":"2026-07-01T09:00:05.000Z","type":"response_item","payload":{"type":"local_shell_call","action":{"command":["git","commit","-m","chore: lint"]}}}
+{"timestamp":"2026-07-01T09:00:08.000Z","type":"event_msg","payload":{"type":"token_count","info":{"total_token_usage":{"input_tokens":9000,"cached_input_tokens":1000,"output_tokens":50,"total_tokens":9050},"last_token_usage":{"input_tokens":9000,"cached_input_tokens":1000,"output_tokens":50,"total_tokens":9050},"model_context_window":258400}}}

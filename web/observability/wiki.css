@@ -1,0 +1,266 @@
+/* web/observability/wiki.css - Wiki view (the app shell around the article iframe).
+   House tokens only (shared/tokens.css): colour, --sp-* spacing, --fs-* for the
+   metadata floor. The wiki reads long text, so it adds a local 13/14/17/20
+   scale on .wiki-root; the app-wide --fs-* scale is untouched. Washes come from
+   --primary-rgb or color-mix on a status token, never a literal. */
+
+#lens-root[data-lens="knowledge"] { overflow: hidden; background: var(--bg); }
+
+.wiki-root {
+  --wk-fs-meta: 13px;
+  --wk-fs-body: 14px;
+  --wk-fs-section: 17px;
+  --wk-fs-title: 20px;
+  --wk-mono: 'Fira Code', ui-monospace, SFMono-Regular, Menlo, Consolas, monospace;
+  --wk-tint: rgba(var(--primary-rgb), 0.12);
+  --wk-tint-edge: rgba(var(--primary-rgb), 0.4);
+  display: flex; flex-direction: column; flex: 1; min-width: 0; height: 100%; min-height: 0;
+  font-size: var(--wk-fs-body);
+}
+
+.wiki-picker {
+  display: flex; align-items: center; gap: var(--sp-2);
+  padding: var(--sp-1) var(--sp-3);
+  flex-shrink: 0;
+  border-bottom: 1px solid var(--border);
+  background: var(--card);
+}
+.wiki-picker-label { font-size: var(--wk-fs-meta); font-weight: 600; color: var(--muted-fg); }
+.wiki-project-select {
+  background: var(--muted);
+  border: 1px solid var(--edge-ui);
+  color: var(--fg);
+  min-height: 32px;
+  padding: 0 var(--sp-2);
+  border-radius: 6px;
+  font: inherit;
+  font-size: var(--wk-fs-body);
+  cursor: pointer;
+  max-width: 320px;
+}
+.wiki-project-select:focus-visible { outline: 2px solid var(--primary); outline-offset: 1px; }
+
+.wiki-shell { display: flex; flex: 1; min-width: 0; min-height: 0; }
+.wiki-loading { margin: auto; font-size: var(--wk-fs-body); color: var(--muted-fg); }
+.wiki-layout { display: flex; flex: 1; min-width: 0; height: 100%; }
+
+.wiki-side {
+  width: 304px; flex-shrink: 0; height: 100%;
+  display: flex; flex-direction: column;
+  border-right: 1px solid var(--border);
+  background: var(--card);
+}
+.wiki-head {
+  display: flex; flex-direction: column; gap: var(--sp-2);
+  padding: var(--sp-3);
+  border-bottom: 1px solid var(--border);
+}
+.wiki-head-info { min-width: 0; display: flex; flex-direction: column; gap: 4px; }
+.wiki-eyebrow {
+  display: flex; align-items: center; gap: 6px;
+  font-size: var(--wk-fs-meta); font-weight: 600;
+  text-transform: uppercase; letter-spacing: .04em;
+  color: var(--primary);
+}
+.wiki-eyebrow svg { flex-shrink: 0; }
+/* The full project name, wrapping at hyphens or anywhere rather than truncating. */
+.wiki-project {
+  margin: 0; font-size: var(--wk-fs-section); font-weight: 600; line-height: 1.25;
+  color: var(--fg); overflow-wrap: anywhere;
+}
+.wiki-sub { font-size: var(--wk-fs-meta); font-weight: 500; line-height: 1.4; color: var(--muted-fg); }
+.wiki-head-actions { display: flex; flex-wrap: wrap; align-items: center; gap: var(--sp-1) var(--sp-2); }
+
+.wiki-stale, .wiki-unknown, .wiki-loop {
+  font-size: var(--wk-fs-meta); font-weight: 500;
+  padding: 2px 8px; border-radius: 999px;
+  border: 1px solid var(--border); color: var(--muted-fg);
+  white-space: nowrap; cursor: help;
+}
+.wiki-stale {
+  color: var(--warning);
+  border-color: color-mix(in srgb, var(--warning) 45%, transparent);
+  background: color-mix(in srgb, var(--warning) 10%, transparent);
+  cursor: default;
+}
+.wiki-unknown { border-style: dashed; background: transparent; }
+.wiki-loop-ok {
+  color: var(--success);
+  border-color: color-mix(in srgb, var(--success) 45%, transparent);
+  background: color-mix(in srgb, var(--success) 10%, transparent);
+}
+.wiki-loop-fail {
+  color: var(--danger-ink);
+  border-color: color-mix(in srgb, var(--danger-ink) 45%, transparent);
+  background: color-mix(in srgb, var(--danger-ink) 10%, transparent);
+}
+.wiki-loop-none { border-style: dashed; background: transparent; }
+.wiki-loop-pending {
+  color: var(--warning);
+  border-color: color-mix(in srgb, var(--warning) 45%, transparent);
+  background: color-mix(in srgb, var(--warning) 10%, transparent);
+}
+
+.wiki-rebuild, .wiki-ask-btn {
+  font: inherit; font-size: var(--wk-fs-meta); font-weight: 600;
+  color: var(--primary);
+  background: var(--wk-tint);
+  border: 1px solid var(--wk-tint-edge);
+  border-radius: 6px;
+  min-height: 32px; padding: 0 var(--sp-3);
+  cursor: pointer; white-space: nowrap;
+  transition: background .15s, border-color .15s;
+}
+.wiki-rebuild:hover:not(:disabled), .wiki-ask-btn:hover:not(:disabled) {
+  background: rgba(var(--primary-rgb), 0.2); border-color: var(--primary);
+}
+.wiki-rebuild:focus-visible, .wiki-ask-btn:focus-visible { outline: 2px solid var(--primary); outline-offset: 1px; }
+.wiki-rebuild:disabled, .wiki-ask-btn:disabled { cursor: default; opacity: .6; }
+.wiki-rebuild { margin-left: auto; }
+
+.wiki-retention {
+  font-size: var(--wk-fs-meta); line-height: 1.4; color: var(--warning);
+  border-left: 3px solid var(--warning);
+  background: color-mix(in srgb, var(--warning) 10%, transparent);
+  padding: var(--sp-1) var(--sp-3);
+}
+.wiki-rebuild-error {
+  font-size: var(--wk-fs-meta); line-height: 1.4; color: var(--danger-ink);
+  padding: 0 var(--sp-3) var(--sp-2);
+}
+
+.wiki-search, .wiki-ask-input {
+  font: inherit; font-size: var(--wk-fs-body);
+  color: var(--fg); background: var(--bg);
+  border: 1px solid var(--edge-ui); border-radius: 6px;
+  min-height: 32px; padding: 0 var(--sp-2);
+}
+.wiki-search { margin: var(--sp-2) var(--sp-2) 0; }
+.wiki-search:focus-visible, .wiki-ask-input:focus-visible { outline: 2px solid var(--primary); outline-offset: 1px; }
+.wiki-ask { display: flex; gap: var(--sp-1); margin: var(--sp-1) var(--sp-2) 0; }
+.wiki-ask-input { flex: 1; min-width: 0; }
+
+.wiki-list {
+  list-style: none; margin: 0; padding: var(--sp-2);
+  overflow-y: auto; flex: 1; min-height: 0;
+  display: flex; flex-direction: column; gap: 2px;
+}
+.wiki-group { display: flex; flex-direction: column; gap: 2px; margin-top: var(--sp-2); }
+.wiki-group:first-child { margin-top: 0; }
+.wiki-group-title, .wiki-subgroup-title {
+  margin: 0; font-size: var(--wk-fs-meta); font-weight: 600; color: var(--muted-fg);
+}
+.wiki-group-title {
+  text-transform: uppercase; letter-spacing: .04em;
+  padding: var(--sp-1) var(--sp-2);
+  border-bottom: 1px solid var(--border);
+  margin-bottom: 2px;
+}
+.wiki-subgroup-title { padding: var(--sp-1) var(--sp-2) 0; color: var(--fg); }
+.wiki-group-items { list-style: none; margin: 0; padding: 0; display: flex; flex-direction: column; gap: 2px; }
+
+.wiki-item {
+  display: flex; align-items: flex-start; gap: var(--sp-2);
+  padding: var(--sp-1) var(--sp-2);
+  border-radius: 6px; border: 1px solid transparent; border-left: 3px solid transparent;
+  cursor: pointer;
+  transition: background .12s, border-color .12s;
+}
+.wiki-item:hover { background: var(--wash); }
+.wiki-item:focus-visible { outline: 2px solid var(--primary); outline-offset: 1px; }
+.wiki-item.active { background: var(--wk-tint); border-left-color: var(--primary); }
+.wiki-item-main { flex: 1; min-width: 0; display: flex; flex-direction: column; gap: 2px; }
+.wiki-item-title {
+  font-size: var(--wk-fs-body); font-weight: 600; line-height: 1.3; color: var(--fg);
+  overflow-wrap: anywhere;
+}
+.wiki-item.active .wiki-item-title { color: var(--primary); }
+.wiki-item-summary { font-size: var(--wk-fs-meta); font-weight: 500; line-height: 1.4; color: var(--muted-fg); }
+.wiki-item-tags { display: inline-flex; align-items: center; gap: var(--sp-1); flex-shrink: 0; padding-top: 2px; }
+.wiki-item-count {
+  font-family: var(--wk-mono); font-size: var(--wk-fs-meta); font-variant-numeric: tabular-nums;
+  color: var(--muted-fg);
+}
+.wiki-item-ai {
+  font-family: var(--wk-mono); font-size: var(--wk-fs-meta); font-weight: 500;
+  color: var(--success);
+  border: 1px solid color-mix(in srgb, var(--success) 45%, transparent);
+  border-radius: 4px; padding: 0 4px;
+}
+.wiki-item-stale { width: 8px; height: 8px; border-radius: 50%; background: var(--warning); flex-shrink: 0; }
+.wiki-empty-hint { list-style: none; }
+
+.wiki-answer {
+  border-bottom: 1px solid var(--border); background: var(--card);
+  padding: var(--sp-2) var(--sp-3);
+  max-height: 40%; overflow-y: auto; flex-shrink: 0;
+}
+.wiki-answer-head { display: flex; align-items: center; justify-content: space-between; gap: var(--sp-2); }
+.wiki-answer-lab { font-size: var(--wk-fs-meta); font-weight: 600; text-transform: uppercase; letter-spacing: .04em; color: var(--primary); }
+.wiki-answer-close {
+  background: transparent; border: 1px solid transparent; border-radius: 6px;
+  color: var(--muted-fg); font-size: var(--wk-fs-section); line-height: 1;
+  min-width: 32px; min-height: 32px; cursor: pointer;
+}
+.wiki-answer-close:hover { color: var(--fg); border-color: var(--border); }
+.wiki-answer-close:focus-visible { outline: 2px solid var(--primary); outline-offset: 1px; }
+.wiki-answer-text {
+  margin-top: var(--sp-2); font-size: var(--wk-fs-body); color: var(--fg);
+  line-height: 1.6; white-space: pre-wrap; overflow-wrap: break-word; max-width: 72ch;
+}
+.wiki-answer-loading, .wiki-answer-error { margin-top: var(--sp-2); font-size: var(--wk-fs-body); }
+.wiki-answer-loading { color: var(--muted-fg); }
+.wiki-answer-error { color: var(--danger-ink); }
+.wiki-answer-cites { display: flex; flex-wrap: wrap; align-items: center; gap: var(--sp-1); margin-top: var(--sp-2); }
+
+.wiki-main { flex: 1; min-width: 0; height: 100%; display: flex; flex-direction: column; }
+/* Back-links bar; empty when the page has none, and then it takes no space. */
+.wiki-conn {
+  display: flex; flex-wrap: wrap; align-items: center; gap: var(--sp-3);
+  padding: var(--sp-1) var(--sp-3);
+  border-bottom: 1px solid var(--border); background: var(--card);
+}
+.wiki-conn:empty { display: none; }
+.wiki-conn-grp { display: inline-flex; align-items: center; gap: var(--sp-1); flex-wrap: wrap; }
+.wiki-conn-lab { font-size: var(--wk-fs-meta); font-weight: 600; color: var(--muted-fg); }
+.wiki-conn-link {
+  font: inherit; font-size: var(--wk-fs-meta); font-weight: 500;
+  color: var(--primary); background: var(--wk-tint);
+  border: 1px solid var(--wk-tint-edge); border-radius: 999px;
+  min-height: 24px; padding: 0 var(--sp-2); cursor: pointer;
+}
+.wiki-conn-link:hover { background: rgba(var(--primary-rgb), 0.2); border-color: var(--primary); }
+.wiki-conn-link:focus-visible { outline: 2px solid var(--primary); outline-offset: 1px; }
+.wiki-frame { width: 100%; flex: 1; min-height: 0; border: 0; display: block; background: var(--bg); }
+
+.wiki-empty {
+  margin: auto; display: flex; flex-direction: column; align-items: center;
+  gap: var(--sp-2); padding: var(--sp-4); text-align: center; max-width: 48ch;
+}
+.wiki-empty-icon { color: var(--muted-fg); opacity: .5; }
+.wiki-empty-msg { font-size: var(--wk-fs-title); font-weight: 600; line-height: 1.25; color: var(--fg); margin-top: var(--sp-1); }
+.wiki-empty-hint { font-size: var(--wk-fs-body); line-height: 1.5; color: var(--muted-fg); font-weight: 500; }
+.wiki-empty-btn {
+  font: inherit; font-size: var(--wk-fs-body); font-weight: 600;
+  color: var(--on-primary); background: var(--primary);
+  border: 1px solid var(--primary); border-radius: 6px;
+  min-height: 40px; padding: 0 var(--sp-4); margin-top: var(--sp-2);
+  cursor: pointer;
+}
+.wiki-empty-btn:hover:not(:disabled) { filter: brightness(1.1); }
+.wiki-empty-btn:focus-visible { outline: 2px solid var(--fg); outline-offset: 2px; }
+.wiki-empty-btn:disabled { cursor: default; opacity: .55; }
+
+@media (max-width: 760px) {
+  /* The page scrolls as a whole on a phone. A height-capped sidebar left the
+     header, search and Ask with all of it and the page list with none. */
+  .wiki-root { overflow-y: auto; }
+  .wiki-shell { flex: none; }
+  .wiki-layout { flex-direction: column; height: auto; }
+  .wiki-side { width: 100%; height: auto; border-right: 0; border-bottom: 1px solid var(--border); }
+  .wiki-list { flex: none; min-height: 196px; max-height: 45vh; }
+  .wiki-main { flex: none; height: 80vh; min-height: 0; }
+  .wiki-item { min-height: 44px; }
+  .wiki-rebuild, .wiki-ask-btn, .wiki-search, .wiki-ask-input, .wiki-project-select { min-height: 44px; }
+  .wiki-answer-close { min-width: 44px; min-height: 44px; }
+}

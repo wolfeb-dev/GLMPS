@@ -1,0 +1,10 @@
+{
+  "note": "Placements of third-party services are declared, not measured. Evidence: vendor (the provider states it), illustrative (the provider does not expose a region). The local store's location comes from config.json surface.localGeo and is never committed (W3).",
+  "players": [
+    { "id": "local", "name": "Local store", "short": "Local", "provider": "This workstation", "geo": "config", "evidence": "operator", "holds": ["repos", "cards", "agents"] },
+    { "id": "github", "name": "GitHub", "short": "GitHub", "provider": "Azure East US 2 (Virginia)", "lon": -78.4, "lat": 37.0, "evidence": "illustrative", "note": "placement illustrative: a git remote exposes a URL, not a building", "remoteHost": "github.com", "holds": ["repos-remote"] },
+    { "id": "slack", "name": "Slack", "short": "Slack", "provider": "AWS us-east-1 (N. Virginia)", "lon": -77.5, "lat": 39.0, "evidence": "vendor", "note": "Slack states it runs on AWS; region not exposed", "holds": ["cards:slack"] },
+    { "id": "anthropic", "name": "Anthropic", "short": "Anthropic", "provider": "AWS, in part", "lon": -76.6, "lat": 38.4, "evidence": "vendor", "note": "Anthropic names AWS as a provider; region not exposed", "holds": ["sessions:claude-code"] },
+    { "id": "gcp", "name": "Gemini and Antigravity", "short": "Gemini", "provider": "GCP us-central1 (Iowa)", "lon": -93.6, "lat": 41.6, "evidence": "illustrative", "note": "Google does not expose the region", "holds": ["sessions:antigravity", "sessions:gemini"] }
+  ]
+}

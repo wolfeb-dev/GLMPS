@@ -1,0 +1,23 @@
+{
+  "title": "Explain this regex",
+  "events": [
+    {
+      "kind": "tool",
+      "lane": "feed",
+      "tool": "user",
+      "path": null,
+      "ts": 1751400000000,
+      "sessionId": "golden",
+      "label": "User: Explain this regex"
+    },
+    {
+      "kind": "tool",
+      "lane": "feed",
+      "tool": "user",
+      "path": null,
+      "ts": 1751400000000,
+      "sessionId": "golden",
+      "label": "User: Now simplify it"
+    }
+  ]
+}

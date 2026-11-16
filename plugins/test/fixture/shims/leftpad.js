@@ -1,0 +1,1 @@
+export default function leftPad(s, n) { return String(s).padStart(n, '.'); }

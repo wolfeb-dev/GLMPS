@@ -1,0 +1,10 @@
+{"type":"session_start","id":"5e0c8b2a-9a4d-4d52-b1c7-3f8a6d1e7b22","title":"Add a health check endpoint","cwd":"/home/ada/proj","timestamp":"2026-05-01T10:00:00.000Z"}
+{"type":"system","subtype":"init","cwd":"/home/ada/proj","session_id":"5e0c8b2a-9a4d-4d52-b1c7-3f8a6d1e7b22","model":"claude-sonnet-4-5","timestamp":"2026-05-01T10:00:00.100Z"}
+{"type":"message","role":"user","text":"add a health check endpoint","session_id":"5e0c8b2a-9a4d-4d52-b1c7-3f8a6d1e7b22","timestamp":"2026-05-01T10:00:01.000Z"}
+{"type":"message","message":{"role":"assistant","content":[{"type":"text","text":"Reading the server entry."},{"type":"tool_use","id":"t1","name":"Read","input":{"file_path":"/home/ada/proj/server.js"}}]},"timestamp":"2026-05-01T10:00:04.000Z"}
+{"type":"tool_call","toolName":"Edit","parameters":{"file_path":"/home/ada/proj/server.js","old_str":"app.listen","new_str":"app.get('/health', ok);\napp.listen"},"timestamp":"2026-05-01T10:00:08.000Z"}
+{"type":"tool_call","toolName":"Execute","parameters":{"command":"npm test"},"timestamp":"2026-05-01T10:00:12.000Z"}
+{"type":"tool_result","toolId":"t2","value":"ok","timestamp":"2026-05-01T10:00:15.000Z"}
+{"type":"message","message":{"role":"assistant","content":[{"type":"tool_use","id":"t3","name":"Execute","input":{"command":"git commit -m \"feat: add health endpoint\""}}]},"timestamp":"2026-05-01T10:00:20.000Z"}
+{"type":"message","message":{"role":"user","content":[{"type":"text","text":"now document it in the README"}]},"timestamp":"2026-05-01T10:01:00.000Z"}
+{"type":"completion","finalText":"Documented.","usage":{"input_tokens":900,"output_tokens":120},"timestamp":"2026-05-01T10:01:30.000Z"}

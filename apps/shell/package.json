@@ -1,0 +1,55 @@
+{
+  "name": "glmps-shell",
+  "productName": "GLMPS 2.0",
+  "version": "2.0.0",
+  "private": true,
+  "description": "GLMPS desktop shell: the dashboard and Slack side by side in one window.",
+  "license": "MIT",
+  "type": "module",
+  "main": "src/main.js",
+  "scripts": {
+    "start": "electron .",
+    "smoke": "node smoke/run-smoke.mjs --start-down",
+    "icons": "node scripts/render-icons.mjs",
+    "dist": "npm run stage-kernel && electron-builder --win nsis",
+    "dist:dir": "npm run stage-kernel && electron-builder --win --dir",
+    "stage-kernel": "node scripts/stage-kernel.mjs"
+  },
+  "devDependencies": {
+    "electron": "44.4.5",
+    "electron-builder": "26.15.3"
+  },
+  "build": {
+    "appId": "dev.glmps.shell2",
+    "productName": "GLMPS 2.0",
+    "directories": { "output": "dist", "buildResources": "build" },
+    "files": ["src/**/*", "renderer/**/*", "assets/**/*", "package.json"],
+    "extraResources": [
+      { "from": "kernel-stage", "to": "kernel" },
+      { "from": "assets", "to": ".", "filter": ["*.ico"] }
+    ],
+    "win": { "target": [{ "target": "nsis", "arch": ["x64"] }], "icon": "build/icon.ico" },
+    "nsis": {
+      "include": "build/installer.nsh",
+      "license": "../../LICENSE",
+      "oneClick": false,
+      "perMachine": false,
+      "allowToChangeInstallationDirectory": true,
+      "createDesktopShortcut": true,
+      "createStartMenuShortcut": true,
+      "shortcutName": "GLMPS 2.0",
+      "runAfterFinish": true,
+      "deleteAppDataOnUninstall": false
+    },
+    "publish": null,
+    "electronFuses": {
+      "runAsNode": false,
+      "enableCookieEncryption": true,
+      "enableNodeOptionsEnvironmentVariable": false,
+      "enableNodeCliInspectArguments": false,
+      "enableEmbeddedAsarIntegrityValidation": true,
+      "onlyLoadAppFromAsar": true,
+      "grantFileProtocolExtraPrivileges": false
+    }
+  }
+}

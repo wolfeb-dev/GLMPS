@@ -1,0 +1,20 @@
+{
+  "creationDate": 1751400000000,
+  "requests": [
+    {
+      "message": {
+        "text": "Explain this regex"
+      }
+    },
+    {
+      "message": {
+        "parts": [
+          {
+            "kind": "text",
+            "text": "Now simplify it"
+          }
+        ]
+      }
+    }
+  ]
+}

@@ -1,0 +1,80 @@
+{
+  "events": [
+    {
+      "kind": "meta",
+      "lane": "feed",
+      "label": "cwd",
+      "path": "D:\\proj",
+      "sessionId": "golden"
+    },
+    {
+      "kind": "meta",
+      "lane": "feed",
+      "label": "model",
+      "model": "auto",
+      "sessionId": "golden"
+    },
+    {
+      "kind": "tool",
+      "lane": "feed",
+      "tool": "user",
+      "path": null,
+      "ts": "2026-07-08T22:47:11.000Z",
+      "sessionId": "golden",
+      "label": "User: add a health check endpoint"
+    },
+    {
+      "kind": "meta",
+      "lane": "feed",
+      "label": "model",
+      "model": "gpt-5-mini",
+      "sessionId": "golden"
+    },
+    {
+      "kind": "tool",
+      "lane": "feed",
+      "tool": "view",
+      "path": "D:\\proj\\server.js",
+      "ts": "2026-07-08T22:47:13.500Z",
+      "sessionId": "golden",
+      "label": "D:\\proj\\server.js"
+    },
+    {
+      "kind": "tool",
+      "lane": "feed",
+      "tool": "str_replace_editor",
+      "path": "D:\\proj\\server.js",
+      "ts": "2026-07-08T22:47:15.000Z",
+      "sessionId": "golden",
+      "label": "D:\\proj\\server.js"
+    },
+    {
+      "kind": "command",
+      "lane": "feed",
+      "tool": "Bash",
+      "path": null,
+      "ts": "2026-07-08T22:47:16.500Z",
+      "sessionId": "golden",
+      "label": "npm test"
+    },
+    {
+      "kind": "git",
+      "lane": "context",
+      "gitOp": "commit",
+      "label": "commit: add health endpoint",
+      "tool": "Bash",
+      "path": null,
+      "ts": "2026-07-08T22:47:18.000Z",
+      "sessionId": "golden"
+    },
+    {
+      "kind": "tool",
+      "lane": "feed",
+      "tool": "web_fetch",
+      "path": null,
+      "ts": "2026-07-08T22:47:19.000Z",
+      "sessionId": "golden",
+      "label": "web_fetch"
+    }
+  ]
+}

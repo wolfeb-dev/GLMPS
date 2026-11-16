@@ -1,0 +1,666 @@
+/* web/surface/surface.css: the Surface lens, a console over a globe.
+   The look is the operator's chosen mockup (deep-blue ocean, glass
+   panels, a left icon rail, a monospace footer bar). Its blue-glass palette is
+   scoped to .surface-root as --sf-* so the repo's teal tokens stay in charge
+   everywhere else; spacing, type sizes, the amber and the rust are the repo's
+   own tokens (styles.css). Nothing here sets a size under --fs-micro. */
+.surface-root {
+  --sf-void: #05070c;
+  --sf-text: #dbeaf2;
+  --sf-muted: #8fb0c2;
+  /* The study's faint grey-blue reads 4.0:1 on the glass; this is lifted to
+     clear 4.5:1 for small text. */
+  --sf-faint: #7392a4;
+  --sf-glass: rgba(8, 20, 32, 0.82);
+  --sf-glass-row: rgba(20, 44, 66, 0.5);
+  --sf-edge: rgba(94, 168, 214, 0.34);
+  --sf-edge-lit: rgba(140, 205, 255, 0.7);
+  --sf-blue: #3d8bff;
+  --sf-blue-soft: rgba(61, 139, 255, 0.22);
+  --sf-green: #3ddc84;
+  /* The house amber (the repo's --warning); on Surface it means one thing: needs you. */
+  --sf-amber: var(--warning);
+  --sf-red: #ff5b5b;
+  --sf-rail: 48px;
+  --sf-foot: 28px;
+  /* The danger panel: red-tinted glass, tinted from the one red. */
+  --sf-danger-glass: rgba(32, 10, 14, 0.9);
+  --sf-danger-edge: rgba(255, 91, 91, 0.45);
+  --sf-danger-text: hsl(0 100% 85%);
+  --sf-usage: hsl(262 100% 78%);
+  --sf-track-text: hsl(145 80% 85%);
+}
+/* Sizes from the flex-column shell (#lens-root is height: 100%), never a viewport guess at the topbar. */
+.surface-root { padding: 0 !important; gap: 0 !important; height: 100%; overflow: hidden; color: var(--sf-text); }
+.surface-frame { display: grid; grid-template-columns: var(--sf-rail) minmax(0, 1fr); flex: 1; min-height: 0; background: var(--sf-void); }
+.surface-root button { font: inherit; color: inherit; cursor: pointer; }
+.surface-root [hidden] { display: none !important; }
+.surface-root :focus-visible { outline: 2px solid var(--sf-edge-lit); outline-offset: 2px; }
+
+/* The icon rail */
+.surface-iconrail { display: flex; flex-direction: column; gap: 4px; padding: var(--sp-1); border-right: 1px solid var(--sf-edge); background: rgba(6, 14, 22, 0.92); overflow-y: auto; }
+.rail-btn { width: 36px; height: 36px; flex: none; display: grid; place-items: center; background: none; border: 1px solid transparent; border-radius: 6px; color: var(--sf-muted); }
+.rail-btn svg { width: 18px; height: 18px; }
+.rail-btn:hover { color: var(--sf-text); background: rgba(61, 139, 255, 0.12); }
+.rail-btn.on { color: var(--sf-blue-ink); background: var(--sf-blue-soft); border-color: rgba(61, 139, 255, 0.45); }
+.rail-reset { margin-top: auto; }
+
+/* The stage: stars and globe are painted on the canvas; panels float over it */
+.surface-stage { position: relative; min-width: 0; min-height: 0; overflow: hidden; background: var(--sf-void); }
+.surface-stage:focus-visible { outline: 2px solid var(--sf-edge-lit); outline-offset: -2px; }
+.globe-base, .globe-marks { position: absolute; inset: 0; }
+.globe-marks { touch-action: none; }
+.globe-bg { fill: transparent; cursor: grab; }
+.globe-marks [role="button"]:focus-visible { outline: 2px solid var(--sf-edge-lit); }
+.globe-marks.labels-off .lbl { display: none; }
+.globe-marks text.lbl { font-family: 'Fira Code', monospace; font-size: var(--fs-micro); fill: var(--sf-text); paint-order: stroke; stroke: var(--sf-halo); stroke-width: 3px; stroke-linejoin: round; }
+
+/* Glass panels */
+.surface-panel { background: var(--sf-glass); border: 1px solid var(--sf-edge); border-radius: 5px; box-shadow: 0 8px 30px rgba(0, 0, 0, 0.45), inset 0 1px 0 rgba(140, 205, 255, 0.25); backdrop-filter: blur(6px); display: flex; flex-direction: column; min-height: 0; pointer-events: auto; }
+.surface-panel-head { display: flex; align-items: center; gap: var(--sp-1); padding: var(--sp-1) var(--sp-2); border-bottom: 1px solid var(--sf-edge); }
+.panel-icon { width: 14px; height: 14px; color: var(--sf-blue); flex: none; }
+.surface-panel-title { margin: 0 auto 0 0; font-size: var(--fs-base); font-weight: 500; letter-spacing: 0.01em; }
+.panel-close, .panel-fold { width: 24px; height: 24px; display: grid; place-items: center; background: none; border: 0; border-radius: 4px; color: var(--sf-muted); }
+.panel-close::before { content: '\2715'; font-size: var(--fs-small); }
+.panel-fold::before { content: '\25BE'; font-size: var(--fs-base); transition: transform .15s; }
+.is-folded .panel-fold::before { transform: rotate(-90deg); }
+.panel-close:hover, .panel-fold:hover { background: rgba(255, 255, 255, 0.08); color: var(--sf-text); }
+.dock-sub { margin: 0; padding: var(--sp-1) var(--sp-2) 0; font-size: var(--fs-small); color: var(--sf-muted); }
+.surface-panel-body { padding: var(--sp-1) var(--sp-2) var(--sp-2); overflow: auto; min-height: 0; }
+.panel-foot { margin: 0; padding: var(--sp-1) var(--sp-2) var(--sp-2); border-top: 1px solid var(--sf-edge); font-size: var(--fs-micro); line-height: 1.4; color: var(--sf-faint); }
+.is-folded .surface-panel-body, .is-folded .panel-foot, .is-folded .dock-sub { display: none; }
+.is-folded .surface-panel-head { border-bottom: 0; }
+.insp-word { font-size: var(--fs-md); margin: var(--sp-1) 0; }
+.insp-facts { display: grid; grid-template-columns: max-content 1fr; gap: 2px var(--sp-3); font-size: var(--fs-small); }
+.insp-facts dt { color: var(--sf-muted); }
+.insp-facts dd { margin: 0; font-family: 'Fira Code', monospace; overflow-wrap: anywhere; }
+.insp-rows { list-style: none; margin: var(--sp-2) 0 0; padding: 0; display: grid; gap: 3px; }
+.insp-row { font-size: var(--fs-small); font-family: 'Fira Code', monospace; padding: 3px var(--sp-1); border-radius: 3px; background: var(--sf-glass-row); cursor: pointer; overflow-wrap: anywhere; }
+.insp-row:hover, .insp-row:has(> .item-btn:focus-visible), .insp-row:has(> .insp-row-link:focus-visible) { background: rgba(61, 139, 255, 0.16); }
+.insp-row-link { display: block; color: inherit; text-decoration: none; }
+.insp-row-link:hover { text-decoration: underline; }
+.insp-row-link:focus-visible { outline: 2px solid var(--sf-edge-lit); outline-offset: 1px; }
+.insp-row .item-btn { font: inherit; color: inherit; background: none; border: 0; padding: 0; text-align: left; width: 100%; cursor: pointer; }
+.fa-btn { font: inherit; font-size: var(--fs-small); color: var(--sf-text); background: rgba(61, 139, 255, 0.14); border: 1px solid var(--sf-edge); border-radius: 4px; padding: 3px var(--sp-2); cursor: pointer; text-decoration: none; display: inline-block; margin: var(--sp-1) var(--sp-1) 0 0; }
+.fa-btn:hover { border-color: var(--sf-edge-lit); }
+
+/* Panel regions: ledger bottom-left, layers and the context drawer on the right */
+.surface-left { position: absolute; left: var(--sp-3); top: var(--sp-3); bottom: var(--sp-3); width: min(480px, 40vw); display: flex; flex-direction: column; gap: var(--sp-1); pointer-events: none; z-index: 3; overflow: hidden; }
+.surface-left > .surface-dock { margin-top: auto; flex: 0 1 auto; }
+.surface-side { position: absolute; top: var(--sp-3); right: var(--sp-3); bottom: var(--sp-3); width: min(360px, 34vw); display: flex; flex-direction: column; gap: var(--sp-1); pointer-events: none; z-index: 3; overflow: hidden; }
+.surface-side > .surface-panel { flex: 0 1 auto; }
+/* A shrinking column must squeeze panel bodies, never heads: a panel clips its
+   own content, its chrome keeps its height, and a folded dock keeps its header,
+   or the next panel paints over it. */
+.surface-side .surface-panel { overflow: hidden; }
+.surface-side .surface-panel-head, .surface-side .dock-sub, .surface-side .panel-foot { flex: none; }
+.surface-side > .surface-panel.is-folded { flex: none; }
+/* Detail the operator opened outranks the standing Recent edits feed. */
+.surface-side:has(> .surface-drawer:not([hidden])) > #dock-edits { max-height: 30%; }
+/* The context drawer (card glmps-2-0-137 phase 2): one view at a time, so it
+   leads the column and keeps a floor instead of collapsing under the docks. */
+.surface-drawer { flex: 0 1 auto; max-height: 62%; min-height: min(96px, 100%); }
+.surface-drawer[hidden] { display: none; }
+.surface-drawer:has(#dock-alerts.is-critical) { border-color: var(--sf-danger-edge); }
+.surface-drawer-head { display: flex; align-items: center; gap: var(--sp-1); padding: 2px var(--sp-1); border-bottom: 1px solid var(--sf-edge); flex: none; }
+.drawer-tabs { display: flex; gap: 2px; flex: 1 1 auto; min-width: 0; overflow-x: auto; scrollbar-width: none; }
+.drawer-tabs-tab { min-height: 28px; padding: 0 var(--sp-2); background: none; border: 0; border-radius: 4px; color: var(--sf-muted); font: inherit; font-size: var(--fs-small); font-weight: 500; white-space: nowrap; cursor: pointer; }
+.drawer-tabs-tab:hover { color: var(--sf-text); background: rgba(255, 255, 255, 0.06); }
+.drawer-tabs-tab[aria-selected="true"] { color: var(--sf-text); font-weight: 600; background: rgba(61, 139, 255, 0.18); box-shadow: inset 0 -2px 0 var(--info); }
+.drawer-tabs-tab:focus-visible { outline: 2px solid var(--sf-edge-lit); outline-offset: -2px; }
+.drawer-tabs-panels { min-height: 0; overflow: auto; flex: 0 1 auto; }
+.drawer-tabs-panel { padding: var(--sp-1) var(--sp-2) var(--sp-2); }
+.drawer-tabs-panel[hidden], .surface-drawer-title[hidden], .surface-drawer-detail[hidden] { display: none; }
+.surface-drawer-title { flex: none; padding: var(--sp-1) var(--sp-2) 0; }
+.surface-drawer-detail { padding: var(--sp-1) var(--sp-2) var(--sp-2); overflow: auto; min-height: 0; }
+.drawer-alerts .dock-sub { padding: 0 0 var(--sp-1); }
+/* Show dismissed stays in reach however long the live list runs. */
+.drawer-alerts .panel-foot { position: sticky; bottom: 0; margin: var(--sp-1) calc(-1 * var(--sp-2)) calc(-1 * var(--sp-2)); padding: var(--sp-1) var(--sp-2); background: linear-gradient(var(--sf-glass), var(--sf-glass)), var(--sf-void); border-top: 1px solid var(--sf-edge); }
+@media (pointer: coarse) { .drawer-tabs-tab { min-height: 44px; } }
+
+/* Layers rows */
+.layer-row { display: grid; grid-template-columns: 16px 10px minmax(0, 1fr) auto auto; align-items: center; gap: var(--sp-1); min-height: 24px; padding: 0; font-size: var(--fs-small); }
+.layer-row input { margin: 0; width: 14px; height: 14px; accent-color: var(--sf-blue); }
+.layer-row .sw { width: 9px; height: 9px; border-radius: 2px; }
+.layer-name { font: inherit; color: var(--sf-text); background: none; border: 0; padding: 0; text-align: left; cursor: pointer; white-space: nowrap; overflow: hidden; text-overflow: ellipsis; }
+.layer-row .n { font-family: 'Fira Code', monospace; font-size: var(--fs-micro); color: var(--sf-muted); font-variant-numeric: tabular-nums; }
+.key { font-family: 'Fira Code', monospace; font-size: var(--fs-micro); color: var(--sf-faint); border: 1px solid rgba(94, 168, 214, 0.3); border-radius: 3px; padding: 0 4px; min-width: 18px; text-align: center; }
+.layer-row.off .layer-name, .layer-row.off .n { color: var(--sf-faint); }
+.layer-group + .layer-group, .layer-sep { border-top: 1px solid var(--sf-edge); margin-top: 3px; padding-top: 3px; }
+.layer-reset { display: flex; justify-content: space-between; align-items: center; width: 100%; margin-top: var(--sp-1); padding: 4px 0 0 26px; background: none; border: 0; border-top: 1px solid var(--sf-edge); font-size: var(--fs-small); color: var(--sf-muted); text-align: left; }
+.layer-reset:hover { color: var(--sf-text); }
+
+.layer-group-h { margin: 0 0 2px; font-size: var(--fs-micro); font-weight: 500; letter-spacing: 0.08em; text-transform: uppercase; color: var(--sf-faint); }
+
+/* Fly to: the camera presets, a grid of nine in the Layers panel */
+.surface-presets-list { display: grid; grid-template-columns: repeat(3, minmax(0, 1fr)); gap: 2px; }
+.preset-btn { min-height: 26px; padding: 0 var(--sp-1); border: 0; border-radius: 4px; background: var(--sf-glass-row); font-size: var(--fs-small); color: var(--sf-muted); white-space: nowrap; overflow: hidden; text-overflow: ellipsis; }
+.preset-btn:hover { color: var(--sf-text); background: rgba(61, 139, 255, 0.12); }
+.preset-btn[aria-pressed="true"] { color: var(--sf-blue-ink); background: rgba(61, 139, 255, 0.25); }
+
+/* Footer bar */
+.surface-footbar { display: flex; align-items: center; gap: 18px; height: var(--sf-foot); padding: 0 var(--sp-3); border-top: 1px solid var(--sf-edge); background: rgba(6, 12, 20, 0.95); font-family: 'Fira Code', monospace; font-size: var(--fs-micro); color: var(--sf-muted); white-space: nowrap; overflow: hidden; }
+.surface-footbar b { font-weight: 500; color: var(--sf-text); }
+.foot-feed { margin-left: auto; color: var(--sf-faint); }
+.foot-hint { overflow: hidden; text-overflow: ellipsis; }
+
+/* Marks. Every status carries a word and a glyph in the DOM (layers.js);
+   colour is a reinforcing channel here, never the only one. */
+.res-node circle { stroke-width: 1.5; }
+.res-synced circle { fill: var(--sf-green); stroke: var(--sf-green); }
+.res-ahead circle { fill: var(--warning); stroke: var(--warning); }
+.res-behind circle { fill: var(--sf-sky); stroke: var(--sf-sky); }
+.res-diverged circle { fill: var(--warning); stroke: var(--sf-red); stroke-width: 3; }
+.res-dirty circle { fill: var(--sf-red); stroke: var(--sf-red); }
+.res-nowhere-else circle { fill: none; stroke: var(--st-gate); stroke-dasharray: 2 2; }
+/* --fg reads as neutral ("no reliable status"), distinct from nowhere-else's
+   dashed no-fill outline via its solid fill. */
+.res-unknown circle { fill: var(--fg); stroke: var(--fg); }
+.res-glyph { font-size: 8px; fill: var(--sf-void); text-anchor: middle; dominant-baseline: central; pointer-events: none; }
+.res-node .lbl { transform: translate(8px, 3px); }
+.res-arc { fill: none; stroke-width: 1.3; opacity: .85; stroke-dasharray: 5 7; stroke-linecap: round; animation: sf-flow 1.8s linear infinite; }
+.res-arc.res-synced { stroke: var(--sf-green); }
+.res-arc.res-ahead, .res-arc.res-diverged { stroke: var(--warning); }
+.res-arc.res-behind { stroke: var(--sf-sky); }
+.res-arc.res-dirty { stroke: var(--sf-red); }
+.res-arc.res-unknown { stroke: var(--fg); animation: none; }
+.res-arc:hover, .res-arc:focus-visible { stroke-width: 2.6; opacity: 1; }
+@keyframes sf-flow { to { stroke-dashoffset: -24; } }
+.nowhere-ring { fill: none; stroke: var(--st-gate); stroke-dasharray: 3 3; }
+
+.player { cursor: pointer; }
+.pl-glow { opacity: .7; pointer-events: none; }
+.pl-ring { fill: none; stroke: rgba(140, 205, 255, 0.6); stroke-dasharray: 3 5; transform-origin: center; transform-box: fill-box; animation: sf-spin 16s linear infinite; pointer-events: none; }
+@keyframes sf-spin { to { transform: rotate(360deg); } }
+.pl-leader { stroke: rgba(140, 205, 255, 0.55); stroke-dasharray: 2 3; pointer-events: none; }
+.pl-true { fill: var(--sf-text); pointer-events: none; }
+.plat { fill: url(#sf-plat); stroke: var(--sf-plat-edge); stroke-width: 1.2; }
+.plat-inner { fill: none; stroke: rgba(140, 205, 255, 0.45); stroke-width: .8; }
+.shield { fill: rgba(8, 30, 60, 0.94); stroke: var(--sf-plat-edge); stroke-width: 1.4; }
+.pl-shape .glyph { fill: none; stroke: var(--sf-glyph); stroke-width: 1.5; }
+.rack-body { fill: rgba(8, 30, 50, 0.95); stroke: var(--sf-rack-edge); stroke-width: 1.3; }
+.rack-slot { fill: rgb(var(--primary-rgb) / 0.18); stroke: rgba(169, 201, 255, 0.5); stroke-width: .6; }
+.rack-led { fill: var(--sf-green); } .rack-led.warn { fill: var(--warning); }
+/* A place is its company logo, one light fill on a dark plate (the name is the mark's accessible name and title). */
+.logo-plate { fill: rgba(8, 30, 50, 0.95); stroke: var(--sf-plat-edge); stroke-width: 1.3; }
+.logo-glyph.logo-fill path { fill: var(--sf-glyph); stroke: none; }
+.logo-glyph.logo-stroke path { fill: none; stroke: var(--sf-glyph); stroke-linecap: round; stroke-linejoin: round; }
+.player:hover .plat, .player:focus-visible .plat, .player:hover .shield, .player:hover .rack-body, .player:hover .logo-plate, .player:focus-visible .logo-plate { stroke: var(--sf-hover-edge); }
+.callout text { font-family: 'Fira Code', monospace; font-size: var(--fs-micro); fill: var(--sf-plat-edge); paint-order: stroke; stroke: var(--sf-halo); stroke-width: 3.5px; stroke-linejoin: round; }
+.callout text.nm { font-family: 'Outfit', sans-serif; font-size: var(--fs-base); font-weight: 500; fill: var(--sf-name); }
+.callout rect.ev-bg { fill: rgba(140, 205, 255, 0.14); stroke: none; }
+.callout rect.ev-bg-illustrative { fill: rgba(245, 165, 36, 0.18); }
+.callout rect.ev-bg-operator { fill: rgba(143, 211, 216, 0.2); }
+.callout rect.ev-bg-vendor { fill: rgba(61, 220, 132, 0.16); }
+.callout text.ev { stroke: none; fill: var(--fg); }
+.callout text.ev-illustrative { fill: var(--sf-amber-text); } .callout text.ev-vendor { fill: var(--sf-green-text); } .callout text.ev-operator { fill: var(--sf-teal-text); }
+.stack .seg { stroke: var(--sf-void); stroke-width: .8; }
+.stack .seg:hover { stroke: var(--sf-hover-edge); }
+
+.folder-sq { fill: rgba(12, 40, 64, 0.9); stroke: rgba(140, 205, 255, 0.6); stroke-width: .8; }
+.folder.drifted .folder-sq { stroke: var(--warning); stroke-width: 2; }
+.agent-dot { fill: var(--sf-green); stroke: rgba(8, 24, 40, 0.95); stroke-width: 2; }
+.agent-vec { stroke: var(--sf-green); stroke-width: 1.2; stroke-dasharray: 3 4; fill: none; opacity: .8; animation: sf-flow 1.4s linear infinite; }
+.card-chip { fill: var(--primary); stroke: var(--sf-void); stroke-width: .5; }
+
+/* Loops in orbit: thin low-opacity rings so the local store stays the focal
+   point. A failing loop is red and filled, a stale one a hollow grey ring, so
+   the state is carried by shape as well as colour. */
+.orbit-ring { fill: none; stroke: var(--sf-edge-lit); stroke-width: .8; opacity: .28; pointer-events: none; }
+.orbit-ring.orbit-warn, .orbit-ring.orbit-critical { stroke: var(--sf-red); opacity: .5; }
+.orbit-dot { cursor: pointer; }
+.orbit-hit { fill: transparent; }
+.orbit-core { fill: var(--sf-green); stroke: rgba(8, 24, 40, 0.95); stroke-width: 1.5; }
+.orbit-warn .orbit-core, .orbit-critical .orbit-core { fill: var(--sf-red); }
+.orbit-critical .orbit-core { stroke: var(--sf-hover-edge); }
+.orbit-stale .orbit-core { fill: rgba(8, 24, 40, 0.95); stroke: var(--sf-muted); }
+.orbit-dot:hover .orbit-core, .orbit-dot:focus-visible .orbit-core { stroke: var(--sf-hover-edge); }
+
+/* Alert pulses: a steady ring with a count badge, and a wave that expands off
+   it. Reduced motion keeps the steady ring and drops the wave. */
+.pulse { cursor: pointer; }
+.pulse-core, .pulse-wave { fill: none; stroke-width: 2; pointer-events: none; }
+.pulse-wave { transform-box: fill-box; transform-origin: center; animation: sf-pulse 2.2s ease-out infinite; }
+.pulse-hit { fill: none; stroke: transparent; stroke-width: 14; pointer-events: stroke; }
+.pulse-critical .pulse-core, .pulse-critical .pulse-wave { stroke: var(--sf-red); }
+.pulse-warn .pulse-core, .pulse-warn .pulse-wave { stroke: var(--warning); }
+.pulse-badge circle { stroke: var(--sf-void); stroke-width: 1.5; }
+.pulse-critical .pulse-badge circle { fill: var(--sf-red); }
+.pulse-warn .pulse-badge circle { fill: var(--warning); }
+.pulse-badge text { font-family: 'Fira Code', monospace; font-size: var(--fs-micro); font-weight: 600; fill: var(--sf-void); text-anchor: middle; dominant-baseline: central; pointer-events: none; }
+.pulse:hover .pulse-core, .pulse:focus-visible .pulse-core { stroke-width: 3; }
+@keyframes sf-pulse { from { transform: scale(1); opacity: .75; } to { transform: scale(1.7); opacity: 0; } }
+
+.panel-sub h3 { font-size: var(--fs-base); font-weight: 400; color: var(--sf-muted); margin: var(--sp-2) 0 var(--sp-1); }
+.drift-minor { border-left: 3px solid var(--warning); }
+.drift-major { border-left: 3px solid var(--sf-red); }
+.pol-permalink { font: inherit; font-size: var(--fs-small); background: none; border: 0; color: var(--sf-muted); cursor: pointer; }
+.pol-directive-row--focus { outline: 2px solid var(--sf-edge-lit); }
+
+@media (max-width: 900px) {
+  .surface-left { width: min(400px, 46vw); }
+}
+@media (pointer: coarse) {
+  .rail-btn { width: 44px; height: 44px; }
+  .panel-close, .panel-fold { width: 44px; height: 44px; }
+  .layer-row { min-height: 44px; }
+  .layer-row input { width: 22px; height: 22px; }
+  .preset-btn, .layer-reset { min-height: 44px; }
+}
+@media (max-width: 560px) {
+  .surface-frame { grid-template-columns: minmax(0, 1fr); grid-template-rows: minmax(0, 1fr) auto; }
+  .surface-iconrail { grid-row: 2; flex-direction: row; flex-wrap: wrap; justify-content: center; border-right: 0; border-top: 1px solid var(--sf-edge); overflow: visible; }
+  .rail-btn { width: 44px; height: 44px; }
+  .rail-reset { margin-top: 0; }
+  .surface-root .dock-sub, .surface-root .panel-foot { display: none; }
+  /* Show dismissed is a control, not a footnote: it stays on a phone. */
+  .surface-root .drawer-alerts .panel-foot { display: block; }
+  .lrow { grid-template-columns: 10px minmax(0, 1fr) 3.5em; }
+  .lrow .chips { grid-column: 2 / -1; }
+  .preset-btn { min-height: 44px; }
+  .surface-left { left: var(--sp-1); right: var(--sp-1); top: var(--sp-1); bottom: 66px; width: auto; }
+  .surface-left > .surface-dock { max-height: 52%; }
+  .surface-side { left: var(--sp-1); right: var(--sp-1); top: auto; bottom: 66px; width: auto; max-height: 52%; justify-content: flex-end; }
+  .surface-footbar { gap: var(--sp-2); }
+  .foot-hint, .foot-feed { display: none; }
+  .layer-row { min-height: 44px; }
+}
+@media (prefers-reduced-motion: reduce) {
+  .surface-root *, .surface-root *::before { transition: none !important; animation: none !important; }
+  .pulse-wave { display: none; }
+}
+
+/* Data ledger */
+.lrow { display: grid; grid-template-columns: 10px minmax(0, 10.5em) 4em minmax(0, 1fr); align-items: center; gap: var(--sp-1); padding: 4px var(--sp-1); margin-bottom: 3px; background: var(--sf-glass-row); border-radius: 3px; font-size: var(--fs-small); cursor: pointer; }
+.lrow:hover, .lrow:focus-visible { background: rgba(61, 139, 255, 0.16); }
+.lrow .sw { width: 8px; height: 8px; border-radius: 2px; }
+.lrow .nm { white-space: nowrap; overflow: hidden; text-overflow: ellipsis; }
+.lrow .loc { font-family: 'Fira Code', monospace; font-size: var(--fs-micro); text-align: right; font-variant-numeric: tabular-nums; }
+.lrow .chips { display: flex; flex-wrap: wrap; gap: 4px; }
+.lrow.off { opacity: .4; }
+.lchip { font-family: 'Fira Code', monospace; font-size: var(--fs-micro); line-height: 1.3; padding: 0 4px; border-radius: 2px; border: 1px solid var(--sf-edge); color: var(--fg); white-space: nowrap; }
+.lchip-github { border-color: rgba(159, 212, 255, 0.6); }
+.lchip-slack { border-color: rgba(224, 111, 180, 0.6); }
+.lchip-anthropic { border-color: rgba(255, 138, 91, 0.6); }
+.lchip-gcp { border-color: rgba(52, 168, 83, 0.7); }
+.lchip.none { border-color: rgba(245, 165, 36, 0.7); color: var(--sf-amber-text); background: rgba(245, 165, 36, 0.1); }
+.lchip.skel { color: var(--sf-faint); border-style: dashed; }
+.layer-sep { height: 0; }
+.layer-list .layer-name:hover { text-decoration: underline; text-underline-offset: 3px; }
+
+/* Study panels: repositories, location, file tree, agents, kanban */
+.panel-note { margin: 0 0 var(--sp-1); font-size: var(--fs-small); color: var(--sf-muted); }
+.sub-h { margin: var(--sp-2) 0 var(--sp-1); font-size: var(--fs-small); font-weight: 500; color: var(--sf-muted); }
+.rsum { display: grid; grid-template-columns: repeat(auto-fit, minmax(5.5em, 1fr)); gap: 2px var(--sp-2); padding: var(--sp-1) 0; font-size: var(--fs-small); color: var(--sf-muted); }
+.rsum b { display: block; font-size: var(--fs-md); font-weight: 600; color: var(--sf-text); line-height: 1.1; }
+.rsum b.amber { color: var(--warning); } .rsum b.rust { color: var(--sf-rust-text); }
+.rlist, .tree-out { display: grid; gap: 2px; }
+.rrow { display: grid; grid-template-columns: 14px minmax(0, 1fr) auto; gap: var(--sp-1); align-items: center; padding: 4px var(--sp-1); background: var(--sf-glass-row); border-radius: 3px; border-left: 3px solid transparent; font-size: var(--fs-small); cursor: pointer; }
+.rrow:hover, .rrow:focus-visible, .rrow[aria-current="true"] { background: rgba(61, 139, 255, 0.18); }
+.rrow[aria-current="true"] { border-left-color: var(--sf-blue); }
+.rrow .pin { width: 12px; height: 12px; }
+.rrow .main { display: flex; flex-direction: column; min-width: 0; }
+.rrow .id { font-family: 'Fira Code', monospace; color: var(--fg); overflow: hidden; text-overflow: ellipsis; white-space: nowrap; }
+.rrow .st { color: var(--sf-muted); }
+.rrow .n { font-family: 'Fira Code', monospace; font-size: var(--fs-micro); color: var(--sf-faint); white-space: nowrap; }
+.rrow.sync .pin { color: var(--sf-green); } .rrow.drift .pin { color: var(--warning); } .rrow.nowhere .pin { color: var(--st-gate); } .rrow.unknown .pin { color: var(--fg); }
+.tree-pick { width: 100%; margin-bottom: var(--sp-1); padding: 5px var(--sp-1); font: inherit; font-size: var(--fs-small); color: var(--sf-text); background: rgba(12, 26, 40, 0.9); border: 1px solid var(--sf-edge); border-radius: 4px; }
+.frow { display: grid; grid-template-columns: minmax(0, 1fr) auto auto; gap: var(--sp-1); align-items: center; padding: 3px var(--sp-1); font-size: var(--fs-small); border-radius: 3px; cursor: pointer; }
+.frow:hover, .frow:focus-visible { background: rgba(61, 139, 255, 0.14); }
+.frow .p { font-family: 'Fira Code', monospace; font-size: var(--fs-micro); overflow: hidden; text-overflow: ellipsis; white-space: nowrap; }
+.frow .n, .frow .st { font-family: 'Fira Code', monospace; font-size: var(--fs-micro); color: var(--sf-muted); white-space: nowrap; }
+.frow .d { font-family: 'Fira Code', monospace; font-size: var(--fs-micro); color: var(--warning); text-align: right; }
+.frow.file { grid-template-columns: minmax(0, 1fr) auto; }
+.frow.file.uncommitted .st, .frow.file.behind .st { color: var(--sf-red-text); } .frow.file.ahead .st { color: var(--warning); } .frow.file.untracked .st { color: var(--sf-faint); }
+.arow { display: grid; grid-template-columns: minmax(0, 1fr) auto; gap: 2px var(--sp-1); padding: var(--sp-1) var(--sp-2); margin-bottom: 4px; border: 1px solid var(--sf-edge); border-radius: 4px; background: rgba(12, 26, 40, 0.6); font-size: var(--fs-small); cursor: pointer; }
+.arow.live { border-color: rgba(61, 220, 132, 0.5); }
+.arow:hover, .arow:focus-visible { background: rgba(61, 139, 255, 0.12); }
+.arow .t { font-family: 'Fira Code', monospace; font-weight: 500; overflow: hidden; text-overflow: ellipsis; white-space: nowrap; }
+.arow .ago { font-family: 'Fira Code', monospace; font-size: var(--fs-micro); color: var(--sf-muted); white-space: nowrap; }
+.arow .d { grid-column: 1 / -1; color: var(--sf-muted); }
+.arow .d b { font-weight: 500; color: var(--sf-text); }
+.arow .chips { grid-column: 1 / -1; display: flex; flex-wrap: wrap; gap: 4px; }
+.lchip.ok { border-color: rgba(61, 220, 132, 0.6); color: var(--sf-green-text); } .lchip.gap { border-color: rgba(245, 165, 36, 0.6); color: var(--sf-amber-text); }
+.kcol { margin-bottom: var(--sp-1); }
+.kh { display: flex; justify-content: space-between; align-items: baseline; font-size: var(--fs-small); font-weight: 500; padding: 4px 2px; border-bottom: 1px solid var(--sf-edge); margin-bottom: 4px; }
+.kh small { font-family: 'Fira Code', monospace; font-size: var(--fs-micro); color: var(--sf-muted); }
+.krow { display: grid; grid-template-columns: 1fr auto; gap: 1px var(--sp-1); padding: 4px var(--sp-1); margin-bottom: 3px; background: var(--sf-glass-row); border-radius: 3px; border-left: 3px solid var(--sf-edge); font-size: var(--fs-small); cursor: pointer; }
+.krow:hover, .krow:focus-visible { background: rgba(61, 139, 255, 0.16); }
+.krow.in_progress { border-left-color: var(--primary); } .krow.in_review { border-left-color: var(--st-learn); } .krow.held { border-left-color: var(--warning); } .krow.queued { border-left-color: rgba(126, 195, 255, 0.5); }
+.krow .id { font-family: 'Fira Code', monospace; font-size: var(--fs-micro); color: var(--fg); }
+.krow .pr { font-family: 'Fira Code', monospace; font-size: var(--fs-micro); color: var(--sf-faint); }
+.krow .acts { grid-column: 1 / -1; color: var(--sf-muted); }
+
+/* Hover card */
+.surface-hovercard { position: fixed; left: 0; top: 0; z-index: 60; max-width: min(340px, calc(100vw - 16px)); padding: var(--sp-1) var(--sp-2); background: rgba(6, 16, 28, 0.98); border: 1px solid var(--sf-edge-lit); border-radius: 4px; box-shadow: 0 8px 24px rgba(0, 0, 0, 0.5); pointer-events: none; font-size: var(--fs-small); color: var(--sf-text); will-change: transform; }
+.hc-title { margin: 0; font-size: var(--fs-base); font-weight: 500; overflow-wrap: anywhere; }
+.hc-word { margin: 2px 0 0; color: var(--sf-muted); }
+.hc-facts { display: grid; grid-template-columns: max-content minmax(0, 1fr); gap: 1px var(--sp-2); margin: var(--sp-1) 0 0; }
+.hc-facts dt { color: var(--sf-muted); }
+.hc-facts dd { margin: 0; font-family: 'Fira Code', monospace; font-size: var(--fs-micro); overflow-wrap: anywhere; align-self: center; }
+.hc-hint { margin: var(--sp-1) 0 0; padding-top: var(--sp-1); border-top: 1px solid var(--sf-edge); font-size: var(--fs-micro); color: var(--sf-faint); }
+
+/* Recent edits window */
+.elist { display: grid; gap: 3px; }
+.erow { display: grid; grid-template-columns: minmax(0, 1fr); align-items: center; gap: 2px; padding: 3px var(--sp-1); background: var(--sf-glass-row); border-radius: 3px; border-left: 3px solid transparent; }
+.erow.sel { background: rgba(61, 139, 255, 0.2); border-left-color: var(--sf-blue); }
+.erow.skel { height: 40px; background: linear-gradient(90deg, rgba(20, 44, 66, 0.4), rgba(61, 139, 255, 0.14), rgba(20, 44, 66, 0.4)); background-size: 200% 100%; animation: sf-skel 1.4s linear infinite; }
+@keyframes sf-skel { to { background-position: -200% 0; } }
+.erow-main { display: grid; grid-template-columns: 8px minmax(0, 1fr); gap: var(--sp-1); align-items: center; padding: 2px 0; cursor: pointer; min-width: 0; }
+.erow-main:hover .name, .erow-main:focus-visible .name { text-decoration: underline; text-underline-offset: 3px; }
+.dot { width: 8px; height: 8px; border-radius: 50%; background: var(--sf-faint); }
+.dot.working { background: var(--sf-green); box-shadow: 0 0 6px rgba(61, 220, 132, 0.7); }
+.etext { display: flex; flex-direction: column; min-width: 0; }
+.etext .l1 { display: flex; align-items: baseline; gap: var(--sp-1); min-width: 0; font-size: var(--fs-small); }
+.etext .name { font-family: 'Fira Code', monospace; font-weight: 500; overflow: hidden; text-overflow: ellipsis; white-space: nowrap; }
+.ed { font-family: 'Fira Code', monospace; font-size: var(--fs-micro); }
+.ed.add { color: var(--sf-green); } .ed.del { color: var(--sf-red-text); }
+.etext .age { margin-left: auto; font-family: 'Fira Code', monospace; font-size: var(--fs-micro); color: var(--sf-muted); white-space: nowrap; }
+.etext .l2 { font-size: var(--fs-micro); color: var(--sf-muted); overflow: hidden; text-overflow: ellipsis; white-space: nowrap; }
+.erow-actions { display: flex; gap: 4px; padding-left: calc(8px + var(--sp-1)); }
+.erow-actions .fa-btn { margin: 0; min-height: 24px; padding: 2px var(--sp-1); font-size: var(--fs-micro); white-space: nowrap; }
+.epane { margin-top: var(--sp-1); border-top: 1px solid var(--sf-edge); padding-top: var(--sp-1); }
+.epath { display: block; font-family: 'Fira Code', monospace; font-size: var(--fs-micro); color: var(--sf-muted); overflow-wrap: anywhere; }
+.epane-src { margin: var(--sp-1) 0 2px; font-size: var(--fs-micro); color: var(--sf-faint); }
+.ediff { max-height: 220px; overflow: auto; font-family: 'Fira Code', monospace; font-size: var(--fs-micro); }
+.ediff .diff-old, .ediff .diff-new { white-space: pre-wrap; overflow-wrap: anywhere; padding: 2px var(--sp-1); border-radius: 2px; margin-top: 2px; }
+.ediff .diff-old { background: rgba(255, 91, 91, 0.14); color: var(--sf-red-ink); }
+.ediff .diff-new { background: rgba(61, 220, 132, 0.12); color: var(--sf-green-text); }
+@media (pointer: coarse) { .erow-actions .fa-btn { min-height: 44px; } .erow-main { min-height: 44px; } }
+
+.sr-only { position: absolute; width: 1px; height: 1px; margin: -1px; padding: 0; overflow: hidden; clip: rect(0 0 0 0); white-space: nowrap; border: 0; }
+
+/* Header: the canvas fallback search, used only when no shell search exists
+   (the shell's topbar box is styled in styles.css). */
+.surface-topbar { position: absolute; top: var(--sp-3); left: calc(272px + 2 * var(--sp-3)); right: calc(min(360px, 34vw) + 2 * var(--sp-3)); max-width: 360px; z-index: 5; display: flex; flex-direction: column; gap: var(--sp-1); pointer-events: none; }
+.surface-toprow { display: flex; flex-direction: column; gap: var(--sp-1); }
+.surface-searchhost { pointer-events: auto; }
+.surface-topbar .surface-search { position: relative; }
+.surface-topbar .surface-search-field { display: flex; align-items: center; gap: var(--sp-1); padding: 0 var(--sp-2); background: var(--sf-glass); border: 1px solid var(--sf-edge); border-radius: 5px; backdrop-filter: blur(6px); }
+.surface-topbar .surface-search-field:focus-within { border-color: var(--sf-edge-lit); outline: 2px solid var(--sf-edge-lit); outline-offset: 1px; }
+.surface-topbar .surface-search-input { flex: 1; min-width: 0; min-height: 34px; padding: 0; font: inherit; font-size: var(--fs-base); color: var(--sf-text); background: none; border: 0; }
+.surface-topbar .surface-search-input:focus-visible { outline: 0; }
+.surface-topbar .surface-search-input::placeholder { color: var(--sf-faint); }
+.surface-topbar .surface-search-list { position: absolute; left: 0; right: 0; top: calc(100% + 4px); margin: 0; padding: 4px; list-style: none; max-height: min(52vh, 420px); overflow: auto; background: rgba(6, 16, 28, 0.98); border: 1px solid var(--sf-edge-lit); border-radius: 5px; box-shadow: 0 8px 24px rgba(0, 0, 0, 0.5); }
+.surface-topbar .sr-opt { display: grid; grid-template-columns: 4.6em minmax(0, 1fr); gap: 0 var(--sp-2); align-items: baseline; padding: 5px var(--sp-1); border-radius: 3px; cursor: pointer; font-size: var(--fs-small); }
+.surface-topbar .sr-opt[aria-selected="true"] { background: rgba(61, 139, 255, 0.22); box-shadow: inset 3px 0 0 var(--sf-blue); }
+.surface-topbar .sr-kind { font-family: 'Fira Code', monospace; font-size: var(--fs-micro); color: var(--sf-muted); text-transform: uppercase; letter-spacing: 0.06em; }
+.surface-topbar .sr-title { font-family: 'Fira Code', monospace; overflow: hidden; text-overflow: ellipsis; white-space: nowrap; }
+.surface-topbar .sr-title mark { background: none; color: var(--warning); font-weight: 600; }
+.surface-topbar .sr-sub { grid-column: 2; font-size: var(--fs-micro); color: var(--sf-muted); overflow: hidden; text-overflow: ellipsis; white-space: nowrap; }
+.surface-topbar .sr-note { padding: 5px var(--sp-1); font-size: var(--fs-small); color: var(--sf-muted); }
+.surface-topbar .sr-error { color: var(--warning); }
+
+
+
+/* Tracking: numbered trail, telemetry card, In view */
+.trail-line { fill: none; stroke: var(--sf-green); stroke-width: 1.6; stroke-dasharray: 2 5; stroke-linecap: round; pointer-events: none; }
+.trail-pt { cursor: pointer; }
+.trail-dot { fill: var(--sf-void); stroke: var(--sf-green); stroke-width: 1.5; }
+.trail-pt-loose .trail-dot { stroke-dasharray: 2 2; cursor: default; }
+.trail-n { font-family: 'Fira Code', monospace; font-size: var(--fs-micro); font-weight: 600; fill: var(--sf-text); text-anchor: middle; dominant-baseline: central; pointer-events: none; }
+.trail-pt:hover .trail-dot, .trail-pt:focus-visible .trail-dot { fill: var(--sf-green); }
+.trail-pt:hover .trail-n, .trail-pt:focus-visible .trail-n { fill: var(--sf-void); }
+.trk-head { margin: 0 0 var(--sp-1); font-size: var(--fs-md); font-weight: 500; overflow-wrap: anywhere; }
+.trk-trail, .trk-inview { list-style: none; margin: 0; padding: 0; display: grid; gap: 3px; }
+.trk-inview { max-height: 190px; overflow: auto; }
+.trk-step, .trk-vrow { font-size: var(--fs-small); background: var(--sf-glass-row); border-radius: 3px; padding: 3px var(--sp-1); cursor: pointer; }
+.trk-step:hover, .trk-vrow:hover, .trk-step:has(> .item-btn:focus-visible), .trk-vrow:has(> .item-btn:focus-visible) { background: rgba(61, 139, 255, 0.16); }
+.trk-step .item-btn, .trk-vrow .item-btn { font: inherit; color: inherit; background: none; border: 0; padding: 0; text-align: left; width: 100%; cursor: pointer; }
+.trk-row { display: grid; grid-template-columns: 1.6em minmax(0, 1fr) auto; gap: var(--sp-1); align-items: baseline; }
+.trk-vrow .trk-row { grid-template-columns: 5.2em minmax(0, 1fr); }
+.trk-n, .trk-vt, .trk-meta { font-family: 'Fira Code', monospace; font-size: var(--fs-micro); color: var(--sf-muted); }
+.trk-n { color: var(--sf-green); font-weight: 600; }
+.trk-file, .trk-vl { font-family: 'Fira Code', monospace; overflow: hidden; text-overflow: ellipsis; white-space: nowrap; }
+.trk-acts { display: flex; flex-wrap: wrap; gap: var(--sp-1); }
+.trk-acts .fa-btn { margin: var(--sp-1) 0 0; }
+.trk-facts { margin: 0; }
+
+/* File as card */
+.pin-form { display: grid; gap: 2px; }
+.pin-l { margin-top: var(--sp-1); font-size: var(--fs-small); color: var(--sf-muted); }
+.pin-in { width: 100%; box-sizing: border-box; padding: 5px var(--sp-1); font: inherit; font-size: var(--fs-small); color: var(--sf-text); background: rgba(12, 26, 40, 0.9); border: 1px solid var(--sf-edge); border-radius: 4px; }
+.pin-prompt { resize: vertical; font-family: 'Fira Code', monospace; font-size: var(--fs-micro); }
+.pin-out { margin: var(--sp-1) 0 0; font-size: var(--fs-small); color: var(--sf-muted); }
+.pin-out:empty { display: none; }
+.pin-bad { color: var(--sf-red); }
+.pin-card { color: var(--sf-blue); }
+
+/* Fleet dock under the globe */
+.surface-fleet { flex: none; border-top: 1px solid var(--sf-edge); background: rgba(6, 14, 22, 0.96); }
+/* The command view's Fleet band is 222 px open: a 32 px header and the stage board scrolling inside. The dock is the stage board. */
+.surface-fleet.is-open { height: var(--fleet-h, 222px); display: flex; flex-direction: column; }
+/* The vitals ribbon leads the dock: with the Pulse dock retired it is the one
+   place each vital shows (card glmps-2-0-137 phase 2), so it is one compact row
+   that wraps on a narrow stage rather than hiding. */
+.surface-fleet #view-stageboard .sb-vitals { grid-template-columns: repeat(auto-fit, minmax(120px, 1fr)); gap: var(--sp-1); padding: var(--sp-1) var(--sp-2) 0; }
+.surface-fleet #view-stageboard .sb-vtile { padding: 3px var(--sp-2); border-radius: 6px; }
+/* #view-stageboard's own overflow:hidden outranks .fleet-body's overflow:auto, which clipped every
+   row below the dock. The board fills the dock down to a usable floor, past which the dock scrolls (glmps-2-0-127). */
+.surface-fleet #view-stageboard { display: flex; overflow: auto; }
+.surface-fleet #view-stageboard .sb-grid { grid-template-rows: minmax(160px, 1fr) auto; }
+.surface-fleet #view-stageboard .sb-body { min-height: 0; max-height: none; }
+.fleet-sep { position: relative; flex: none; height: 10px; margin-top: -5px; z-index: 1; cursor: row-resize; touch-action: none; }
+.fleet-sep::after { content: ''; position: absolute; left: 50%; top: 4px; width: 44px; height: 3px; margin-left: -22px; border-radius: 2px; background: var(--sf-blue); opacity: 0.55; transition: opacity .12s; }
+.fleet-sep:hover::after, .fleet-sep:focus-visible::after, .is-resizing .fleet-sep::after { opacity: 1; }
+.fleet-sep:focus-visible { outline: 2px solid var(--sf-edge-lit); outline-offset: -2px; }
+.is-resizing { user-select: none; }
+.fleet-head { display: flex; align-items: center; gap: var(--sp-3); padding: 0 var(--sp-3); flex: none; }
+.fleet-toggle { display: inline-flex; align-items: center; gap: var(--sp-1); min-height: 32px; padding: 0; font-size: var(--fs-base); background: none; border: 0; color: var(--sf-text); }
+.fleet-caret::before { content: '\25BE'; display: inline-block; transition: transform .15s; }
+.surface-fleet:not(.is-open) .fleet-caret::before { transform: rotate(-90deg); }
+.fleet-note { font-size: var(--fs-micro); color: var(--sf-faint); overflow: hidden; text-overflow: ellipsis; white-space: nowrap; }
+.fleet-body { flex: 1; min-height: 0; overflow: auto; padding: 0 var(--sp-3) var(--sp-2); }
+
+/* Timeline in the foot bar */
+.surface-footbar { flex-direction: column; align-items: stretch; gap: 0; height: auto; padding: 0; white-space: normal; overflow: visible; }
+.foot-line { display: flex; align-items: center; gap: 18px; height: var(--sf-foot); padding: 0 var(--sp-3); white-space: nowrap; overflow: hidden; }
+.foot-timeline { display: flex; flex-wrap: wrap; align-items: center; gap: var(--sp-1); padding: 4px var(--sp-3); border-bottom: 1px solid rgba(94, 168, 214, 0.16); }
+.tl-speeds { display: inline-flex; gap: 2px; }
+.tl-btn { min-height: 28px; padding: 0 var(--sp-2); font-size: var(--fs-small); background: none; border: 1px solid var(--sf-edge); border-radius: 4px; color: var(--sf-text); }
+.tl-btn:hover:not(:disabled) { border-color: var(--sf-edge-lit); }
+.tl-btn[aria-pressed="true"] { background: var(--sf-blue-soft); border-color: var(--sf-blue); }
+.tl-btn:disabled { opacity: .45; cursor: default; }
+.tl-track { position: relative; flex: 1 1 220px; min-width: 160px; height: 34px; }
+.tl-lanes { position: absolute; inset: 2px 0; pointer-events: none; background: var(--sf-glass-row); border-radius: 3px; }
+.tl-tick { position: absolute; width: 3px; height: 17%; transform: translateX(-50%); border-radius: 1px; background: var(--k); }
+.tl-k-edit { --k: var(--sf-blue); } .tl-k-card { --k: var(--warning); } .tl-k-gate { --k: var(--st-gate); } .tl-k-alert { --k: var(--sf-red); } .tl-k-loop { --k: var(--st-learn); }
+.tl-range { position: absolute; inset: 0; width: 100%; height: 100%; margin: 0; background: transparent; -webkit-appearance: none; appearance: none; cursor: ew-resize; }
+.tl-range::-webkit-slider-runnable-track { height: 100%; background: transparent; }
+.tl-range::-moz-range-track { height: 100%; background: transparent; }
+.tl-range::-webkit-slider-thumb { -webkit-appearance: none; width: 6px; height: 28px; border-radius: 2px; background: var(--sf-text); border: 0; }
+.tl-range::-moz-range-thumb { width: 6px; height: 28px; border-radius: 2px; background: var(--sf-text); border: 0; }
+.tl-range:disabled { cursor: default; opacity: .4; }
+.tl-asof { min-width: 14ch; font-family: 'Fira Code', monospace; font-size: var(--fs-micro); color: var(--sf-text); }
+.tl-legend { display: inline-flex; flex-wrap: wrap; gap: var(--sp-2); }
+.tl-key { display: inline-flex; align-items: center; gap: 4px; font-size: var(--fs-micro); color: var(--sf-muted); }
+.tl-sw { width: 8px; height: 8px; border-radius: 2px; background: var(--k); }
+.tl-status { font-size: var(--fs-micro); color: var(--sf-muted); }
+
+@media (pointer: coarse) {
+  .tl-btn { min-height: 44px; min-width: 44px; }
+  .surface-topbar .surface-search-input, .surface-topbar .sr-opt { min-height: 44px; }
+  .fleet-toggle { min-height: 44px; }
+  .trk-step, .trk-vrow { min-height: 44px; display: flex; align-items: center; }
+  .trk-step .item-btn, .trk-vrow .item-btn { min-height: 44px; }
+}
+@media (max-width: 900px) {
+  .surface-topbar { left: calc(236px + 2 * var(--sp-3)); }
+}
+@media (max-width: 560px) {
+  .surface-topbar { left: var(--sp-1); right: var(--sp-1); top: var(--sp-1); max-width: none; }
+  .surface-left { top: 60px; }
+  .surface-topbar .surface-search-input, .surface-topbar .sr-opt { min-height: 44px; }
+  .tl-btn { min-height: 44px; min-width: 44px; }
+  .tl-speeds, .tl-legend { display: none; }
+  .tl-track { flex-basis: 100%; order: 10; height: 44px; }
+  .tl-range::-webkit-slider-thumb { height: 42px; width: 10px; }
+  .tl-range::-moz-range-thumb { height: 42px; width: 10px; }
+  .fleet-note { display: none; }
+  .fleet-toggle { min-height: 44px; }
+  .surface-fleet.is-open { height: auto; max-height: 40vh; }
+  .fleet-sep { display: none; }
+}
+@media (prefers-reduced-motion: reduce) {
+  .fleet-caret::before { transition: none; }
+}
+
+#dock-track { flex: 0 0 auto; max-height: 64%; }
+
+/* Alerts: the one alert list on Surface, the context drawer's first tab */
+.adock-row { display: flex; flex-direction: column; gap: 2px; padding: var(--sp-1); border-radius: 4px; background: var(--sf-danger-glass); }
+.adock-title { padding: 0; background: none; border: 0; font: inherit; font-weight: 600; color: var(--sf-danger-text); text-align: left; cursor: pointer; overflow-wrap: anywhere; }
+.adock-title:hover { text-decoration: underline; text-underline-offset: 2px; }
+.adock-meta { margin: 0; font-size: var(--fs-micro); color: var(--sf-muted); overflow-wrap: anywhere; }
+.adock-acts { display: flex; gap: var(--sp-1); }
+.adock-acts .fa-btn { margin: 0; }
+.adock-acts .fa-btn:disabled { opacity: .5; cursor: default; }
+.adock-ack { background: var(--sf-red); border-color: var(--sf-red); color: var(--sf-void); font-weight: 600; }
+.adock-group { display: grid; grid-template-columns: 8px minmax(0, 1fr) auto; align-items: center; gap: var(--sp-2); min-height: 26px; padding: 0 var(--sp-1); font: inherit; font-size: var(--fs-small); color: var(--sf-text); text-align: left; background: none; border: 0; border-radius: 4px; cursor: pointer; }
+.adock-group:hover { background: rgba(61, 139, 255, 0.12); }
+.adock-group .sw { width: 8px; height: 8px; border-radius: 50%; background: var(--warning); }
+.adock-group .n { font-family: 'Fira Code', monospace; color: var(--warning); }
+.adock-feed { margin: 0; padding: var(--sp-1); font-size: var(--fs-small); color: var(--sf-muted); border: 1px dashed var(--sf-edge); border-radius: 4px; }
+/* Past alerts behind Show dismissed, inside the 360px drawer: the drawer
+   scrolls, so the list drops its own scroller and page-width padding. */
+.adock-dismissed { display: inline-flex; align-items: center; gap: var(--sp-1); min-height: 24px; font-size: var(--fs-small); color: var(--sf-muted); cursor: pointer; }
+.adock-history .alerts-shell { height: auto; }
+.adock-history .alerts-main { box-sizing: border-box; overflow: visible; padding: var(--sp-2) 0 0; }
+.adock-history .alert-card { overflow-wrap: anywhere; }
+@media (pointer: coarse) { .adock-acts .fa-btn, .adock-group { min-height: 44px; } }
+
+.att-btn { min-height: 28px; padding: 0 10px; font-size: var(--fs-small); background: none; border: 1px solid var(--sf-danger-edge); border-radius: 5px; color: var(--sf-danger-text); }
+.att-btn:disabled { opacity: .45; cursor: default; }
+
+/* Event and flow layers */
+.event-badge { cursor: pointer; }
+.badge-bg { fill: var(--sf-glass); stroke: var(--sf-edge-lit); stroke-width: 1; }
+.badge-gates .badge-bg { stroke: var(--st-gate); }
+.badge-refusals .badge-bg { stroke: var(--warning); }
+.badge-text { font-family: 'Fira Code', monospace; font-size: var(--fs-micro); fill: var(--sf-text); pointer-events: none; }
+.pl-count { pointer-events: none; }
+.pl-count-bg { fill: var(--sf-glass); stroke: var(--sf-edge-lit); stroke-width: 1; }
+.pl-count-text { font-family: 'Fira Code', monospace; font-size: var(--fs-micro); font-weight: 700; fill: var(--sf-text); text-anchor: middle; }
+.event-badge:hover .badge-bg, .event-badge:focus-visible .badge-bg { fill: rgba(61, 139, 255, 0.22); }
+.usage-arc { fill: none; stroke: var(--sf-usage); opacity: .85; stroke-linecap: round; cursor: pointer; pointer-events: stroke; }
+.usage-arc:hover, .usage-arc:focus-visible { opacity: 1; filter: drop-shadow(0 0 4px var(--sf-usage)); }
+.edit-trail { fill: none; stroke: var(--sf-green); stroke-width: 1.2; stroke-dasharray: 3 4; opacity: .7; pointer-events: none; }
+@media (pointer: coarse) { .att-btn { min-height: 44px; } }
+/* Tracking: the board's header, telemetry card, In view list and pin box */
+.surface-trackbar { position: absolute; top: 0; left: 0; right: 0; z-index: 6; display: flex; align-items: center; gap: var(--sp-3); min-height: 44px; padding: 0 var(--sp-3); background: var(--sf-glass); border-bottom: 1px solid var(--sf-edge); backdrop-filter: blur(6px); }
+.crumbs { display: flex; flex-wrap: wrap; align-items: center; gap: var(--sp-2); margin: 0; padding: 0; list-style: none; font-size: var(--fs-base); }
+.crumb { color: var(--sf-faint); }
+.crumb + .crumb::before { content: '/'; margin-right: var(--sp-2); color: var(--sf-edge); }
+.crumb[aria-current="page"] { font-family: 'Fira Code', monospace; color: var(--sf-track-text); }
+.trk-stop { min-height: 28px; padding: 0 10px; font-size: var(--fs-small); background: none; border: 1px solid var(--sf-edge); border-radius: 5px; color: var(--sf-text); }
+.trk-stop:hover { border-color: var(--sf-edge-lit); }
+.trackbar-right { margin-left: auto; display: flex; align-items: center; gap: var(--sp-2); }
+.is-tracking .surface-topbar, .is-tracking #dock-ledger { display: none; }
+.is-tracking .surface-side { top: 56px; }
+.surface-inview { position: absolute; left: var(--sp-3); top: 56px; z-index: 3; width: 270px; max-height: calc(100% - 56px - 150px); box-sizing: border-box; padding: var(--sp-1) var(--sp-2); display: flex; flex-direction: column; background: var(--sf-glass); border: 1px solid var(--sf-edge); border-radius: 5px; backdrop-filter: blur(6px); font-size: var(--fs-small); }
+.inview-h { margin: 0 0 var(--sp-1); font-size: var(--fs-base); font-weight: 600; }
+.surface-inview .trk-inview { max-height: none; overflow: auto; min-height: 0; gap: 0; }
+.surface-inview .trk-vrow { padding: 0; background: none; min-height: 26px; display: flex; align-items: center; }
+.surface-inview .trk-vrow .trk-row { grid-template-columns: 8px minmax(0, 1fr) auto; align-items: center; width: 100%; }
+.surface-inview .trk-vl { font-family: inherit; }
+.trk-dot { width: 8px; height: 8px; border-radius: 50%; background: var(--sf-faint); }
+.trk-dot-agent { background: var(--sf-green); } .trk-dot-repo, .trk-dot-arc { background: var(--sf-blue); } .trk-dot-alert-pulse { background: var(--sf-red); } .trk-dot-loop { background: var(--st-learn); } .trk-dot-card-stack { background: var(--warning); }
+.surface-pinbox { position: absolute; left: var(--sp-3); bottom: var(--sp-3); z-index: 3; width: 270px; box-sizing: border-box; padding: var(--sp-1) var(--sp-2); background: var(--sf-glass); border: 1px dashed var(--warning); border-radius: 5px; font-size: var(--fs-small); }
+.pin-line { margin: 0; color: var(--warning); font-weight: 500; overflow-wrap: anywhere; }
+.pin-help { margin: 2px 0 var(--sp-2); color: var(--sf-muted); }
+.pin-file { min-height: 30px; padding: 0 12px; font-weight: 600; background: var(--sf-blue); color: var(--sf-void); border: 0; border-radius: 5px; }
+.trk-headbox { margin-bottom: var(--sp-1); }
+.trk-id { font-family: 'Fira Code', monospace; font-size: var(--fs-md); color: var(--sf-track-text); }
+.trk-title, .trk-facts dd { display: -webkit-box; -webkit-box-orient: vertical; -webkit-line-clamp: 2; line-clamp: 2; overflow: hidden; overflow-wrap: anywhere; }
+.trk-title { font-weight: 500; }
+.trk-drift-none { color: var(--sf-green); } .trk-drift-minor { color: var(--warning); } .trk-drift-major { color: var(--sf-red); }
+@media (pointer: coarse) { .trk-stop, .pin-file { min-height: 44px; } }
+@media (max-width: 560px) {
+  .surface-trackbar { flex-wrap: wrap; gap: var(--sp-1) var(--sp-2); padding: var(--sp-1); }
+  .crumb:not(:first-child):not(:last-child) { display: none; }
+  .trackbar-right { margin-left: 0; width: 100%; }
+  .surface-inview { display: none; }
+  .surface-pinbox { left: var(--sp-1); right: var(--sp-1); width: auto; bottom: 66px; }
+  .is-tracking .surface-side { top: auto; }
+}
+/* A short stage scrolls the Layers rows; the provenance footer goes first. */
+@media (max-height: 960px) { #dock-layers .panel-foot { display: none; } }
+
+/* Live motion (card glmps-2-0-204): the agents' dials, pings, arcs, the roster and Wall mode.
+   Blue is activity, green a commit, push or pass, red a failed gate, amber a session that needs you;
+   idle is the faint neutral. Every motion itself is script-driven and stops under reduced motion. */
+.agent .lbl { text-anchor: middle; }
+.dial, .dial * { pointer-events: none; }
+.dial-tick { stroke-width: 1.6; stroke-linecap: round; }
+.tk-rest { stroke: var(--sf-faint); opacity: .35; }
+.tk-idle { stroke: var(--sf-faint); opacity: .75; }
+.tk-info { stroke: var(--sf-blue); }
+.tk-ok { stroke: var(--sf-green); }
+.tk-err { stroke: var(--sf-red); }
+.tk-warn { stroke: var(--sf-amber); }
+.tk-warnrest { stroke: var(--sf-amber); opacity: .3; }
+.dial-ring { fill: none; stroke: var(--sf-amber); stroke-width: 2; }
+.dial-ping { fill: none; stroke-width: 1.5; pointer-events: none; }
+.ping-info { stroke: var(--sf-blue); } .ping-ok { stroke: var(--sf-green); } .ping-err { stroke: var(--sf-red); }
+.dial-reticle path { fill: none; stroke: var(--sf-text); stroke-width: 1.6; stroke-linecap: square; }
+.agent[data-state="waiting"] .agent-dot { fill: var(--sf-amber); }
+.agent[data-state="fail"] .agent-dot { fill: var(--sf-red); }
+.agent[data-state="idle"] .agent-dot { fill: var(--sf-faint); }
+.live-arc { fill: none; stroke-width: 1.6; stroke-linecap: round; pointer-events: none; }
+.arc-info { stroke: var(--sf-blue); } .arc-ok { stroke: var(--sf-green); }
+.live-dot { pointer-events: none; }
+.dot-info { fill: var(--sf-blue); } .dot-ok { fill: var(--sf-green); }
+
+/* Wall mode sits top left beside the rail; under the tracking bar while a session is tracked. */
+.surface-wall { position: absolute; left: var(--sp-3); top: var(--sp-3); z-index: 5; display: flex; align-items: center; gap: var(--sp-2); max-width: calc(100% - min(360px, 34vw) - 3 * var(--sp-3)); pointer-events: none; }
+.surface-left { top: calc(var(--sp-3) + 40px); }
+/* The canvas fallback search (no shell search) sits right of the rail: the bar stops short of it. */
+.surface-root:not(.is-tracking) .has-canvas-search .surface-wall { max-width: 272px; }
+@media (max-width: 900px) { .surface-root:not(.is-tracking) .has-canvas-search .surface-wall { max-width: 236px; } }
+.is-tracking .surface-wall { top: 56px; }
+.is-tracking .surface-inview { top: 96px; max-height: calc(100% - 96px - 150px); }
+.wall-btn { display: inline-flex; align-items: center; gap: var(--sp-1); flex: none; min-height: 32px; padding: 0 var(--sp-2); font: inherit; font-size: var(--fs-small); color: var(--sf-text); background: var(--sf-glass); border: 1px solid var(--sf-edge); border-radius: 5px; backdrop-filter: blur(6px); cursor: pointer; pointer-events: auto; }
+.wall-btn::before { content: ""; width: 8px; height: 8px; border-radius: 50%; border: 1.5px solid var(--sf-muted); }
+.wall-btn:hover { border-color: var(--sf-edge-lit); }
+.wall-btn[aria-pressed="true"] { background: var(--sf-blue-soft); border-color: var(--sf-edge-lit); }
+.wall-btn[aria-pressed="true"]::before { background: var(--sf-blue); border-color: var(--sf-blue); }
+.surface-headsup { min-width: 0; padding: 4px var(--sp-2); font-family: 'Fira Code', monospace; font-size: var(--fs-small); color: var(--sf-text); background: var(--sf-glass); border: 1px solid var(--sf-edge-lit); border-radius: 5px; white-space: nowrap; overflow: hidden; text-overflow: ellipsis; }
+
+/* Sessions dock (mockup E): tinted rows, name over the latest action, sparkline, rate, then the colour key. */
+#dock-sessions .surface-panel-body { padding-top: var(--sp-1); }
+.roster-list { margin: 0; padding: 0; list-style: none; display: grid; gap: 3px; }
+.roster-row { display: grid; grid-template-columns: 10px minmax(0, 1fr) 84px 3.6em; align-items: center; gap: var(--sp-2); width: 100%; min-height: 36px; padding: 4px var(--sp-2); font: inherit; font-size: var(--fs-small); color: var(--sf-text); text-align: left; background: var(--sf-glass-row); border: 0; border-radius: 3px; cursor: pointer; }
+.roster-row:hover { box-shadow: inset 0 0 0 1px var(--sf-edge); }
+.roster-row[aria-pressed="true"] { background: var(--sf-blue-soft); box-shadow: inset 0 0 0 1px var(--sf-edge-lit), inset 3px 0 0 var(--sf-blue); }
+.roster-dot, .legend-dot { width: 8px; height: 8px; border-radius: 50%; background: var(--sf-blue); flex: none; }
+.roster-row[data-tone="ok"] .roster-dot, .legend-dot.tone-ok { background: var(--sf-green); }
+.roster-row[data-tone="warn"] .roster-dot, .legend-dot.tone-warn { background: var(--sf-amber); }
+.roster-row[data-tone="err"] .roster-dot, .legend-dot.tone-err { background: var(--sf-red); }
+.roster-row[data-tone="idle"] .roster-dot, .legend-dot.tone-idle { background: var(--sf-faint); }
+.roster-row[data-tone="warn"] .roster-dot { box-shadow: 0 0 0 2px rgba(245, 165, 36, 0.3); }
+.roster-mid { display: grid; min-width: 0; line-height: 1.3; }
+.roster-name, .roster-word { overflow: hidden; text-overflow: ellipsis; white-space: nowrap; }
+.roster-name { font-family: 'Fira Code', monospace; font-size: var(--fs-micro); }
+.roster-word { font-size: var(--fs-micro); color: var(--sf-muted); }
+.roster-row[data-state="waiting"] .roster-word { color: var(--sf-amber-text); font-weight: 600; }
+.roster-row[data-state="fail"] .roster-word { color: var(--sf-danger-text); }
+.roster-row[data-state="idle"] .roster-word { color: var(--sf-faint); }
+.roster-spark { width: 84px; height: 20px; display: block; }
+.spark-info { --spark: var(--sf-blue); } .spark-ok { --spark: var(--sf-green); } .spark-warn { --spark: var(--sf-amber); } .spark-err { --spark: var(--sf-red); } .spark-idle { --spark: var(--sf-faint); }
+.spark-area { fill: var(--spark); stroke: none; opacity: .16; }
+.spark-line { fill: none; stroke: var(--spark); stroke-width: 1.3; }
+.roster-rate { font-family: 'Fira Code', monospace; font-size: var(--fs-micro); color: var(--sf-muted); text-align: right; font-variant-numeric: tabular-nums; }
+.roster-empty { margin: var(--sp-1) 0; font-size: var(--fs-small); color: var(--sf-faint); }
+.roster-legend { flex: none; display: flex; flex-wrap: wrap; gap: var(--sp-1) var(--sp-3); padding: var(--sp-1) var(--sp-2) var(--sp-2); font-size: var(--fs-micro); color: var(--sf-muted); border-top: 1px solid rgba(94, 168, 214, 0.16); }
+.legend-item { display: inline-flex; align-items: center; gap: 6px; }
+.is-folded .roster-legend { display: none; }
+@media (max-width: 560px) {
+  .surface-wall { left: var(--sp-1); right: var(--sp-1); top: var(--sp-1); max-width: none; }
+  .surface-left { top: 60px; }
+  /* The search spans the top here, so the bar and the rail drop under it, below its dropdown. */
+  .surface-root:not(.is-tracking) .has-canvas-search .surface-wall { top: 58px; z-index: 4; max-width: none; }
+  .surface-root:not(.is-tracking) .has-canvas-search .surface-left { top: 110px; }
+  .is-tracking .surface-wall { top: 104px; }
+  .wall-btn, .roster-row { min-height: 44px; }
+}
+@media (pointer: coarse) { .wall-btn, .roster-row { min-height: 44px; } }

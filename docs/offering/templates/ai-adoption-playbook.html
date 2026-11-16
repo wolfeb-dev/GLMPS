@@ -1,0 +1,806 @@
+<!DOCTYPE html>
+<!--
+  AI ADOPTION PLAYBOOK — AI Readiness & Governance Audit
+  Fill every {{TOKEN}} before handing to the client. Search for "{{" to find all slots.
+  Delete .howto-box and all .guidance elements before client distribution.
+  Fonts: Montserrat (headings) · Roboto (body) · Roboto Mono (labels/codes)
+  Accent: #2563eb (blue) — matches the GLMPS AI Usage & Risk Baseline report.
+-->
+<html lang="en">
+<head>
+<meta charset="UTF-8" />
+<meta name="viewport" content="width=device-width, initial-scale=1.0" />
+<title>AI Adoption Playbook — {{CLIENT_NAME}}</title>
+<link rel="preconnect" href="https://fonts.googleapis.com" />
+<link rel="preconnect" href="https://fonts.gstatic.com" crossorigin />
+<link href="https://fonts.googleapis.com/css2?family=Montserrat:wght@400;500;600;700;800&family=Roboto+Mono:wght@400;500;600&family=Roboto:wght@300;400;500;700&display=swap" rel="stylesheet" />
+<style>
+/* ── Design tokens (mirrors GLMPS storm-research report-template.html) ─── */
+:root {
+  --blue: #2563eb; --blue-dark: #1e3a8a; --ink: #16203a; --muted: #5b6677;
+  --line: #e4e9f2; --bg-soft: #f6f8fc; --green: #15803d; --green-bg: #e9f6ee;
+  --amber: #b45309; --amber-bg: #fdf3e7; --slate: #475569; --slate-bg: #eef1f6;
+  --red: #b91c1c; --red-bg: #fdecec;
+  --slot-bg: #fef9c3; --slot-border: #fbbf24; --slot-text: #92400e;
+}
+* { box-sizing: border-box; margin: 0; padding: 0; }
+body {
+  font-family: 'Roboto', system-ui, -apple-system, sans-serif;
+  color: var(--ink); background: #eef1f6;
+  line-height: 1.62; font-weight: 400; -webkit-font-smoothing: antialiased;
+}
+.page {
+  max-width: 900px; margin: 0 auto; background: #fff;
+  padding: 64px 72px 80px;
+  box-shadow: 0 1px 40px rgba(22,32,58,0.08);
+}
+
+/* ── Document header ─── */
+.doc-brand { display: flex; align-items: baseline; gap: 12px; margin-bottom: 22px; }
+.brand-mark { font-family: 'Montserrat', sans-serif; font-weight: 800; font-size: 17px; color: var(--blue); letter-spacing: 0.04em; }
+.brand-sep { color: var(--line); font-weight: 300; font-size: 18px; }
+.brand-label { font-family: 'Roboto Mono', monospace; font-size: 11px; font-weight: 600; letter-spacing: 0.14em; text-transform: uppercase; color: var(--muted); }
+.doc-title { font-family: 'Montserrat', sans-serif; font-weight: 800; font-size: 38px; line-height: 1.1; letter-spacing: -0.02em; color: var(--ink); margin-bottom: 12px; }
+.doc-lede { font-size: 16px; color: var(--muted); max-width: 600px; margin-bottom: 26px; line-height: 1.6; }
+.doc-meta { display: grid; grid-template-columns: repeat(auto-fit, minmax(150px, 1fr)); gap: 16px; padding: 20px 0; border-top: 2px solid var(--line); border-bottom: 2px solid var(--line); margin-bottom: 22px; }
+.meta-item { display: flex; flex-direction: column; gap: 4px; }
+.meta-label { font-family: 'Roboto Mono', monospace; font-size: 10px; font-weight: 600; letter-spacing: 0.13em; text-transform: uppercase; color: var(--muted); }
+.meta-value { font-size: 14px; font-weight: 500; color: var(--ink); }
+
+/* ── Consultant howto box ─── */
+.howto-box { background: var(--amber-bg); border: 1px solid #f0d9b5; border-left: 4px solid var(--amber); border-radius: 6px; padding: 16px 20px; }
+.howto-label { font-family: 'Roboto Mono', monospace; font-size: 10.5px; font-weight: 600; letter-spacing: 0.1em; text-transform: uppercase; color: var(--amber); margin-bottom: 10px; }
+.howto-box ul { list-style: none; }
+.howto-box li { font-size: 13.5px; color: #4a3a22; margin-bottom: 7px; padding-left: 16px; position: relative; line-height: 1.5; }
+.howto-box li::before { content: "›"; position: absolute; left: 0; color: var(--amber); font-weight: 700; }
+.howto-box code { font-family: 'Roboto Mono', monospace; font-size: 12px; background: rgba(0,0,0,0.06); padding: 1px 5px; border-radius: 3px; }
+
+/* ── Fill-in slots ─── */
+.slot { background: var(--slot-bg); border: 1px dashed var(--slot-border); border-radius: 3px; padding: 1px 7px; font-family: 'Roboto Mono', monospace; font-size: 0.88em; font-style: italic; color: var(--slot-text); }
+.guidance { display: block; font-size: 12px; font-style: italic; color: var(--amber); margin-top: 5px; line-height: 1.5; }
+.fill-region { border: 1.5px dashed var(--slot-border); background: #fefce8; border-radius: 6px; padding: 14px 18px; margin: 10px 0 14px; min-height: 52px; }
+.fill-region .placeholder-text { color: var(--slot-text); font-style: italic; font-size: 13.5px; line-height: 1.55; }
+
+/* ── Section layout ─── */
+.section { margin-top: 56px; }
+.section-num { font-family: 'Roboto Mono', monospace; font-size: 13px; font-weight: 600; color: var(--blue); letter-spacing: 0.05em; }
+h2 { font-family: 'Montserrat', sans-serif; font-weight: 700; font-size: 24px; letter-spacing: -0.01em; color: var(--ink); margin: 6px 0 16px; line-height: 1.2; }
+h2 .bar { display: inline-block; width: 34px; height: 4px; background: var(--blue); border-radius: 2px; vertical-align: middle; margin-right: 12px; }
+.section-lede { font-size: 15px; color: var(--muted); margin-bottom: 24px; line-height: 1.6; }
+p { margin-bottom: 14px; font-size: 14.5px; }
+ul, ol { margin: 0 0 14px 22px; }
+li { margin-bottom: 7px; line-height: 1.55; font-size: 14.5px; }
+strong { font-weight: 600; }
+h3 { font-family: 'Montserrat', sans-serif; font-weight: 700; font-size: 17px; color: var(--ink); margin-bottom: 12px; margin-top: 0; }
+h4 { font-family: 'Montserrat', sans-serif; font-weight: 600; font-size: 15px; color: var(--ink); margin-bottom: 10px; margin-top: 0; }
+
+/* ── Tables ─── */
+.plain-table { width: 100%; border-collapse: collapse; font-size: 13.5px; margin: 12px 0 14px; }
+.plain-table thead th { background: var(--bg-soft); padding: 9px 12px; text-align: left; font-family: 'Roboto Mono', monospace; font-size: 10.5px; font-weight: 600; letter-spacing: 0.06em; text-transform: uppercase; color: var(--muted); border-bottom: 2px solid var(--line); }
+.plain-table tbody td { padding: 9px 12px; border-bottom: 1px solid var(--line); vertical-align: top; line-height: 1.55; }
+.plain-table tbody tr:last-child td { border-bottom: none; }
+.add-row td { font-style: italic; color: var(--muted); font-size: 12.5px; background: var(--bg-soft); }
+
+/* ── Govern-don't-ban callout (Section 01) ─── */
+.principle-card {
+  background: linear-gradient(135deg, var(--blue-dark) 0%, #1a41a8 100%);
+  color: #eaf0fb; border-radius: 10px; padding: 32px 36px; margin-bottom: 28px;
+}
+.principle-card .eyebrow {
+  font-family: 'Roboto Mono', monospace; font-size: 11px; font-weight: 600;
+  letter-spacing: 0.14em; text-transform: uppercase; color: #9ec1ff; margin-bottom: 12px;
+}
+.principle-card h3 { color: #fff; font-size: 22px; margin-bottom: 14px; }
+.principle-card p { font-size: 15px; color: #d3def3; margin-bottom: 12px; line-height: 1.65; }
+.principle-card p:last-child { margin-bottom: 0; }
+.principle-card strong { color: #fff; font-weight: 600; }
+
+/* ── Ban vs govern comparison ─── */
+.compare-grid { display: grid; grid-template-columns: 1fr 1fr; gap: 16px; margin-bottom: 24px; }
+.compare-col { border-radius: 8px; overflow: hidden; }
+.compare-col-head { padding: 12px 16px; font-family: 'Montserrat', sans-serif; font-weight: 700; font-size: 14px; }
+.compare-col.ban .compare-col-head { background: var(--red-bg); color: var(--red); border: 1px solid #f3c9c9; }
+.compare-col.govern .compare-col-head { background: var(--green-bg); color: var(--green); border: 1px solid #bfe3cc; }
+.compare-col-body { padding: 14px 16px; }
+.compare-col.ban .compare-col-body { background: #fff8f8; border: 1px solid #f3c9c9; border-top: none; }
+.compare-col.govern .compare-col-body { background: #f6fef9; border: 1px solid #bfe3cc; border-top: none; }
+.compare-col-body ul { list-style: none; margin: 0; padding: 0; }
+.compare-col-body li { font-size: 13.5px; padding-left: 18px; position: relative; margin-bottom: 9px; line-height: 1.5; color: #283449; }
+.compare-col.ban .compare-col-body li::before { content: "✕"; position: absolute; left: 0; color: var(--red); font-weight: 700; font-size: 11px; top: 2px; }
+.compare-col.govern .compare-col-body li::before { content: "✓"; position: absolute; left: 0; color: var(--green); font-weight: 700; font-size: 11px; top: 2px; }
+
+/* ── Tool comparison table slot ─── */
+.tool-compare-table { width: 100%; border-collapse: collapse; font-size: 13.5px; margin: 14px 0; }
+.tool-compare-table thead th { background: var(--blue-dark); color: #fff; padding: 10px 12px; text-align: left; font-family: 'Roboto Mono', monospace; font-size: 10.5px; font-weight: 600; letter-spacing: 0.06em; text-transform: uppercase; }
+.tool-compare-table thead th:first-child { border-radius: 6px 0 0 0; }
+.tool-compare-table thead th:last-child { border-radius: 0 6px 0 0; }
+.tool-compare-table tbody td { padding: 9px 12px; border-bottom: 1px solid var(--line); vertical-align: top; line-height: 1.5; }
+.tool-compare-table tbody tr:last-child td { border-bottom: none; }
+.tool-compare-table tbody tr:nth-child(even) td { background: var(--bg-soft); }
+.tc-feature { font-family: 'Roboto Mono', monospace; font-size: 11.5px; font-weight: 600; color: var(--slate); white-space: nowrap; }
+.tc-yes { color: var(--green); font-weight: 600; }
+.tc-no { color: var(--red); }
+.tc-partial { color: var(--amber); font-weight: 500; }
+
+/* ── Setup steps (Section 02) ─── */
+.setup-step { display: flex; gap: 20px; padding: 20px 0; border-bottom: 1px solid var(--line); align-items: flex-start; }
+.setup-step:last-child { border-bottom: none; }
+.step-num {
+  flex-shrink: 0; width: 32px; height: 32px; border-radius: 50%;
+  background: var(--blue); color: #fff;
+  font-family: 'Montserrat', sans-serif; font-weight: 700; font-size: 14px;
+  display: flex; align-items: center; justify-content: center;
+}
+.step-body { flex: 1; }
+.step-title { font-family: 'Montserrat', sans-serif; font-weight: 600; font-size: 15.5px; color: var(--ink); margin-bottom: 7px; }
+.step-body p { font-size: 14px; margin-bottom: 8px; }
+.step-body ul { margin: 6px 0 8px 20px; }
+.step-body li { font-size: 13.5px; }
+.step-cmd {
+  font-family: 'Roboto Mono', monospace; font-size: 12.5px; background: var(--slate-bg);
+  border: 1px solid var(--line); border-radius: 5px; padding: 8px 12px; margin: 6px 0;
+  color: var(--blue-dark); overflow-x: auto;
+}
+
+/* ── Do / Don't guide (Section 03) ─── */
+.do-dont-grid { display: grid; grid-template-columns: 1fr 1fr; gap: 16px; margin-bottom: 22px; }
+.do-col { border-radius: 8px; overflow: hidden; }
+.do-col-head { padding: 12px 16px; font-family: 'Montserrat', sans-serif; font-weight: 700; font-size: 13.5px; }
+.do-col.do .do-col-head { background: var(--green-bg); color: var(--green); border: 1px solid #bfe3cc; }
+.do-col.dont .do-col-head { background: var(--red-bg); color: var(--red); border: 1px solid #f3c9c9; }
+.do-col-body { padding: 14px 16px; }
+.do-col.do .do-col-body { background: #f6fef9; border: 1px solid #bfe3cc; border-top: none; }
+.do-col.dont .do-col-body { background: #fff8f8; border: 1px solid #f3c9c9; border-top: none; }
+.do-col-body ul { list-style: none; margin: 0; padding: 0; }
+.do-col-body li { font-size: 13.5px; padding-left: 20px; position: relative; margin-bottom: 10px; line-height: 1.55; color: #283449; }
+.do-col.do .do-col-body li::before { content: "Do"; position: absolute; left: 0; color: var(--green); font-weight: 700; font-size: 10px; font-family: 'Roboto Mono', monospace; top: 3px; }
+.do-col.dont .do-col-body li::before { content: "✕"; position: absolute; left: 0; color: var(--red); font-weight: 700; font-size: 11px; top: 2px; }
+
+/* ── Audience tabs (Section 03) ─── */
+.audience-block { margin-bottom: 28px; }
+.audience-label { font-family: 'Roboto Mono', monospace; font-size: 10.5px; font-weight: 600; letter-spacing: 0.1em; text-transform: uppercase; color: #fff; background: var(--slate); display: inline-block; padding: 4px 12px; border-radius: 4px; margin-bottom: 12px; }
+.audience-label.dev { background: var(--blue); }
+.audience-label.lead { background: var(--blue-dark); }
+.audience-label.general { background: var(--slate); }
+
+/* ── Sensitive-data locations (Section 03) ─── */
+.sensitive-box { background: var(--red-bg); border: 1px solid #f3c9c9; border-left: 4px solid var(--red); border-radius: 6px; padding: 18px 22px; margin-bottom: 20px; }
+.sensitive-box-title { font-family: 'Montserrat', sans-serif; font-weight: 700; font-size: 14px; color: var(--red); margin-bottom: 10px; }
+.sensitive-box ul { list-style: none; margin: 0; padding: 0; }
+.sensitive-box li { font-size: 13.5px; color: #3a1010; padding-left: 16px; position: relative; margin-bottom: 7px; line-height: 1.5; }
+.sensitive-box li::before { content: "!"; position: absolute; left: 0; color: var(--red); font-weight: 700; font-family: 'Roboto Mono', monospace; font-size: 12px; }
+
+/* ── Measurement plan (Section 04) ─── */
+.phase-block { margin-bottom: 32px; }
+.phase-header { display: flex; align-items: center; gap: 14px; margin-bottom: 16px; padding-bottom: 12px; border-bottom: 2px solid var(--line); }
+.phase-badge {
+  font-family: 'Roboto Mono', monospace; font-size: 10.5px; font-weight: 700;
+  letter-spacing: 0.08em; text-transform: uppercase; padding: 5px 12px;
+  border-radius: 4px; flex-shrink: 0;
+}
+.phase-badge.assess { background: var(--slate-bg); color: var(--slate); }
+.phase-badge.govern { background: var(--amber-bg); color: var(--amber); }
+.phase-badge.enable { background: #dbeafe; color: var(--blue-dark); }
+.phase-badge.measure { background: var(--green-bg); color: var(--green); }
+.phase-title { font-family: 'Montserrat', sans-serif; font-weight: 700; font-size: 17px; color: var(--ink); }
+.phase-desc { font-size: 13.5px; color: var(--muted); margin-left: auto; }
+
+.metric-table { width: 100%; border-collapse: collapse; font-size: 13px; }
+.metric-table thead th { background: var(--bg-soft); padding: 8px 10px; text-align: left; font-family: 'Roboto Mono', monospace; font-size: 10px; font-weight: 600; letter-spacing: 0.06em; text-transform: uppercase; color: var(--muted); border-bottom: 1px solid var(--line); }
+.metric-table tbody td { padding: 9px 10px; border-bottom: 1px solid var(--line); vertical-align: top; line-height: 1.5; }
+.metric-table tbody tr:last-child td { border-bottom: none; }
+.metric-name { font-weight: 600; color: var(--ink); font-size: 13px; }
+.metric-why { font-size: 12px; color: var(--muted); margin-top: 3px; line-height: 1.4; }
+
+/* ── Loop diagram (measurement cycle) ─── */
+.loop-visual { display: flex; align-items: center; justify-content: center; gap: 0; margin: 28px 0; flex-wrap: wrap; }
+.loop-node { text-align: center; padding: 14px 18px; border-radius: 8px; min-width: 120px; }
+.loop-node.assess { background: var(--slate-bg); }
+.loop-node.govern { background: var(--amber-bg); }
+.loop-node.enable { background: #dbeafe; }
+.loop-node.measure { background: var(--green-bg); }
+.loop-node-label { font-family: 'Roboto Mono', monospace; font-size: 10px; font-weight: 600; letter-spacing: 0.1em; text-transform: uppercase; color: var(--muted); margin-bottom: 4px; }
+.loop-node-name { font-family: 'Montserrat', sans-serif; font-weight: 700; font-size: 14px; color: var(--ink); }
+.loop-arrow { color: var(--line); font-size: 24px; padding: 0 6px; line-height: 1; align-self: center; }
+
+/* ── Footer ─── */
+.doc-footer { margin-top: 48px; padding-top: 20px; border-top: 2px solid var(--line); font-family: 'Roboto Mono', monospace; font-size: 11px; color: var(--muted); display: flex; flex-direction: column; gap: 4px; }
+
+/* ── Responsive ─── */
+@media (max-width: 640px) {
+  .page { padding: 32px 22px 48px; }
+  .doc-title { font-size: 28px; }
+  h2 { font-size: 20px; }
+  .compare-grid, .do-dont-grid { grid-template-columns: 1fr; }
+  .loop-visual { flex-direction: column; gap: 4px; }
+  .loop-arrow { transform: rotate(90deg); }
+  .tool-compare-table { font-size: 12px; }
+  .principle-card { padding: 22px 18px; }
+}
+
+/* ── Print ─── */
+@media print {
+  body { background: #fff; }
+  .page { box-shadow: none; max-width: 100%; padding: 0; }
+  .howto-box { display: none; }
+  .guidance { color: #999; }
+  .principle-card, .compare-col-head, .do-col-head,
+  .phase-badge, .tool-compare-table thead,
+  .sensitive-box, .slot, .loop-node {
+    -webkit-print-color-adjust: exact; print-color-adjust: exact;
+  }
+  .section { page-break-inside: avoid; }
+  .phase-block { page-break-inside: avoid; }
+  .compare-grid, .do-dont-grid { page-break-inside: avoid; }
+  h2 { page-break-after: avoid; }
+  .loop-visual { page-break-inside: avoid; }
+}
+</style>
+</head>
+<body>
+<div class="page">
+
+  <!-- DOCUMENT HEADER -->
+  <header>
+    <div class="doc-brand">
+      <span class="brand-mark">GLMPS</span>
+      <span class="brand-sep">/</span>
+      <span class="brand-label">AI Readiness &amp; Governance Audit</span>
+    </div>
+    <h1 class="doc-title">AI Adoption Playbook</h1>
+    <p class="doc-lede">Sanctioned-tool decision, fast-path setup, team enablement guide, and a measurement plan that closes the Assess–Govern–Enable–Measure loop.</p>
+    <div class="doc-meta">
+      <div class="meta-item">
+        <span class="meta-label">Client</span>
+        <span class="meta-value"><span class="slot">{{CLIENT_NAME}}</span></span>
+      </div>
+      <div class="meta-item">
+        <span class="meta-label">Date</span>
+        <span class="meta-value"><span class="slot">{{DATE}}</span></span>
+      </div>
+      <div class="meta-item">
+        <span class="meta-label">Prepared by</span>
+        <span class="meta-value"><span class="slot">{{CONSULTANT_NAME}}</span></span>
+      </div>
+      <div class="meta-item">
+        <span class="meta-label">Engagement</span>
+        <span class="meta-value"><span class="slot">{{ENGAGEMENT_ID}}</span></span>
+      </div>
+      <div class="meta-item">
+        <span class="meta-label">Follows from</span>
+        <span class="meta-value">Governance Starter Kit v<span class="slot">{{GSK_VERSION}}</span></span>
+      </div>
+    </div>
+    <div class="howto-box">
+      <div class="howto-label">Consultant instructions — delete before client handoff</div>
+      <ul>
+        <li><strong>Yellow text in dashed boxes</strong> marks every fill-in slot. Search for <code>{{</code> to find them all.</li>
+        <li>This playbook is intended to be handed to the client's engineering lead and team leads directly, as a working guide — not just an executive summary.</li>
+        <li>Section 01 (Govern, Don't Ban) is a conversation starter as much as a document. Walk through it in the Phase 3 kickoff before handing over the written version.</li>
+        <li>Section 03 (Team Enablement) should be lightly tailored to the client's actual AI tools before distribution to developers.</li>
+        <li>Delete this box and all guidance notes before saving as PDF for the handoff package.</li>
+      </ul>
+    </div>
+  </header>
+
+  <!-- ══════════════════════════════════════════════════════
+       SECTION 01 — GOVERN, DON'T BAN
+       ══════════════════════════════════════════════════════ -->
+  <section class="section">
+    <div class="section-num">01</div>
+    <h2><span class="bar"></span>Govern, Don't Ban: The Sanctioned-Tool Decision</h2>
+    <p class="section-lede">The most common AI governance mistake is banning unapproved tools with no alternative. This section explains why that approach fails and how to replace it with a sanctioned path that people will actually use.</p>
+
+    <div class="principle-card">
+      <div class="eyebrow">Core principle</div>
+      <h3>Give people an equally fast approved path. Then the defection to personal accounts stops.</h3>
+      <p>The baseline report for <span class="slot">{{CLIENT_NAME}}</span> found shadow AI use — personal accounts, unsanctioned tools, or both. This is the norm in every mid-market company with no approved AI path. It is not a discipline problem; it is a procurement gap.</p>
+      <p>When the unapproved tool is faster, easier, or simply the one developers already know, banning it without a replacement does one thing: it drives the same usage underground, where you have zero visibility. The data leak happens either way. The difference is whether you can see it.</p>
+      <p><strong>The goal of this playbook is to make the approved path the obviously better path</strong> — well-provisioned, well-documented, and fast enough that no one has a reason to defect.</p>
+    </div>
+
+    <div class="compare-grid">
+      <div class="compare-col ban">
+        <div class="compare-col-head">
+          <svg width="14" height="14" viewBox="0 0 24 24" fill="none" aria-hidden="true" style="display:inline;vertical-align:middle;margin-right:6px;"><circle cx="12" cy="12" r="10" stroke="#b91c1c" stroke-width="2"/><path d="M4.93 4.93l14.14 14.14" stroke="#b91c1c" stroke-width="2" stroke-linecap="round"/></svg>
+          What happens when you ban without an alternative
+        </div>
+        <div class="compare-col-body">
+          <ul>
+            <li>Developers continue using personal ChatGPT / Copilot — now on personal devices you can't monitor</li>
+            <li>The shadow AI footprint grows and becomes invisible to your DLP and GLMPS capture</li>
+            <li>Trust between security/IT and engineering erodes: security is seen as blocking productivity</li>
+            <li>High performers look elsewhere; AI-unblocked competitors hire them</li>
+            <li>When a data leak eventually occurs, you have no session data to investigate it</li>
+            <li>The ban is openly flouted within weeks; enforcement cost exceeds any risk reduction</li>
+          </ul>
+        </div>
+      </div>
+      <div class="compare-col govern">
+        <div class="compare-col-head">
+          <svg width="14" height="14" viewBox="0 0 24 24" fill="none" aria-hidden="true" style="display:inline;vertical-align:middle;margin-right:6px;"><path d="M20 6L9 17l-5-5" stroke="#15803d" stroke-width="2" stroke-linecap="round" stroke-linejoin="round"/></svg>
+          What happens when you govern with a sanctioned alternative
+        </div>
+        <div class="compare-col-body">
+          <ul>
+            <li>Most developers switch to the sanctioned tool, because it's company-provisioned and supported</li>
+            <li>Sensitive-data flows through monitored, contract-protected accounts with no-train clauses</li>
+            <li>GLMPS has full session capture; egress events and policy violations are visible and alertable</li>
+            <li>Security and engineering share a common tool — the same one, with the same guardrails</li>
+            <li>Remaining shadow usage (holdouts, contractors) is identifiable as a residual gap, not the whole picture</li>
+            <li>Adoption metrics are measurable: you can prove the governance investment is working</li>
+          </ul>
+        </div>
+      </div>
+    </div>
+
+    <h3>Sanctioned-Tool Comparison</h3>
+    <p>Use this table to document the evaluation of candidate tools. The recommended tool for <span class="slot">{{CLIENT_NAME}}</span> is <span class="slot">{{RECOMMENDED_TOOL}}</span>.</p>
+    <em class="guidance">Fill in one column per tool evaluated. The criteria below are the ones that matter for governance; add client-specific criteria (cost, SSO integration, IDE support) as additional rows.</em>
+
+    <table class="tool-compare-table">
+      <thead>
+        <tr>
+          <th style="width:28%">Criterion</th>
+          <th><span class="slot">{{TOOL_A_NAME}}</span></th>
+          <th><span class="slot">{{TOOL_B_NAME}}</span></th>
+          <th><span class="slot">{{TOOL_C_NAME}}</span></th>
+        </tr>
+      </thead>
+      <tbody>
+        <tr>
+          <td class="tc-feature">No-train clause available</td>
+          <td><span class="slot">{{A}}</span></td>
+          <td><span class="slot">{{B}}</span></td>
+          <td><span class="slot">{{C}}</span></td>
+        </tr>
+        <tr>
+          <td class="tc-feature">Data residency / region</td>
+          <td><span class="slot">{{A}}</span></td>
+          <td><span class="slot">{{B}}</span></td>
+          <td><span class="slot">{{C}}</span></td>
+        </tr>
+        <tr>
+          <td class="tc-feature">Data retention period</td>
+          <td><span class="slot">{{A}}</span></td>
+          <td><span class="slot">{{B}}</span></td>
+          <td><span class="slot">{{C}}</span></td>
+        </tr>
+        <tr>
+          <td class="tc-feature">Enterprise SSO / SAML</td>
+          <td><span class="slot">{{A}}</span></td>
+          <td><span class="slot">{{B}}</span></td>
+          <td><span class="slot">{{C}}</span></td>
+        </tr>
+        <tr>
+          <td class="tc-feature">GLMPS capture coverage</td>
+          <td><span class="slot">{{A}}</span></td>
+          <td><span class="slot">{{B}}</span></td>
+          <td><span class="slot">{{C}}</span></td>
+        </tr>
+        <tr>
+          <td class="tc-feature">Audit log / admin console</td>
+          <td><span class="slot">{{A}}</span></td>
+          <td><span class="slot">{{B}}</span></td>
+          <td><span class="slot">{{C}}</span></td>
+        </tr>
+        <tr>
+          <td class="tc-feature">Cost per seat / month</td>
+          <td><span class="slot">{{A}}</span></td>
+          <td><span class="slot">{{B}}</span></td>
+          <td><span class="slot">{{C}}</span></td>
+        </tr>
+        <tr>
+          <td class="tc-feature">SOC 2 Type II / ISO 27001</td>
+          <td><span class="slot">{{A}}</span></td>
+          <td><span class="slot">{{B}}</span></td>
+          <td><span class="slot">{{C}}</span></td>
+        </tr>
+        <tr>
+          <td class="tc-feature">Recommendation</td>
+          <td><span class="slot">{{A_VERDICT}}</span></td>
+          <td><span class="slot">{{B_VERDICT}}</span></td>
+          <td><span class="slot">{{C_VERDICT}}</span></td>
+        </tr>
+      </tbody>
+    </table>
+
+    <p style="margin-top:8px;"><strong>Decision rationale:</strong></p>
+    <div class="fill-region">
+      <div class="placeholder-text">{{TOOL_DECISION_RATIONALE}} — In 3–5 sentences: which tool was selected, the primary reasons (no-train clause, existing vendor relationship, GLMPS coverage, cost), and any conditions attached to the approval (e.g., "approved for Internal/non-PII data only until the enterprise plan is in place").</div>
+    </div>
+  </section>
+
+  <!-- ══════════════════════════════════════════════════════
+       SECTION 02 — FAST-PATH SETUP
+       ══════════════════════════════════════════════════════ -->
+  <section class="section">
+    <div class="section-num">02</div>
+    <h2><span class="bar"></span>Fast-Path Setup</h2>
+    <p class="section-lede">Standing up the sanctioned tool and guardrails for a team of <span class="slot">{{TEAM_SIZE}}</span> developers. Target: first developer using the governed tool within one working day of kickoff.</p>
+
+    <div class="setup-step">
+      <div class="step-num">1</div>
+      <div class="step-body">
+        <div class="step-title">Provision the sanctioned tool under company accounts</div>
+        <p>Create an organization/enterprise account for <span class="slot">{{TOOL_NAME}}</span> under a company email domain, not an individual's personal account. Assign a technical admin (<span class="slot">{{ADMIN_NAME}}</span>) who is not the same person as the billing owner.</p>
+        <ul>
+          <li>Configure SSO so all user access goes through the company identity provider (<span class="slot">{{IDP_NAME}}</span>). This ensures joiners are provisioned automatically and leavers are deprovisioned immediately.</li>
+          <li>Enable the no-train and data-retention settings in the vendor console before inviting any users. Document the settings and save screenshots to the engagement record.</li>
+          <li>Confirm data residency region matches the client's data-handling requirements: <span class="slot">{{REQUIRED_REGION}}</span>.</li>
+        </ul>
+      </div>
+    </div>
+
+    <div class="setup-step">
+      <div class="step-num">2</div>
+      <div class="step-body">
+        <div class="step-title">Install and configure GLMPS on the representative dev environment</div>
+        <p>Run <code class="step-cmd">glmps init</code> on the managed dev environment, dev container base image, or a representative sample of developer machines (minimum 3–5 machines across the team). GLMPS captures all AI harness sessions locally with no data leaving the building.</p>
+        <ul>
+          <li>Verify the capture-parity matrix shows the sanctioned tool at full or high coverage. Coverage for <span class="slot">{{TOOL_NAME}}</span>: <span class="slot">{{CAPTURE_COVERAGE}}</span>.</li>
+          <li>Configure dev/prod zone classification using the paths identified in the Governance Starter Kit §02.</li>
+          <li>Enable the egress detector and live-install guard before inviting developers to use the new tool.</li>
+          <li>Confirm the alert center is active and test alerts route to <span class="slot">{{ALERT_CHANNEL}}</span>.</li>
+        </ul>
+      </div>
+    </div>
+
+    <div class="setup-step">
+      <div class="step-num">3</div>
+      <div class="step-body">
+        <div class="step-title">Deploy the AI Use Policy and instruction files</div>
+        <p>Distribute the signed AI Use Policy (Governance Starter Kit §01) to all staff with AI tool access. Require acknowledgment before account provisioning. This creates a documented consent chain.</p>
+        <ul>
+          <li>Add the company's AI governance instruction file to the shared repository baseline — a CLAUDE.md, .cursorrules, or equivalent depending on the sanctioned tool. The policy in this file should match the written AI Use Policy, not supplement or contradict it.</li>
+          <li>Protect the instruction file at Layer 2: set it read-only in the managed environment, or add it to a CI check that alerts if it is removed or modified. An instruction file the agent can delete is advisory, not a control.</li>
+          <li>Schedule a 30-minute developer kickoff (see §03 for the agenda and do/don't guide).</li>
+        </ul>
+        <div class="fill-region">
+          <div class="placeholder-text">{{INSTRUCTION_FILE_PATH}} — Enter the path to the instruction file that will be added to the client's repository. Example: "docs/ai-policy/CLAUDE.md" committed to the main branch with a CI lint check that fails if the file is absent.</div>
+        </div>
+      </div>
+    </div>
+
+    <div class="setup-step">
+      <div class="step-num">4</div>
+      <div class="step-body">
+        <div class="step-title">Run the first week of monitored usage and review the baseline</div>
+        <p>Let the team use the sanctioned tool normally for 5 business days. GLMPS will build the first real baseline under the governed setup. At the end of the week, review the alert center with the technical lead.</p>
+        <ul>
+          <li>Check: is the egress rate under the baseline threshold set in the Governance Starter Kit §02?</li>
+          <li>Check: are there any zone-crossing events (dev agents touching prod paths)?</li>
+          <li>Check: are there any quarantined injection flags that need review?</li>
+          <li>Tune the allowlist if there are recurring false positives from known-safe patterns.</li>
+          <li>Document the post-setup baseline: <span class="slot">{{POST_SETUP_BASELINE_NOTES}}</span>.</li>
+        </ul>
+      </div>
+    </div>
+
+    <div class="setup-step">
+      <div class="step-num">5</div>
+      <div class="step-body">
+        <div class="step-title">Wire the measurement loop and schedule the first quarterly review</div>
+        <p>Set a recurring calendar event for the quarterly AI posture review (see §04). Assign the owner for the review: <span class="slot">{{REVIEW_OWNER}}</span>. The first review compares against the Phase 1 baseline; subsequent reviews compare against the prior quarter.</p>
+        <ul>
+          <li>Confirm the metrics defined in §04 are being captured and can be pulled from GLMPS at review time.</li>
+          <li>If the retainer is in scope: schedule the monthly monitoring check-in for the same day each month.</li>
+        </ul>
+      </div>
+    </div>
+  </section>
+
+  <!-- ══════════════════════════════════════════════════════
+       SECTION 03 — TEAM ENABLEMENT GUIDE
+       ══════════════════════════════════════════════════════ -->
+  <section class="section">
+    <div class="section-num">03</div>
+    <h2><span class="bar"></span>Team Enablement Guide</h2>
+    <p class="section-lede">Hand this section directly to developers, engineering leads, and general staff. It covers how to use AI safely, where the sensitive data lives, and what the guardrails are watching for.</p>
+
+    <em class="guidance">Tailor the do/don't lists to the specific sanctioned tool before distribution. If the tool is Claude Code, the examples below are accurate. If it is Copilot or Cursor, update the instruction file names and CLI commands accordingly.</em>
+
+    <div class="audience-block">
+      <div class="audience-label dev">Developers</div>
+      <h3 style="margin-top:12px;">How to use AI safely with company code</h3>
+      <div class="do-dont-grid">
+        <div class="do-col do">
+          <div class="do-col-head">Safe practice</div>
+          <div class="do-col-body">
+            <ul>
+              <li>Use the company-provisioned <span class="slot">{{TOOL_NAME}}</span> account, accessed through your company SSO login. No personal accounts for work.</li>
+              <li>Paste code from internal, non-PII repositories freely — the vendor contract covers this data classification.</li>
+              <li>Review AI-generated code before committing, exactly as you would review a colleague's code. The AI makes mistakes. The PR reviewer will expect the same standard regardless of authorship.</li>
+              <li>Use AI to generate test cases, draft documentation, explain unfamiliar code, and stub out boilerplate — these are the highest-leverage, lowest-risk uses.</li>
+              <li>Flag unusual AI behavior to <span class="slot">{{INCIDENT_CONTACT}}</span> — if the AI appears to have "remembered" something it shouldn't, or suggests something that looks like it came from outside your context window, report it.</li>
+              <li>When in doubt about whether something is safe to paste, ask <span class="slot">{{AI_POLICY_CONTACT}}</span> rather than guessing.</li>
+            </ul>
+          </div>
+        </div>
+        <div class="do-col dont">
+          <div class="do-col-head">What to avoid</div>
+          <div class="do-col-body">
+            <ul>
+              <li>Do not paste API keys, database passwords, private keys, or any production credential into any AI tool — including the sanctioned one. Use a secret manager instead.</li>
+              <li>Do not use your personal ChatGPT, Claude.ai, or Copilot account for anything involving company code or data. The company account has a no-train clause; your personal account does not.</li>
+              <li>Do not commit AI-generated code you haven't read. The guardrail is your review, not the AI's judgment.</li>
+              <li>Do not install new AI tools or plugins into your IDE without approval from <span class="slot">{{APPROVAL_AUTHORITY}}</span>. New tools appear in the GLMPS session map and are flagged.</li>
+              <li>Do not give the AI context it doesn't need — paste the relevant function or file, not the entire repository with credentials.</li>
+              <li>Do not share AI-generated client deliverables without disclosure if your client relationship requires it.</li>
+            </ul>
+          </div>
+        </div>
+      </div>
+    </div>
+
+    <div class="audience-block">
+      <div class="audience-label lead">Engineering leads and team leads</div>
+      <h3 style="margin-top:12px;">Your role in AI governance</h3>
+      <p>As a team lead, you are the first line of detection for AI misuse — not because you are policing your team, but because you are the person who reviews the code, sets the norms, and sets the example.</p>
+      <ul>
+        <li><strong>Review AI-co-authored code with the same rigor as human-authored code.</strong> Do not approve a PR faster because the AI wrote it or because it "looks right at a glance." AI outputs fail in specific, predictable ways: plausible-looking but subtly wrong logic, hallucinated library calls, security antipatterns that pass surface review.</li>
+        <li><strong>Check the GLMPS alert center weekly</strong> (or delegate this to a rotation). Alerts that go unreviewed for more than <span class="slot">{{ALERT_REVIEW_SLA}}</span> are escalated to <span class="slot">{{ESCALATION_CONTACT}}</span>.</li>
+        <li><strong>Set the norm on personal accounts explicitly and early.</strong> If you are still using a personal AI account for work, you are signalling that the policy doesn't apply to seniors. It applies to everyone.</li>
+        <li><strong>When you see a teammate using an unsanctioned tool, surface it.</strong> The process is: report to <span class="slot">{{INCIDENT_CONTACT}}</span>, not a public callout. The goal is to get the person onto the sanctioned path, not to discipline them.</li>
+      </ul>
+    </div>
+
+    <div class="audience-block">
+      <div class="audience-label general">All staff</div>
+      <h3 style="margin-top:12px;">AI tools and company data — the short version</h3>
+      <p>You may use the company-provisioned AI tool (<span class="slot">{{TOOL_NAME}}</span>) for work. You may not use personal AI accounts for work. The reasons:</p>
+      <ul>
+        <li>When you use the company account, the vendor has agreed that your data will not be used to train their model. When you use a personal account, there is no such agreement.</li>
+        <li>The company account is monitored. If something goes wrong, we can investigate. A personal account is invisible to us.</li>
+        <li>If you are not sure whether something is okay to put into an AI tool, the rule is: would you put this in an email to a vendor? If not, don't put it in the AI tool either.</li>
+      </ul>
+      <p>Questions go to <span class="slot">{{AI_POLICY_CONTACT}}</span>. Incidents (accidental pastes of sensitive data) go to <span class="slot">{{INCIDENT_CONTACT}}</span> within <span class="slot">{{REPORTING_WINDOW}}</span>.</p>
+    </div>
+
+    <h3>Where the sensitive data lives at <span class="slot">{{CLIENT_NAME}}</span></h3>
+    <p>This section is specific to the client's environment. It tells developers which data to handle with extra care when using AI tools. Populate it from the Phase 1 assessment findings.</p>
+    <em class="guidance">List the actual sensitive data types and locations found during the assessment — database connection strings in .env files, PII in the CRM schema, PHI in the claims pipeline, API keys in CI config, etc. Be specific. Generic lists get ignored.</em>
+
+    <div class="sensitive-box">
+      <div class="sensitive-box-title">Do not paste into AI tools — keep these out of prompts and context windows</div>
+      <ul>
+        <li><span class="slot">{{SENSITIVE_DATA_1}}</span> — <span class="slot">{{LOCATION_1}}</span></li>
+        <li><span class="slot">{{SENSITIVE_DATA_2}}</span> — <span class="slot">{{LOCATION_2}}</span></li>
+        <li><span class="slot">{{SENSITIVE_DATA_3}}</span> — <span class="slot">{{LOCATION_3}}</span></li>
+        <li><span class="slot">{{SENSITIVE_DATA_4}}</span> — <span class="slot">{{LOCATION_4}}</span></li>
+        <li>Any credential file: .env, ~/.aws/credentials, service account key JSON files, API key environment variables</li>
+        <li>Any file in the paths flagged as prod-zone in GLMPS: <span class="slot">{{PROD_ZONE_PATHS}}</span></li>
+      </ul>
+    </div>
+  </section>
+
+  <!-- ══════════════════════════════════════════════════════
+       SECTION 04 — MEASUREMENT PLAN
+       ══════════════════════════════════════════════════════ -->
+  <section class="section">
+    <div class="section-num">04</div>
+    <h2><span class="bar"></span>Measurement Plan</h2>
+    <p class="section-lede">Governance without measurement is a policy document. This section defines what to track, at what cadence, and how to know if the engagement is working. Metrics map directly to the four-phase loop.</p>
+
+    <div class="loop-visual" aria-label="Four-phase measurement loop: Assess, Govern, Enable, Measure">
+      <div class="loop-node assess">
+        <div class="loop-node-label">Phase 1</div>
+        <div class="loop-node-name">Assess</div>
+      </div>
+      <div class="loop-arrow" aria-hidden="true">&#8594;</div>
+      <div class="loop-node govern">
+        <div class="loop-node-label">Phase 2</div>
+        <div class="loop-node-name">Govern</div>
+      </div>
+      <div class="loop-arrow" aria-hidden="true">&#8594;</div>
+      <div class="loop-node enable">
+        <div class="loop-node-label">Phase 3</div>
+        <div class="loop-node-name">Enable</div>
+      </div>
+      <div class="loop-arrow" aria-hidden="true">&#8594;</div>
+      <div class="loop-node measure">
+        <div class="loop-node-label">Phase 4</div>
+        <div class="loop-node-name">Measure</div>
+      </div>
+      <div class="loop-arrow" aria-hidden="true">&#8635;</div>
+    </div>
+
+    <div class="phase-block">
+      <div class="phase-header">
+        <span class="phase-badge assess">Assess</span>
+        <span class="phase-title">What the baseline established</span>
+        <span class="phase-desc">One-time; establishes comparison point</span>
+      </div>
+      <table class="metric-table">
+        <thead>
+          <tr>
+            <th style="width:28%">Metric</th>
+            <th style="width:20%">Baseline value</th>
+            <th style="width:20%">Method</th>
+            <th>What it tells you</th>
+          </tr>
+        </thead>
+        <tbody>
+          <tr>
+            <td><span class="metric-name">AI tools in active use</span><div class="metric-why">Total count, including shadow/unsanctioned</div></td>
+            <td><span class="slot">{{BASELINE_TOOL_COUNT}}</span> tools</td>
+            <td>GLMPS session map + self-reported survey</td>
+            <td>The true surface area — often 2–3x what IT believes</td>
+          </tr>
+          <tr>
+            <td><span class="metric-name">Egress events / day</span><div class="metric-why">Flags matching sensitive-data patterns</div></td>
+            <td><span class="slot">{{BASELINE_EGRESS}}</span> / day</td>
+            <td>GLMPS egress detector, first 3–5 days</td>
+            <td>Data-leak risk at the point of use; the number governance must move</td>
+          </tr>
+          <tr>
+            <td><span class="metric-name">Shadow AI usage rate</span><div class="metric-why">Sessions from unmanaged / personal accounts</div></td>
+            <td><span class="slot">{{BASELINE_SHADOW_PCT}}</span>% of sessions</td>
+            <td>GLMPS capture-parity matrix; accounts not matching company domain</td>
+            <td>The governance gap most likely to cause a data breach</td>
+          </tr>
+          <tr>
+            <td><span class="metric-name">Standards gap count</span><div class="metric-why">GAP items in the standards gap-map</div></td>
+            <td><span class="slot">{{BASELINE_GAP_COUNT}}</span> gaps</td>
+            <td>Governance Starter Kit §03</td>
+            <td>The remediation backlog; progress tracked in the quarterly review</td>
+          </tr>
+        </tbody>
+      </table>
+    </div>
+
+    <div class="phase-block">
+      <div class="phase-header">
+        <span class="phase-badge govern">Govern</span>
+        <span class="phase-title">What Phase 2 must move</span>
+        <span class="phase-desc">Measured at Phase 2 close (approx. <span class="slot">{{PHASE2_CLOSE_DATE}}</span>)</span>
+      </div>
+      <table class="metric-table">
+        <thead>
+          <tr>
+            <th style="width:28%">Metric</th>
+            <th style="width:20%">Target</th>
+            <th style="width:20%">Actual</th>
+            <th>Notes</th>
+          </tr>
+        </thead>
+        <tbody>
+          <tr>
+            <td><span class="metric-name">Guardrail coverage</span><div class="metric-why">% of checklist items checked</div></td>
+            <td>100% or documented N/A</td>
+            <td><span class="slot">{{ACTUAL}}</span></td>
+            <td class="fill-cell"></td>
+          </tr>
+          <tr>
+            <td><span class="metric-name">Policy distributed and acknowledged</span><div class="metric-why">% of staff with AI tool access who have acknowledged the AI Use Policy</div></td>
+            <td>100%</td>
+            <td><span class="slot">{{ACTUAL}}</span></td>
+            <td class="fill-cell"></td>
+          </tr>
+          <tr>
+            <td><span class="metric-name">Vendor contracts updated</span><div class="metric-why">No-train clause confirmed per sanctioned tool</div></td>
+            <td>All sanctioned tools</td>
+            <td><span class="slot">{{ACTUAL}}</span></td>
+            <td class="fill-cell"></td>
+          </tr>
+          <tr>
+            <td><span class="metric-name">Critical remediations closed</span><div class="metric-why">Critical-severity items from Remediation List §05</div></td>
+            <td>100% of Critical items</td>
+            <td><span class="slot">{{ACTUAL}}</span></td>
+            <td class="fill-cell"></td>
+          </tr>
+        </tbody>
+      </table>
+    </div>
+
+    <div class="phase-block">
+      <div class="phase-header">
+        <span class="phase-badge enable">Enable</span>
+        <span class="phase-title">What Phase 3 must move</span>
+        <span class="phase-desc">Measured 4 weeks after sanctioned tool launch</span>
+      </div>
+      <table class="metric-table">
+        <thead>
+          <tr>
+            <th style="width:28%">Metric</th>
+            <th style="width:20%">Target</th>
+            <th style="width:20%">Actual</th>
+            <th>Notes</th>
+          </tr>
+        </thead>
+        <tbody>
+          <tr>
+            <td><span class="metric-name">Sanctioned-tool adoption</span><div class="metric-why">% of developers using the company-provisioned tool at least weekly</div></td>
+            <td><span class="slot">{{ADOPTION_TARGET}}</span>%</td>
+            <td><span class="slot">{{ACTUAL}}</span></td>
+            <td class="fill-cell"></td>
+          </tr>
+          <tr>
+            <td><span class="metric-name">Shadow AI reduction</span><div class="metric-why">% point reduction in sessions from unmanaged accounts vs. baseline</div></td>
+            <td>&gt; 50% reduction</td>
+            <td><span class="slot">{{ACTUAL}}</span></td>
+            <td class="fill-cell"></td>
+          </tr>
+          <tr>
+            <td><span class="metric-name">Egress rate (post-governance)</span><div class="metric-why">Events/day under the governed setup vs. baseline</div></td>
+            <td>&lt; baseline rate</td>
+            <td><span class="slot">{{ACTUAL}}</span></td>
+            <td class="fill-cell"></td>
+          </tr>
+          <tr>
+            <td><span class="metric-name">Developer enablement sessions completed</span><div class="metric-why">% of developers who attended or watched the kickoff</div></td>
+            <td>100%</td>
+            <td><span class="slot">{{ACTUAL}}</span></td>
+            <td class="fill-cell"></td>
+          </tr>
+        </tbody>
+      </table>
+    </div>
+
+    <div class="phase-block">
+      <div class="phase-header">
+        <span class="phase-badge measure">Measure</span>
+        <span class="phase-title">Ongoing metrics — quarterly posture review</span>
+        <span class="phase-desc">Reviewed each quarter; first review <span class="slot">{{FIRST_REVIEW_DATE}}</span></span>
+      </div>
+      <table class="metric-table">
+        <thead>
+          <tr>
+            <th style="width:28%">Metric</th>
+            <th style="width:20%">Cadence</th>
+            <th style="width:22%">Owner</th>
+            <th>What triggers action</th>
+          </tr>
+        </thead>
+        <tbody>
+          <tr>
+            <td><span class="metric-name">Egress events / day (trend)</span><div class="metric-why">Rolling 30-day average vs. prior quarter</div></td>
+            <td>Monthly check; quarterly review</td>
+            <td><span class="slot">{{METRIC_OWNER}}</span></td>
+            <td>Any quarter-over-quarter increase &gt;20% triggers a root-cause review</td>
+          </tr>
+          <tr>
+            <td><span class="metric-name">AI-related incidents</span><div class="metric-why">Reported incidents involving AI tool misuse, data exposure, or anomalous behavior</div></td>
+            <td>Real-time (alert center) + quarterly count</td>
+            <td><span class="slot">{{METRIC_OWNER}}</span></td>
+            <td>Any incident triggers immediate post-mortem; recurrence triggers policy update</td>
+          </tr>
+          <tr>
+            <td><span class="metric-name">Sanctioned tool adoption rate</span><div class="metric-why">% of AI sessions from company-provisioned accounts</div></td>
+            <td>Monthly</td>
+            <td><span class="slot">{{METRIC_OWNER}}</span></td>
+            <td>Drop below <span class="slot">{{ADOPTION_FLOOR}}</span>% triggers team check-in to surface blockers</td>
+          </tr>
+          <tr>
+            <td><span class="metric-name">Guard efficacy</span><div class="metric-why">For each active guard: alert rate, false-positive rate, any bypass events</div></td>
+            <td>Quarterly</td>
+            <td><span class="slot">{{METRIC_OWNER}}</span></td>
+            <td>Bypass events or rising false-positive rate triggers tuning; zero alerts for 90 days may indicate guard is misconfigured, not that risk is zero</td>
+          </tr>
+          <tr>
+            <td><span class="metric-name">New tools in session map</span><div class="metric-why">Any AI tool appearing in GLMPS that is not on the sanctioned list</div></td>
+            <td>Monthly scan; real-time alert</td>
+            <td><span class="slot">{{METRIC_OWNER}}</span></td>
+            <td>Each new tool triggers review: sanctioned, prohibited, or requires evaluation</td>
+          </tr>
+          <tr>
+            <td><span class="metric-name">Open remediations (by severity)</span><div class="metric-why">Count of open items in the remediation list past their target date</div></td>
+            <td>Quarterly</td>
+            <td><span class="slot">{{METRIC_OWNER}}</span></td>
+            <td>Any Critical/High item past target date escalates to <span class="slot">{{ESCALATION_CONTACT}}</span></td>
+          </tr>
+        </tbody>
+      </table>
+    </div>
+
+    <p style="margin-top:4px;color:var(--muted);font-size:13.5px;">The measurement plan feeds directly back into the next Assess phase. At each quarterly review, the updated metrics become the new baseline, and the remediation list is repriorized accordingly. The loop is the mechanism by which governance remains current rather than becoming a one-time checkbox exercise.</p>
+  </section>
+
+  <footer class="doc-footer">
+    <div>GLMPS AI Readiness &amp; Governance Audit &middot; AI Adoption Playbook &middot; <span class="slot">{{CLIENT_NAME}}</span> &middot; Prepared <span class="slot">{{DATE}}</span></div>
+    <div>Confidential — prepared for <span class="slot">{{CLIENT_NAME}}</span> only. Do not distribute without written permission from <span class="slot">{{CONSULTANT_NAME}}</span>.</div>
+  </footer>
+
+</div>
+</body>
+</html>

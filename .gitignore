@@ -1,0 +1,63 @@
+node_modules/
+companion/dist/
+companion/*.vsix
+.superpowers/
+
+# Local runtime config (copy config.example.json -> config.json and edit)
+config.json
+
+# Local Claude config (machine-specific; may carry absolute paths) — never publish
+.claude/settings.local.json
+.claude/skills/
+.claude/hooks/
+
+# OS cruft
+.DS_Store
+Thumbs.db
+
+# Logs
+*.log
+
+# Env files
+.env
+.env.*
+
+# SCUT Slack credentials (bot/app tokens + signing secret) - never commit
+scut.json
+scut-creds*.json
+# SCUT runtime settings (bob-mode flag; per-machine state)
+scut-settings.json
+
+# Statusline tap backups created by the installer
+*.mc-backup
+
+# Local scratch that carries sample/personal data — never publish
+/mockups/
+_shot.png
+
+# Generated storm-research briefings (carry personal data) — never publish
+storm-reports/
+
+# Per-machine skill mirrors for other agent harnesses (like .claude/skills/)
+.agent/
+.gemini/
+
+# Editor-local config
+.vscode/
+
+# graphify knowledge-graph build artifacts
+graphify-out/
+
+# Python bytecode caches
+__pycache__/
+*.pyc
+
+# GLMPS desktop shell: local install and build output (D26)
+apps/shell/node_modules/
+apps/shell/dist/
+apps/shell/kernel-stage/
+
+# GLMPS client tap: local install, Node download cache and build output
+apps/tap/node_modules/
+apps/tap/.cache/
+apps/tap/dist/

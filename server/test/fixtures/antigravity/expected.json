@@ -1,0 +1,41 @@
+{
+  "events": [
+    {
+      "kind": "tool",
+      "lane": "feed",
+      "tool": "user",
+      "path": null,
+      "ts": 1751400000000,
+      "sessionId": "golden",
+      "label": "User: Refactor the config loader"
+    },
+    {
+      "tool": "view_file",
+      "ts": 1751400001000,
+      "sessionId": "golden",
+      "path": "D:\\proj\\CLAUDE.md",
+      "kind": "context-file",
+      "lane": "context",
+      "label": "D:\\proj\\CLAUDE.md",
+      "op": "read"
+    },
+    {
+      "tool": "write_to_file",
+      "ts": 1751400002000,
+      "sessionId": "golden",
+      "path": "D:\\proj\\config.js",
+      "kind": "file-edit",
+      "lane": "feed",
+      "label": "D:\\proj\\config.js"
+    },
+    {
+      "tool": "run_command",
+      "ts": 1751400003000,
+      "sessionId": "golden",
+      "path": null,
+      "kind": "command",
+      "lane": "feed",
+      "label": "Run the test suite"
+    }
+  ]
+}

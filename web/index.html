@@ -1,0 +1,36 @@
+<!DOCTYPE html>
+<html lang="en"><head>
+  <meta charset="utf-8">
+  <meta name="viewport" content="width=device-width, initial-scale=1">
+  <title>GLMPS</title>
+  <link rel="icon" type="image/svg+xml" href="/favicon.svg">
+  <link rel="stylesheet" href="/styles.css">
+  <link rel="stylesheet" href="/observability/alerts.css">
+</head><body>
+  <a class="skip-link" href="#main-content">Skip to content</a>
+  <header id="topbar">
+    <span class="brand">
+      <img class="brand-mark" src="/glmps-mark.svg" alt="" width="24" height="24">
+      <span class="brand-text">GLMPS</span>
+      <span class="brand-version" id="brand-version" hidden></span>
+    </span>
+    <nav aria-label="Pillars">
+      <a class="lens-link" href="/surface" data-lens="surface">Surface</a>
+      <a class="lens-link" href="/work" data-lens="work">Work</a>
+      <a class="lens-link" href="/learning" data-lens="learning">Evolution</a>
+      <a class="lens-link" href="/knowledge" data-lens="knowledge">Knowledge</a>
+    </nav>
+    <div id="topbar-search"></div>
+    <div id="topbar-slot"></div>
+    <div id="topbar-tools">
+      <span id="topstats"></span>
+    </div>
+  </header>
+  <main id="main-content" tabindex="-1">
+    <div id="lens-root"></div>
+  </main>
+  <div id="huddle-dock" class="dock-root"></div>
+  <div id="editor-pane" class="hidden"></div>
+  <div id="toast" class="hidden" role="status" aria-live="polite"></div>
+  <script type="module" src="/app.js"></script>
+</body></html>

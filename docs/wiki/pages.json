@@ -1,0 +1,305 @@
+{
+  "groups": [
+    { "id": "documentation", "title": "Documentation", "subgroups": ["User guide", "Admin guide"] },
+    { "id": "concepts", "title": "Concepts" },
+    { "id": "code", "title": "Code reference" }
+  ],
+  "pages": [
+    {
+      "slug": "getting-started", "title": "Getting started", "group": "documentation", "subgroup": "User guide", "kind": "guide", "order": 1,
+      "angle": "First hour with GLMPS: what it is in two sentences, how to open it (the desktop app or http://127.0.0.1:8123), the top bar (the four lenses, the live count, the critical count, usage, alerts), and where to go next for each common job. Route the reader to the lens pages and the admin guide.",
+      "sources": [
+        { "glob": "README.md", "lines": 120 },
+        { "glob": "web/index.html", "lines": 60 },
+        { "glob": "web/shared/lens-router.js", "lines": 60 },
+        { "glob": "scripts/setup/glmps-setup.ps1", "lines": 40 }
+      ],
+      "related": ["surface-guide", "learning-guide", "work-guide", "wiki-guide", "install-service"]
+    },
+    {
+      "slug": "surface-guide", "title": "Use the Surface lens", "group": "documentation", "subgroup": "User guide", "kind": "guide", "order": 2,
+      "angle": "Surface is the one-page picture of everything the agents are touching: the globe or map, the layers you can toggle, the ledger tables, the panels and the search. Explain how to read it at a glance and how to drill from a dot to a session.",
+      "sources": [
+        { "glob": "web/surface/lens.js", "lines": 80 },
+        { "glob": "web/surface/layers.js", "lines": 50 },
+        { "glob": "web/surface/ledger.js", "lines": 50 },
+        { "glob": "web/surface/panels.js", "lines": 50 },
+        { "glob": "web/shared/search.js", "lines": 40 }
+      ],
+      "related": ["lenses", "session-guide"]
+    },
+    {
+      "slug": "learning-guide", "title": "Use the Evolution lens", "group": "documentation", "subgroup": "User guide", "kind": "guide", "order": 3,
+      "angle": "The Evolution lens (the top bar label; its internal view name is learning) shows what the system has learned and whether it helped: the outcome metrics, the proposals waiting for a decision, and how to accept or reject one. Say what each number means.",
+      "sources": [
+        { "glob": "web/learning/lens.js", "lines": 120 },
+        { "glob": "web/learning/outcome-metrics.js", "lines": 60 }
+      ],
+      "related": ["learning-loop", "memory"]
+    },
+    {
+      "slug": "work-guide", "title": "Use the Work lens", "group": "documentation", "subgroup": "User guide", "kind": "guide", "order": 4,
+      "angle": "Work is where the jobs are: the Fleet stage board, the History tab of ended sessions (the latest eight marked) and the board of cards. Explain how to see what every agent is doing now and what finished.",
+      "sources": [
+        { "glob": "web/work/lens.js", "lines": 100 },
+        { "glob": "web/observability/history.js", "lines": 40 },
+        { "glob": "web/overview/stage-board.js", "lines": 60 }
+      ],
+      "related": ["board-guide", "session-guide"]
+    },
+    {
+      "slug": "wiki-guide", "title": "Use the wiki", "group": "documentation", "subgroup": "User guide", "kind": "guide", "order": 5,
+      "angle": "How to find a page (the three groups, search), switch project, ask the wiki a question with Ask, and read the at-a-glance strip (built at commit, sources). Say that an installed GLMPS opens with the wiki snapshot that shipped with that version, that a kernel running its own wiki loop rebuilds it when the code changes and rewrites only the pages whose sources changed, and that other projects build on demand with Generate.",
+      "sources": [
+        { "glob": "web/observability/wiki.js", "lines": 120 },
+        { "glob": "server/lib/observability/wiki-ask.js", "lines": 40 },
+        { "glob": "server/lib/observability/wiki-loop.js", "lines": 30 }
+      ],
+      "related": ["loops"]
+    },
+    {
+      "slug": "session-guide", "title": "Read a session", "group": "documentation", "subgroup": "User guide", "kind": "guide", "order": 6,
+      "angle": "The Session page every list opens: the header with verdicts and cost, what the agent touched, what it learned, what it did, and the live versus ended states. How to get there and what to look at first.",
+      "sources": [
+        { "glob": "web/shared/session-page.js", "lines": 160 }
+      ],
+      "related": ["surface-guide", "work-guide"]
+    },
+    {
+      "slug": "huddle-guide", "title": "Run a huddle", "group": "documentation", "subgroup": "User guide", "kind": "guide", "order": 7,
+      "angle": "The huddle dock: start one, talk or type, name a specialist first, interrupt, decide, file the outcome as a card, close. Which models take part and what a huddle costs is configuration, so link the configuration page.",
+      "sources": [
+        { "glob": "web/shared/huddle.js", "lines": 100 },
+        { "glob": "web/shared/huddle-voice.js", "lines": 40 },
+        { "glob": "web/huddle/dock.js", "lines": 60 },
+        { "glob": "server/lib/huddle/*.js", "lines": 30, "max": 4 }
+      ],
+      "related": ["config-reference"]
+    },
+    {
+      "slug": "board-guide", "title": "Work with the board and cards", "group": "documentation", "subgroup": "User guide", "kind": "guide", "order": 8,
+      "angle": "The board: create a card, read its drawer (prompt, acceptance criteria, devlog, gate), move it, queue it for the runner, and what the labels mean (agent:in-progress, agent:done, agent:backlog).",
+      "sources": [
+        { "glob": "web/orchestration/board.js", "lines": 80 },
+        { "glob": "web/orchestration/board-drawer.js", "lines": 80 },
+        { "glob": "server/lib/orchestration/backlog-store.js", "lines": 60 },
+        { "glob": "server/lib/orchestration/queue-runner.js", "lines": 40 }
+      ],
+      "related": ["slack-guide", "merge-queue"]
+    },
+    {
+      "slug": "slack-guide", "title": "Work through a Slack thread", "group": "documentation", "subgroup": "User guide", "kind": "guide", "order": 9,
+      "angle": "Filing work from Slack and following it there: a message becomes a card, the agent's devlog and gate verdict arrive in the thread, a parked agent waits for your reply, and replying wakes it. What the posts look like and how to answer a decision request.",
+      "sources": [
+        { "glob": "server/lib/scut/park.js", "lines": 60 },
+        { "glob": "server/lib/scut/progress.js", "lines": 40 },
+        { "glob": "server/lib/scut/altitude.js", "lines": 40 },
+        { "glob": "server/lib/scut/ticket-channels.js", "lines": 80 },
+        { "glob": "server/lib/scut/channel-map.js", "lines": 40 },
+        { "glob": "scripts/scut-setup.mjs", "lines": 40 }
+      ],
+      "related": ["board-guide"]
+    },
+    {
+      "slug": "settings-guide", "title": "Change settings and theme", "group": "documentation", "subgroup": "User guide", "kind": "guide", "order": 10,
+      "angle": "The Settings panel: theme (light, dark, follow the system), and every other setting it exposes, what each one changes, and which settings live in config.json instead (link the configuration page).",
+      "sources": [
+        { "glob": "web/shared/settings.js", "lines": 160 },
+        { "glob": "server/lib/scut/settings.js", "lines": 40 }
+      ],
+      "related": ["config-reference"]
+    },
+    {
+      "slug": "install-service", "title": "Install and run GLMPS", "group": "documentation", "subgroup": "Admin guide", "kind": "admin", "order": 1,
+      "angle": "For a customer who installed GLMPS with the installer: what the installer puts on the machine, the first-run setup wizard (what it checks, what it installs only after a yes, the optional graphify and Slack steps), starting and restarting GLMPS, the requirements, and where the state and logs live. Describe only what the sources show. Do not describe a Windows service install, an elevated terminal or the operator's own deployment.",
+      "sources": [
+        { "glob": "README.md", "lines": 200 },
+        { "glob": "scripts/setup/glmps-setup.ps1", "lines": 60 },
+        { "glob": "scripts/setup/glmps-setup.sh", "lines": 80 },
+        { "glob": "scripts/setup/deps-plan.mjs", "lines": 20 },
+        { "glob": "server/lib/kernel/service-mode.js", "lines": 40 },
+        { "glob": "package.json", "lines": 30 }
+      ],
+      "related": ["config-reference", "troubleshooting"]
+    },
+    {
+      "slug": "config-reference", "title": "Configure GLMPS", "group": "documentation", "subgroup": "Admin guide", "kind": "admin", "order": 2,
+      "angle": "config.json: where it lives (the repository root, git-ignored), that it merges over the shipped defaults (shallow, with named keys deep-merged), that changes apply on restart, and the settings an operator changes most (port, host, accessToken, wikiLoop, huddle, scut, nightly). The full key list is in the generated reference table on this page; do not repeat it.",
+      "facts": ["config"],
+      "sources": [
+        { "glob": "server/lib/config-defaults.js", "lines": 200 },
+        { "glob": "config.example.json", "lines": 80 }
+      ],
+      "related": ["access", "loops"]
+    },
+    {
+      "slug": "access", "title": "Access tokens and remote access", "group": "documentation", "subgroup": "Admin guide", "kind": "admin", "order": 3,
+      "angle": "Who can reach GLMPS: loopback only by default, the access token for anything else, the read-only wiki ticket, the plaintext remote-bind acknowledgement and why it exists. State the risk of binding beyond 127.0.0.1 plainly.",
+      "sources": [
+        { "glob": "server/lib/governance/access-guard.js", "lines": 140 }
+      ],
+      "related": ["config-reference"]
+    },
+    {
+      "slug": "deploy", "title": "Deploy a change", "group": "documentation", "subgroup": "Admin guide", "kind": "admin", "order": 4,
+      "angle": "How merged work reaches a running GLMPS: the merge queue's merge, the optional auto-deploy rule (a deploy action configured per repository and base branch, run after a merge, a burst of merges collapsing into one deploy), and how a deploy is verified (the health check must name the commit just deployed and come from a process that started after the restart). Why the checkout a deploy updates must stay clean, and what a restart interrupts. Describe the feature, not any one deployment.",
+      "sources": [
+        { "glob": "server/lib/orchestration/auto-deploy.js", "lines": 60 },
+        { "glob": "server/lib/kernel/deploy-verify.js", "lines": 50 },
+        { "glob": "server/lib/kernel/prod-checkout.js", "lines": 40 },
+        { "glob": "server/lib/kernel/start-reason.js", "lines": 40 }
+      ],
+      "related": ["merge-queue", "upgrading"]
+    },
+    {
+      "slug": "loops", "title": "Loops and scheduled tasks", "group": "documentation", "subgroup": "Admin guide", "kind": "admin", "order": 5,
+      "angle": "Every loop the kernel runs and every Windows scheduled task, from the generated tables on this page: how to see their health (GET /api/loops), run one now, read a failure streak, and what the SLA means. Do not restate the tables.",
+      "facts": ["loops", "tasks"],
+      "sources": [
+        { "glob": "server/lib/loops/registry.js", "lines": 60 },
+        { "glob": "scripts/register-nightly-task.ps1", "lines": 40 },
+        { "glob": "server/lib/kernel/obligation-sweeper.js", "lines": 30 }
+      ],
+      "related": ["loops-obligations", "troubleshooting"]
+    },
+    {
+      "slug": "merge-queue", "title": "The merge queue and the runner", "group": "documentation", "subgroup": "Admin guide", "kind": "admin", "order": 6,
+      "angle": "Turning the runner on and off, what it launches and where (one worktree per card), how a merge request moves through the merge queue (requested, testing the pull request's affected tests, merging, merged, with bounced back to the author and held for a person as the exits, and the retry ceilings), the suite run on the base after a merge, and what to do when a merge request is rejected or the queue halts. Describe the feature as the code defines it, not any one deployment's settings.",
+      "sources": [
+        { "glob": "server/lib/orchestration/merge-queue.js", "lines": 60 },
+        { "glob": "server/lib/orchestration/merge-exec.js", "lines": 40 },
+        { "glob": "server/lib/orchestration/main-suite.js", "lines": 40 },
+        { "glob": "server/lib/orchestration/queue-runner.js", "lines": 60 },
+        { "glob": "server/lib/orchestration/runner-store.js", "lines": 40 }
+      ],
+      "related": ["deploy", "board-guide"]
+    },
+    {
+      "slug": "state-dir", "title": "Back up and restore", "group": "documentation", "subgroup": "Admin guide", "kind": "admin", "order": 7,
+      "angle": "The state directory: where it is, what each part holds, which environment variables move it (generated table), what to back up, how to restore, and what must never be copied between machines (tokens, keys).",
+      "facts": ["env"],
+      "sources": [
+        { "glob": "server/lib/paths.js", "lines": 200 },
+        { "glob": "server/lib/private-dirs.js", "lines": 40 }
+      ],
+      "related": ["install-service"]
+    },
+    {
+      "slug": "api-reference", "title": "HTTP API reference", "group": "documentation", "subgroup": "Admin guide", "kind": "admin", "order": 8,
+      "angle": "The HTTP API: base URL, that reads and writes need the access token from anywhere but loopback, JSON in and out, and the routes an operator scripts most (backlog, devlog, gate, loops, wiki). The complete route list is the generated table; do not restate it.",
+      "facts": ["routes"],
+      "sources": [
+        { "glob": "server/lib/http-json.js", "lines": 40 },
+        { "glob": "server/lib/governance/access-guard.js", "lines": 40 }
+      ],
+      "related": ["access"]
+    },
+    {
+      "slug": "troubleshooting", "title": "Troubleshooting", "group": "documentation", "subgroup": "Admin guide", "kind": "admin", "order": 9,
+      "angle": "The failures an installed GLMPS meets and the fix for each: the kernel is down or keeps restarting, a loop is failing, the wiki did not update, a merge request is stuck. For each: the symptom, how to confirm it (health check, crash records, why the kernel last started, the loop health route), the fix. Use only what the sources show.",
+      "sources": [
+        { "glob": "server/lib/kernel/healthz.js", "lines": 40 },
+        { "glob": "server/lib/kernel/crash-records.js", "lines": 40 },
+        { "glob": "server/lib/kernel/start-reason.js", "lines": 60 },
+        { "glob": "server/lib/kernel/boot-trace.js", "lines": 30 },
+        { "glob": "server/lib/loops/registry.js", "lines": 40 }
+      ],
+      "related": ["loops", "install-service"]
+    },
+    {
+      "slug": "upgrading", "title": "Upgrade GLMPS", "group": "documentation", "subgroup": "Admin guide", "kind": "admin", "order": 10,
+      "angle": "Taking a new version of an installed GLMPS: run the newer installer, what it keeps (the state directory) and what it replaces (the bundled kernel), what the first start seeds from the bundle only when the bundled copy is newer than the local one (the code map, the wiki, the starter memories), the state backups to rely on before and after, how to check the new version (health check), and how to roll back. Use only what the sources show.",
+      "sources": [
+        { "glob": "server/lib/observability/graph-ship-seed.js", "lines": 40 },
+        { "glob": "server/lib/observability/wiki-ship-seed.js", "lines": 40 },
+        { "glob": "server/lib/governance/memory-ship-seed.js", "lines": 40 },
+        { "glob": "server/lib/kernel/state-backup.js", "lines": 40 },
+        { "glob": "server/lib/kernel/healthz.js", "lines": 40 },
+        { "glob": "server/lib/kernel/start-reason.js", "lines": 30 }
+      ],
+      "related": ["deploy", "state-dir"]
+    },
+    {
+      "slug": "what-is-glmps", "title": "What GLMPS is", "group": "concepts", "kind": "concept", "order": 1,
+      "angle": "GLMPS 2.0 in one page. Open with the definition: GLMPS is a local control plane for coding agents. Explain the term: a control plane decides what work runs, watches it, checks results and enforces rules, while the data plane does the work; here the agent tools (Claude Code, Antigravity, Codex and the rest) are the data plane and GLMPS runs beside them on this computer. Then explain how GLMPS does each of its five jobs, with the concrete mechanism for each: watch (per-tool adapters read the session logs the tools already write, read-only), dispatch (board cards, filed in the dashboard or from Slack, launched by the queue runner into their own git worktree and branch), verify (gate verdicts against acceptance criteria, the merge queue testing the PR merged with its base, registered loops with a maker, a separate checker and a ceiling, obligations with due times that alert when missed), govern (Claude Code hooks installed through its own settings: stop and approval gates, the plan gate, the live-install guard, the done gate; intake poison scan and quarantine; other tools are watched, not steered) and learn (a recurring miss becomes a proposed guard that lands only on approval or the capped, probationary auto-approval path). Do not say GLMPS never instruments agents: it never proxies them, but it does install Claude Code hooks. Include a short 'What it is not' section: not a framework (an installed application, not a library), not an in-process orchestrator like LangGraph or CrewAI (it hands whole cards to agents and checks the result), not an operating system (it supervises runtimes it does not own). Name the four lenses exactly by their top bar labels: Surface, Work, Evolution and Knowledge; never call them Learning or Wiki. Also cover the kernel service and the desktop app briefly. This is the 2.0 runtime; do not describe the retired 1.0 GLMPS dashboard.",
+      "sources": [
+        { "glob": "README.md", "lines": 160 },
+        { "glob": "scripts/install-hooks-lib.mjs", "lines": 65 },
+        { "glob": "web/app.js", "lines": 40 },
+        { "glob": "server/lib/kernel/service-mode.js", "lines": 40 },
+        { "glob": "web/shared/view-registry.js", "lines": 40 }
+      ],
+      "related": ["kernel", "lenses", "getting-started"]
+    },
+    {
+      "slug": "kernel", "title": "The kernel", "group": "concepts", "kind": "concept", "order": 2,
+      "angle": "The kernel is the GLMPS server: what it owns (loops, obligations, the board, the wiki), service mode versus a dev server, health checks, crash records, and how paired clients connect to it. Describe only what the sources show; do not describe how any one machine installs or supervises it.",
+      "sources": [
+        { "glob": "server/lib/kernel/service-mode.js", "lines": 40 },
+        { "glob": "server/lib/kernel/healthz.js", "lines": 40 },
+        { "glob": "server/lib/kernel/chain.js", "lines": 40 },
+        { "glob": "server/lib/kernel/clients.js", "lines": 40 }
+      ],
+      "related": ["loops-obligations", "install-service"]
+    },
+    {
+      "slug": "loops-obligations", "title": "Loops and obligations", "group": "concepts", "kind": "concept", "order": 3,
+      "angle": "The loop contract: a maker, a different actor as checker, a ceiling on attempts, model calls and time, an SLA, backoff, and an obligation that makes a missed job visible. Use the wiki loop as the worked example.",
+      "sources": [
+        { "glob": "server/lib/loops/registry.js", "lines": 80 },
+        { "glob": "server/lib/kernel/obligations.js", "lines": 50 },
+        { "glob": "server/lib/observability/wiki-loop.js", "lines": 30 }
+      ],
+      "related": ["loops", "kernel"]
+    },
+    {
+      "slug": "lenses", "title": "The four lenses", "group": "concepts", "kind": "concept", "order": 4,
+      "angle": "Why the UI is four lenses (Surface, Learning, Work, Wiki): the touching, doing and learning rule, what each lens answers, and how deep links and the session page tie them together.",
+      "sources": [
+        { "glob": "web/shared/lens-router.js", "lines": 80 },
+        { "glob": "web/shared/view-registry.js", "lines": 60 }
+      ],
+      "related": ["surface-guide", "learning-guide", "work-guide", "wiki-guide"]
+    },
+    {
+      "slug": "learning-loop", "title": "The learning loop", "group": "concepts", "kind": "concept", "order": 5,
+      "angle": "How GLMPS turns a miss into a lasting fix: adopt, measure, keep or retire, applied to guards, memory facts and skills, recorded in one ledger. The pillar is called Evolution in the UI and lives in the evaluation directory in code.",
+      "sources": [
+        { "glob": "server/lib/evaluation/*.js", "lines": 30, "max": 8 },
+        { "glob": "docs/offering/guardrail-policy-library.md", "lines": 60 }
+      ],
+      "related": ["memory", "learning-guide"]
+    },
+    {
+      "slug": "memory", "title": "Memory", "group": "concepts", "kind": "concept", "order": 6,
+      "angle": "What GLMPS remembers between sessions and how a fact gets in: admission, distillation, consolidation, eviction and the working set. What an operator can see and change.",
+      "sources": [
+        { "glob": "server/lib/evaluation/memory-*.js", "lines": 25, "max": 6 }
+      ],
+      "related": ["learning-loop"]
+    },
+    {
+      "slug": "governance", "title": "Governance and safety", "group": "concepts", "kind": "concept", "order": 7,
+      "angle": "What stops an agent doing damage: write-path and live-install guards, poison and injection scans, push leases on integration branches, role permissions, and the access guard. What each one blocks and how a block shows up.",
+      "sources": [
+        { "glob": "docs/offering/ai-readiness-governance-audit.md", "lines": 60 },
+        { "glob": "server/lib/governance/live-install-guard.js", "lines": 30 },
+        { "glob": "server/lib/governance/write-path-guard.js", "lines": 30 },
+        { "glob": "server/lib/governance/push-lease.js", "lines": 30 },
+        { "glob": "server/lib/governance/poison-scan.js", "lines": 30 },
+        { "glob": "server/lib/governance/role-permissions.js", "lines": 30 }
+      ],
+      "related": ["access", "merge-queue"]
+    },
+    {
+      "slug": "agents-skills", "title": "Agents and skills", "group": "concepts", "kind": "concept", "order": 8,
+      "angle": "Subagents and skills as GLMPS sees them: how a card is routed to an agent type, how agents and skills are captured and counted, and how an unused or missed capability is surfaced.",
+      "sources": [
+        { "glob": "server/lib/observability/agent-fleet.js", "lines": 50 },
+        { "glob": "server/lib/orchestration/routing-log.js", "lines": 40 },
+        { "glob": "assets/agents/*.md", "lines": 12, "max": 6 }
+      ],
+      "related": ["board-guide", "learning-loop"]
+    }
+  ]
+}

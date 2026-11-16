@@ -1,0 +1,39 @@
+/* apps/shell/renderer/offline.css
+   The pane's one moment of personality, and it has to read in two seconds:
+   a left-aligned column in the upper third, the brand mark shown visibly
+   "off" (rust G, dimmed lens ring), one clear headline, then the facts and
+   the way out. Nothing moves except the retry countdown, so
+   prefers-reduced-motion has nothing to turn off. */
+:root {
+  --bg: #0a0b0d;
+  --fg: #afdde5;
+  /* Raised from the drafted 0.5 to 0.6: measured contrast of rgba(175, 221,
+     229, 0.5) over --bg is ~4.0:1, short of the 4.5:1 floor for 12px text
+     (WCAG AA, non-large text). 0.6 measures ~5.3:1. */
+  --muted-fg: rgba(175, 221, 229, 0.6);
+  --primary: #0fa4af;
+  --card: rgba(0, 49, 53, 0.4);
+  --fs-small: 12px;
+  --fs-base: 13px;
+  --fs-md: 15px;
+  --fs-xl: 24px;
+}
+html, body { margin: 0; min-height: 100%; background: var(--bg); color: var(--fg); }
+body { font-family: "Segoe UI Variable Text", "Segoe UI", system-ui, sans-serif; font-size: var(--fs-base); line-height: 1.5; }
+.panel { max-width: 56ch; padding: 12vh 40px 40px; }
+.mark { display: block; margin-bottom: 20px; }
+h1 { font-size: var(--fs-xl); font-weight: 500; line-height: 1.25; margin: 0 0 8px; }
+.lead { font-size: var(--fs-md); margin: 0; }
+.countdown { font-size: var(--fs-md); color: var(--muted-fg); margin: 2px 0 0; font-variant-numeric: tabular-nums; }
+.facts { display: grid; grid-template-columns: max-content 1fr; gap: 4px 16px; margin: 20px 0; font-size: var(--fs-small); color: var(--muted-fg); }
+.facts dt { margin: 0; }
+.facts dd { margin: 0; color: var(--fg); overflow-wrap: anywhere; }
+.actions { display: flex; gap: 12px; align-items: center; margin: 4px 0 20px; }
+button { font: inherit; font-size: var(--fs-base); border-radius: 6px; padding: 7px 14px; cursor: pointer; min-height: 32px; }
+button.primary { background: transparent; color: var(--primary); border: 1px solid var(--primary); }
+button.primary:hover { background: rgba(15, 164, 175, 0.12); }
+button.quiet { background: transparent; color: var(--fg); border: 1px solid transparent; text-decoration: underline; text-underline-offset: 3px; }
+button:focus-visible { outline: 2px solid var(--primary); outline-offset: 2px; }
+.hint { margin: 0 0 6px; }
+.command { font-family: ui-monospace, Consolas, monospace; font-size: var(--fs-small); background: var(--card); border-radius: 6px; padding: 10px 12px; margin: 0 0 20px; white-space: pre-wrap; user-select: all; }
+.footer { color: var(--muted-fg); font-size: var(--fs-small); margin: 0; }

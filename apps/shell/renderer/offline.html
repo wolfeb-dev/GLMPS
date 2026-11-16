@@ -1,0 +1,33 @@
+<!doctype html>
+<html lang="en">
+<head>
+<meta charset="utf-8">
+<meta http-equiv="Content-Security-Policy" content="default-src 'none'; style-src 'self'; script-src 'self'">
+<link rel="stylesheet" href="offline.css">
+<title>GLMPS 2.0 kernel status</title>
+</head>
+<body>
+<main class="panel">
+  <svg class="mark" viewBox="0 0 200 200" width="72" height="72" aria-hidden="true">
+    <circle cx="100" cy="100" r="94" fill="#0a0b0d"/>
+    <circle cx="100" cy="100" r="78" fill="none" stroke="#afdde5" stroke-width="4" opacity="0.12"/>
+    <path d="M 146 126 A 50 50 0 1 1 146 74" fill="none" stroke="#964734" stroke-width="18" stroke-linecap="round"/>
+    <path d="M 146 100 H 112" fill="none" stroke="#964734" stroke-width="18" stroke-linecap="round" opacity="0.6"/>
+  </svg>
+  <div class="status" aria-live="polite">
+    <h1 id="headline">Connecting to the GLMPS 2.0 kernel</h1>
+    <p id="lead" class="lead"></p>
+  </div>
+  <p id="countdown" class="countdown" hidden></p>
+  <dl id="facts" class="facts"></dl>
+  <div id="actions" class="actions">
+    <button id="retry" type="button" class="primary" hidden>Try again now</button>
+    <button id="logs" type="button" class="quiet" hidden>Open logs folder</button>
+  </div>
+  <p id="hint" class="hint" hidden></p>
+  <pre id="command" class="command" hidden></pre>
+  <p id="footer" class="footer" hidden></p>
+</main>
+<script src="offline.js"></script>
+</body>
+</html>

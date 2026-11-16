@@ -1,0 +1,39 @@
+# The Features wiki page injects this file verbatim; pin it to LF so
+# core.autocrlf=true does not report phantom line-ending diffs.
+docs/features.html text eol=lf
+
+# Vendored d3 + world-atlas coastlines (D21): pinned upstream bytes, verified
+# by exact size and sha256 in server/test/vendor-budget.test.js. Treat as
+# opaque binary so core.autocrlf (true by default on this Git for Windows
+# install) never rewrites a byte on the next checkout; LICENSES.md carries the
+# sha256 lines that test parses, which must also never gain a stray \r.
+web/vendor/d3.min.js binary
+web/vendor/countries-110m.json binary
+web/vendor/LICENSES.md text eol=lf
+
+# The huddle's voice bundles (H3), pinned the same way and verified by sha256
+# in server/test/web-huddle-neural.test.js.
+web/huddle-assets/kokoro.web.js binary
+web/huddle-assets/transformers.min.js binary
+web/huddle-assets/LICENSES.md text eol=lf
+
+# GLMPS-managed vendor instruction files. The guardrail/memory push writes
+# these with LF and records an attestation hash over the managed block; with
+# core.autocrlf=true git would materialize CRLF on the next checkout and the
+# hash would no longer match, reporting drift on a file nobody edited
+# (glmps-147). normalizeManagedBody() in vendor-writers.js makes the hash
+# itself line-ending-independent; pinning these to LF stops the rewrite at
+# the source so the working tree and the recorded baseline agree byte-for-byte.
+CLAUDE.md text eol=lf
+AGENTS.md text eol=lf
+GEMINI.md text eol=lf
+.cursor/rules/*.mdc text eol=lf
+.github/copilot-instructions.md text eol=lf
+
+# Batch files (.cmd and .bat) misread labels with LF endings; the deploy script must stay CRLF
+# on every checkout, including the Linux CI legs.
+*.cmd text eol=crlf
+*.bat text eol=crlf
+
+# The setup wizard runs under Git for Windows bash; CRLF breaks it.
+scripts/setup/*.sh text eol=lf

@@ -1,0 +1,214 @@
+/* GLMPS: house palette. P3 (card glmps-2-0-53) moved the root to the
+   Surface palette (web/surface/surface.css --sf-*): near-black blue ground,
+   glass panels, a blue-tinted edge, and four distinct status colours. The
+   brand blue survives only as --primary (the mark, focus rings, active nav).
+
+   Themes (phase 2, Q4): the colour tokens below are roles with two value sets.
+   Dark is the base. Light re-declares the same names, either by the Settings
+   override (:root[data-theme="light"]) or by the OS (prefers-color-scheme)
+   unless the operator pinned dark. Surface and the Fleet board are dark
+   instruments, so the dark set is re-declared on them: tokens are inherited,
+   so a subtree that must differ has to restate them, aliases included.
+   Raw hex literals belong only in these token definitions;
+   scripts/css-hex-gate.mjs keeps them out of rules everywhere else. */
+
+/* The house faces, served from this origin (latin subset, variable weight,
+   SIL OFL 1.1, licences in web/fonts). A cross-origin stylesheet import held
+   first paint; a font file never does, and swap shows the fallback meanwhile. */
+@font-face {
+  font-family: 'Outfit';
+  font-style: normal;
+  font-weight: 300 700;
+  font-display: swap;
+  src: url('../fonts/outfit-latin.woff2') format('woff2');
+}
+@font-face {
+  font-family: 'Fira Code';
+  font-style: normal;
+  font-weight: 400 500;
+  font-display: swap;
+  src: url('../fonts/fira-code-latin.woff2') format('woff2');
+}
+
+:root,
+.surface-root,
+#lens-root[data-lens="surface"],
+#view-stageboard {
+  color-scheme: dark;
+  --bg:          #05070c; /* Surface ground */
+  --fg:          #dbeaf2; /* Surface text */
+  --card:        rgba(8, 20, 32, 0.82); /* Surface glass panel */
+  --muted:       rgba(20, 44, 66, 0.5); /* Surface nested row / hover */
+  --muted-fg:    #8fb0c2; /* Surface muted text, 8.8:1 on --bg */
+  --border:      rgba(94, 168, 214, 0.34); /* Surface edge (decorative divider) */
+  --edge-ui:     #4d7088; /* edge of a control (input, button): 3:1 against --bg and --card */
+  --primary:     #3d8bff; /* Brand blue: mark, focus ring, active nav */
+  --primary-rgb: 61, 139, 255; /* --primary as channels, for translucent washes */
+  --success:     #3ddc84; /* ok */
+  --warning:     #f5a524;
+  --destructive: #ff5b5b; /* danger */
+  /* --destructive-strong: a solid danger fill that carries --bg text (the
+     quarantine flag and its sibling controls). --destructive lightened toward
+     white so dark text on it stays well above AA. Decorative-only uses
+     (borders, dots, low-alpha washes) keep plain --destructive. */
+  --destructive-strong: #ff8a8a;
+  --info:        #3d8bff; /* interactive */
+  --accent:      #ff5b5b; /* alias of danger, as the old rust accent was of the old destructive */
+  --teal:        #3d8bff;
+
+  /* Text-weight roles. --danger-ink is red text on its own low-alpha red wash
+     (the rgba(224,86,86,x) tints), which --destructive is too bright for on
+     dark and too light for on light. Dark clears 4.5:1 on a .14 wash over a
+     card (the critical alert chip was 4.38:1 at #e05656). */
+  --danger-ink:  #f26d6d;
+  --link-hover:  #7ab0e8;
+  --ok-hover:   #7ad8a8;
+  --warn-ink:    #e8c98a;
+  /* Ink that sits ON a solid status fill. */
+  --on-primary:  #1a1205;
+  --on-warning:  #1a1205;
+  --on-danger:   #1a1205;
+  /* Surface steps, lightness not shadow. --sunk recedes, --raise-n advance. */
+  --sunk:        #0c1016;
+  --raise-1:     #161b22;
+  --raise-2:     #22272f;
+  --raise-3:     #2a3038;
+  --raise-4:     #3a414c;
+  --edge-strong: #2f3640;
+  --wash:        rgba(255, 255, 255, 0.04); /* faint hover/fill veil */
+  --bar:         #08141f; /* top bar ground, a step above --bg */
+
+  /* success, info, warning and destructive are four distinct colours. Many
+     older badge/chip rgba() tints were written against the previous
+     teal/rust palette and are unchanged. */
+
+  --panel:   var(--card);
+  --panel-2: var(--muted);
+  --text:    var(--fg);
+  --gold:    var(--primary);
+  --green:   var(--success);
+  --amber:   var(--warning);
+  --red:     var(--destructive);
+  --blue:    var(--info);
+  --purple:  var(--accent);
+}
+
+/* Light values for the same roles. Every text token is checked 4.5:1 on --bg
+   and on the card composite, control edges 3:1 (server/test/web-theme-q4.test.js
+   recomputes the ratios from this file). */
+:root[data-theme="light"] {
+  color-scheme: light;
+  --bg:          #f3f6f9;
+  --fg:          #0e2233;
+  --card:        rgba(255, 255, 255, 0.92);
+  --muted:       rgba(20, 70, 110, 0.07);
+  --muted-fg:    #425b6e;
+  --border:      rgba(20, 70, 110, 0.34);
+  --edge-ui:     #6b8499;
+  --primary:     #1d58c9;
+  --primary-rgb: 29, 88, 201;
+  --success:     #116b39;
+  --warning:     #8a5200;
+  --destructive: #c0282d;
+  --destructive-strong: #c0282d;
+  --info:        #1d58c9;
+  --accent:      #c0282d;
+  --teal:        #1d58c9;
+  --danger-ink:  #b4232a;
+  --link-hover:  #1d58c9;
+  --ok-hover:   #116b39;
+  --warn-ink:    #7a4a00;
+  --on-primary:  #ffffff;
+  --on-warning:  #ffffff;
+  --on-danger:   #ffffff;
+  --sunk:        #e8edf2;
+  --raise-1:     #e9eef3;
+  --raise-2:     #e3e9ef;
+  --raise-3:     #d9e1e8;
+  --raise-4:     #b9c6d1;
+  --edge-strong: #b3c2cf;
+  --wash:        rgba(15, 35, 55, 0.05);
+  --bar:         #e9eef3;
+}
+@media (prefers-color-scheme: light) {
+  :root:not([data-theme="dark"]) {
+    color-scheme: light;
+    --bg:          #f3f6f9;
+    --fg:          #0e2233;
+    --card:        rgba(255, 255, 255, 0.92);
+    --muted:       rgba(20, 70, 110, 0.07);
+    --muted-fg:    #425b6e;
+    --border:      rgba(20, 70, 110, 0.34);
+    --edge-ui:     #6b8499;
+    --primary:     #1d58c9;
+    --primary-rgb: 29, 88, 201;
+    --success:     #116b39;
+    --warning:     #8a5200;
+    --destructive: #c0282d;
+    --destructive-strong: #c0282d;
+    --info:        #1d58c9;
+    --accent:      #c0282d;
+    --teal:        #1d58c9;
+    --danger-ink:  #b4232a;
+    --link-hover:  #1d58c9;
+    --ok-hover:   #116b39;
+    --warn-ink:    #7a4a00;
+    --on-primary:  #ffffff;
+    --on-warning:  #ffffff;
+    --on-danger:   #ffffff;
+    --sunk:        #e8edf2;
+    --raise-1:     #e9eef3;
+    --raise-2:     #e3e9ef;
+    --raise-3:     #d9e1e8;
+    --raise-4:     #b9c6d1;
+    --edge-strong: #b3c2cf;
+    --wash:        rgba(15, 35, 55, 0.05);
+    --bar:         #e9eef3;
+  }
+}
+
+/* Dark-instrument inks, outside the themed roles above: Surface and the Fleet
+   board are dark in every theme, so these have no light values. */
+:root {
+  --on-stage:      #04211f; /* ink on a Fleet board stage-hue fill */
+  /* Surface: light tints of the --sf-* hues for text and strokes on the dark
+     globe and glass. */
+  --sf-blue-ink:   #cfe6ff; /* text on a blue wash (pressed rail, preset) */
+  --sf-halo:       #030507; /* outline stroke behind globe labels */
+  --sf-sky:        #7ec3ff; /* marks on the far side of the globe */
+  --sf-plat-edge:  #9fd4ff; /* platform and shield edges, callout text */
+  --sf-rack-edge:  #9fc4ff; /* rack body edge */
+  --sf-glyph:      #dff1ff; /* glyph stroke inside a player shape */
+  --sf-name:       #f2f8fc; /* a callout's name line */
+  --sf-hover-edge: #ffffff; /* edge of a hovered or critical mark */
+  --sf-amber-text: #ffd27a;
+  --sf-green-text: #b8f5d2;
+  --sf-teal-text:  #d8f4f6;
+  --sf-rust-text:  #e08a73;
+  --sf-red-text:   #ff9a9a;
+  --sf-red-ink:    #ffb3b3; /* text on a red diff wash */
+}
+
+:root {
+  --sp-1: 6px;
+  --sp-2: 10px;
+  --sp-3: 14px;
+  --sp-4: 20px;
+
+  /* Type scale
+     11px is the smallest usable size; nothing in the UI renders below it.
+     Everything scales up from this floor. Use these tokens, not raw px. */
+  --fs-micro: 11px;  /* pills, badges, micro-labels, timestamps (the floor) */
+  --fs-small: 12px;  /* secondary text, meta lines, dense captions */
+  --fs-base:  13px;  /* body / default */
+  --fs-md:    15px;  /* emphasis, card titles, subheads */
+  --fs-lg:    18px;  /* section headings */
+  --fs-xl:    24px;  /* large numbers */
+
+  --st-orch:   #3d8bff; /* Orchestrate: blue */
+  --st-exec:   #5fd0d8; /* Execute: light cyan */
+  --st-adv:    #e0a23a; /* Adversarial: amber */
+  --st-gate:   #c96b52; /* Gate: rust */
+  --st-commit: #7ea8b8; /* Commit: steel blue */
+  --st-learn:  #3fb6a0; /* Learning: teal green */
+}

@@ -1,0 +1,42 @@
+{
+  "summary": "Golden gemini session",
+  "messages": [
+    {
+      "id": "m1",
+      "type": "user",
+      "timestamp": 1751400000000,
+      "content": "Port the widget to TypeScript"
+    },
+    {
+      "id": "m2",
+      "type": "gemini",
+      "timestamp": 1751400002000,
+      "model": "gemini-2.5-pro",
+      "thoughts": [
+        {
+          "subject": "Plan",
+          "description": "convert file then fix imports"
+        }
+      ],
+      "toolCalls": [
+        {
+          "name": "run_shell_command",
+          "args": {
+            "command": "git status"
+          }
+        },
+        {
+          "name": "write_file",
+          "args": {
+            "file_path": "D:/proj/widget.ts"
+          }
+        }
+      ],
+      "tokens": {
+        "input": 1200,
+        "output": 80,
+        "cached": 300
+      }
+    }
+  ]
+}

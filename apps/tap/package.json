@@ -1,0 +1,16 @@
+{
+  "name": "glmps-tap",
+  "version": "0.1.0",
+  "private": true,
+  "description": "GLMPS client tap: the hooks, statusline tap and a pinned Node, bundled to run with no runtime checkout.",
+  "license": "MIT",
+  "type": "module",
+  "scripts": {
+    "build": "node scripts/build-tap.mjs",
+    "smoke": "node smoke/run-smoke.mjs",
+    "release": "node scripts/release-tap.mjs"
+  },
+  "devDependencies": {
+    "esbuild": "0.28.2"
+  }
+}

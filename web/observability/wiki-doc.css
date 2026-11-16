@@ -1,0 +1,198 @@
+/* web/observability/wiki-doc.css - styles a generated wiki page loaded inside the
+   sandboxed iframe. The page is its own document, so it links the shared token
+   file first (/shared/tokens.css: colour, light and dark, --sp-*, --fs-*) and then
+   this sheet. The server's boot script sets data-theme from the ?theme= parameter;
+   without it the OS preference applies, exactly as in the dashboard.
+
+   Type scale for reading: 13 metadata, 14 body, 17 section, 20 page title, on a
+   4 px grid. Only Outfit for text and Fira Code for identifiers. No colour literals:
+   every colour is a token or a color-mix of one. */
+/* Also imported here, not only linked by the page: a build published before
+   tokens.css existed links only this sheet and would otherwise render with no
+   palette until the next build replaces it. A page that links both gets the
+   cached copy. */
+@import url('/shared/tokens.css');
+
+:root {
+  --wd-fs-meta: 13px;
+  --wd-fs-body: 14px;
+  --wd-fs-section: 17px;
+  --wd-fs-title: 20px;
+  --wd-s1: 4px; --wd-s2: 8px; --wd-s3: 12px; --wd-s4: 16px; --wd-s5: 24px; --wd-s6: 32px; --wd-s7: 48px;
+  --wd-measure: 72ch;
+  --wd-mono: 'Fira Code', ui-monospace, SFMono-Regular, Menlo, Consolas, monospace;
+  --wd-tint: rgba(var(--primary-rgb), 0.1);
+  --wd-tint-edge: rgba(var(--primary-rgb), 0.4);
+}
+* { box-sizing: border-box; }
+html { -webkit-text-size-adjust: 100%; background: var(--bg); }
+body {
+  margin: 0; background: var(--bg); color: var(--fg);
+  font: 400 var(--wd-fs-body)/1.6 'Outfit', -apple-system, BlinkMacSystemFont, "Segoe UI", system-ui, sans-serif;
+}
+
+.wiki-doc { margin: 0; padding: var(--wd-s6) var(--wd-s6) var(--wd-s7); }
+
+.wiki-doc header { border-bottom: 1px solid var(--border); padding-bottom: var(--wd-s4); margin-bottom: var(--wd-s5); max-width: 100%; }
+.wiki-doc h1 {
+  margin: 0 0 var(--wd-s1); font-size: var(--wd-fs-title); line-height: 1.25; font-weight: 700;
+  color: var(--fg); text-wrap: balance; max-width: var(--wd-measure);
+}
+.wd-eyebrow, .wiki-meta {
+  margin: 0 0 var(--wd-s1); font-size: var(--wd-fs-meta); font-weight: 600; line-height: 1.4;
+  text-transform: uppercase; letter-spacing: .04em; color: var(--primary);
+}
+.wiki-meta { color: var(--muted-fg); }
+.wiki-dates { margin: var(--wd-s1) 0 0; font-size: var(--wd-fs-meta); font-weight: 500; color: var(--muted-fg); }
+.wd-summary { margin: var(--wd-s1) 0 0; font-size: var(--wd-fs-section); line-height: 1.45; color: var(--fg); max-width: var(--wd-measure); text-wrap: pretty; }
+
+.wd-glance {
+  display: grid; grid-template-columns: repeat(auto-fit, minmax(160px, 1fr));
+  gap: var(--wd-s3) var(--wd-s5); margin: var(--wd-s4) 0 0;
+}
+.wd-glance > div { min-width: 0; }
+.wd-glance dt {
+  font-size: var(--wd-fs-meta); font-weight: 600; text-transform: uppercase; letter-spacing: .04em;
+  color: var(--muted-fg); margin: 0 0 2px;
+}
+.wd-glance dd { margin: 0; font-size: var(--wd-fs-body); color: var(--fg); overflow-wrap: anywhere; }
+.wd-glance .wd-sources { grid-column: 1 / -1; }
+.wd-sources dd { display: flex; flex-wrap: wrap; gap: var(--wd-s1) var(--wd-s2); }
+.wd-chip, .wiki-doc code {
+  font-family: var(--wd-mono); font-size: var(--wd-fs-meta); font-weight: 400;
+  border: 1px solid var(--border); border-radius: 4px; padding: 0 var(--wd-s2);
+}
+.wd-chip { display: inline-block; line-height: 1.6; color: var(--fg); background: var(--wash); overflow-wrap: anywhere; }
+
+.wiki-doc h2 { margin: var(--wd-s6) 0 var(--wd-s3); font-size: var(--wd-fs-section); line-height: 1.3; font-weight: 600; color: var(--fg); text-wrap: balance; max-width: var(--wd-measure); }
+.wiki-doc h3 { margin: var(--wd-s5) 0 var(--wd-s2); font-size: var(--wd-fs-body); line-height: 1.4; font-weight: 600; color: var(--fg); max-width: var(--wd-measure); }
+.wiki-doc p { margin: 0 0 var(--wd-s4); max-width: var(--wd-measure); text-wrap: pretty; }
+.wiki-doc ul, .wiki-doc ol { margin: 0 0 var(--wd-s4); padding-left: var(--wd-s5); max-width: var(--wd-measure); }
+.wiki-doc li { margin: var(--wd-s1) 0; }
+.wiki-doc li > ul, .wiki-doc li > ol { margin: var(--wd-s1) 0; }
+.wiki-doc strong { font-weight: 600; color: var(--fg); }
+.wiki-doc a { color: var(--primary); text-decoration: none; }
+.wiki-doc a:hover { text-decoration: underline; color: var(--link-hover); }
+.wiki-doc a:focus-visible, .wiki-doc summary:focus-visible { outline: 2px solid var(--primary); outline-offset: 2px; border-radius: 2px; }
+a.wikilink { border-bottom: 1px dotted var(--wd-tint-edge); cursor: pointer; }
+a.wikilink:hover { border-bottom-style: solid; text-decoration: none; }
+
+.wiki-doc code { background: var(--wash); }
+.wiki-doc h1 code, .wiki-doc h2 code, .wiki-doc h3 code { font-size: .9em; }
+.wiki-doc pre {
+  background: var(--sunk); border: 1px solid var(--border); border-radius: 6px;
+  padding: var(--wd-s3) var(--wd-s4); overflow-x: auto; margin: 0 0 var(--wd-s4);
+}
+.wiki-doc pre code { background: none; border: 0; padding: 0; font-size: var(--wd-fs-meta); line-height: 1.6; }
+
+.wiki-doc table, table.wd-ledger {
+  width: 100%; border-collapse: collapse; margin: 0 0 var(--wd-s5); font-size: var(--wd-fs-body);
+}
+.wiki-doc th, .wiki-doc td { padding: var(--wd-s2) var(--wd-s3); text-align: left; vertical-align: top; border-bottom: 1px solid var(--border); }
+.wiki-doc thead th {
+  font-size: var(--wd-fs-meta); font-weight: 600; text-transform: uppercase; letter-spacing: .04em;
+  color: var(--muted-fg); border-bottom: 1px solid var(--edge-ui); background: var(--wash); white-space: nowrap;
+}
+.wiki-doc tbody tr:hover { background: var(--wash); }
+.wiki-doc td code { white-space: nowrap; }
+.wiki-doc td.wd-num, .wiki-doc th.wd-num {
+  text-align: right; font-family: var(--wd-mono); font-size: var(--wd-fs-meta);
+  font-variant-numeric: tabular-nums; white-space: nowrap;
+}
+.wd-reference { margin: var(--wd-s6) 0 0; overflow-x: auto; }
+.wd-reference > h2 { margin-top: 0; }
+
+.wd-callout {
+  max-width: var(--wd-measure); margin: 0 0 var(--wd-s4);
+  padding: var(--wd-s3) var(--wd-s4); border: 1px solid var(--border); border-left: 4px solid var(--info);
+  border-radius: 6px; background: var(--card);
+}
+.wd-callout > p { margin: 0 0 var(--wd-s2); max-width: none; }
+.wd-callout > p:last-child { margin-bottom: 0; }
+.wd-callout-label { font-size: var(--wd-fs-meta); font-weight: 600; text-transform: uppercase; letter-spacing: .04em; color: var(--info); }
+.wd-callout-tip { border-left-color: var(--info); }
+.wd-callout-warning { border-left-color: var(--warning); }
+.wd-callout-warning .wd-callout-label { color: var(--warning); }
+
+.wiki-fig {
+  margin: 0 0 var(--wd-s5); padding: var(--wd-s4); background: var(--card);
+  border: 1px solid var(--border); border-radius: 6px; text-align: center; overflow-x: auto;
+}
+.wiki-fig figcaption { font-size: var(--wd-fs-meta); font-weight: 600; color: var(--muted-fg); margin-bottom: var(--wd-s3); text-align: left; }
+.wiki-fig.wiki-arch { border-left: 3px solid var(--primary); }
+.wiki-fig pre.mermaid { background: none; border: 0; padding: 0; margin: 0; overflow: visible; }
+.wiki-fig .mermaid svg, .wiki-fig .vega-lite, .mermaid-svg svg { max-width: 100%; height: auto; margin: 0 auto; }
+.mermaid-svg { text-align: center; }
+.mermaid-fallback { text-align: left; }
+.mermaid-fallback summary { cursor: pointer; color: var(--muted-fg); font-size: var(--wd-fs-meta); font-weight: 500; }
+.mermaid-fallback pre { border: 0; background: none; margin: var(--wd-s2) 0 0; }
+
+.wd-files, .wd-tree { margin: 0 0 var(--wd-s4); }
+.wd-files > summary, .wd-tree > summary {
+  cursor: pointer; font-size: var(--wd-fs-body); font-weight: 600; color: var(--fg);
+  padding: var(--wd-s1) 0; min-height: 24px;
+}
+.wd-tree > summary { font-family: var(--wd-mono); font-size: var(--wd-fs-meta); font-weight: 500; }
+.wd-files[open] > summary, .wd-tree[open] > summary { margin-bottom: var(--wd-s2); }
+.wd-tree-list { list-style: none; margin: 0 0 var(--wd-s2); padding: 0 0 0 var(--wd-s4); border-left: 1px solid var(--border); max-width: none; }
+.wd-tree-list li { margin: 2px 0; }
+.wd-tree .wd-tree { margin: var(--wd-s1) 0; padding-left: var(--wd-s4); border-left: 1px solid var(--border); }
+.wd-tree-list code { border: 0; background: none; padding: 0; }
+
+.wiki-related { margin: var(--wd-s6) 0 0; padding-top: var(--wd-s4); border-top: 1px solid var(--border); }
+.wiki-related h2 { margin: 0 0 var(--wd-s3); font-size: var(--wd-fs-body); }
+.wiki-related-links { display: flex; flex-wrap: wrap; gap: var(--wd-s2); }
+a.related-link {
+  font-size: var(--wd-fs-meta); font-weight: 500; color: var(--primary); text-decoration: none;
+  background: var(--wd-tint); border: 1px solid var(--wd-tint-edge); border-radius: 999px;
+  padding: var(--wd-s1) var(--wd-s3); cursor: pointer; transition: background .12s, border-color .12s;
+}
+a.related-link:hover { background: rgba(var(--primary-rgb), 0.2); border-color: var(--primary); text-decoration: none; }
+
+.wiki-files-sec h2 { border-top: 1px solid var(--border); padding-top: var(--wd-s5); }
+.wiki-files code { background: none; border: 0; padding: 0; color: var(--fg); }
+.wiki-empty { color: var(--muted-fg); font-style: italic; }
+
+/* File tree page (old build): a filterable, collapsible tree. */
+.ft { margin: 0 0 var(--wd-s5); border: 1px solid var(--border); border-radius: 6px; background: var(--card); }
+.ft-bar {
+  position: sticky; top: 0; z-index: 2; display: flex; align-items: center; gap: var(--wd-s2);
+  padding: var(--wd-s2) var(--wd-s3); background: var(--card);
+  border-bottom: 1px solid var(--border); border-radius: 6px 6px 0 0;
+}
+.ft-filter {
+  flex: 1 1 auto; min-width: 0; font-family: var(--wd-mono); font-size: var(--wd-fs-meta);
+  color: var(--fg); background: var(--bg); border: 1px solid var(--edge-ui); border-radius: 6px; padding: var(--wd-s1) var(--wd-s2);
+}
+.ft-filter::placeholder { color: var(--muted-fg); }
+.ft-filter:focus-visible { outline: 2px solid var(--primary); outline-offset: 1px; }
+.ft-stats { flex: 0 0 auto; font-family: var(--wd-mono); font-size: var(--wd-fs-meta); color: var(--muted-fg); white-space: nowrap; }
+.ft-tree { overflow-x: auto; padding: var(--wd-s2) 0; }
+/* Flex with margin-left:auto pins the count to the row end; a hand-drawn marker
+   replaces the native one because a flex summary loses list-item display. */
+.ft-dir > summary { display: flex; align-items: baseline; gap: var(--wd-s2); list-style: none; cursor: pointer; padding: var(--wd-s1) var(--wd-s3) var(--wd-s1) var(--wd-s2); border-radius: 4px; }
+.ft-dir > summary::-webkit-details-marker { display: none; }
+.ft-dir > summary::before {
+  content: ''; flex: none; align-self: center; width: 0; height: 0;
+  border-top: 4px solid transparent; border-bottom: 4px solid transparent; border-left: 5px solid var(--muted-fg);
+  transition: transform .12s ease;
+}
+.ft-dir[open] > summary::before { transform: rotate(90deg); }
+.ft-dir > summary:hover { background: var(--wash); }
+.ft-dir > summary:focus-visible { outline: 2px solid var(--primary); outline-offset: -2px; background: var(--wd-tint); }
+.ft-name { font-family: var(--wd-mono); font-size: var(--wd-fs-meta); color: var(--fg); white-space: nowrap; }
+.ft-dir > summary .ft-name { font-weight: 500; }
+.ft-note { flex: 0 1 auto; min-width: 0; overflow: hidden; text-overflow: ellipsis; white-space: nowrap; font-size: var(--wd-fs-meta); font-style: italic; color: var(--muted-fg); }
+a.ft-link { flex: none; font-size: var(--wd-fs-meta); padding: 0 var(--wd-s2); }
+a.ft-link:focus-visible { outline: 2px solid var(--primary); outline-offset: 1px; }
+.ft-count { flex: none; margin-left: auto; min-width: 2.5em; text-align: right; font-family: var(--wd-mono); font-size: var(--wd-fs-meta); font-variant-numeric: tabular-nums; color: var(--muted-fg); }
+.ft-kids { margin-left: var(--wd-s3); padding-left: var(--wd-s3); border-left: 1px solid var(--border); }
+.ft-file { display: flex; align-items: center; padding: var(--wd-s1) var(--wd-s2) var(--wd-s1) 21px; border-radius: 4px; }
+.ft-file:hover { background: var(--wash); }
+.ft-dir[hidden], .ft-file[hidden] { display: none; }
+
+@media (max-width: 560px) {
+  .wiki-doc { padding: var(--wd-s4) var(--wd-s4) var(--wd-s6); }
+  .wiki-doc table { display: block; overflow-x: auto; }
+}
+@media (prefers-reduced-motion: reduce) { * { animation: none !important; transition: none !important; } }

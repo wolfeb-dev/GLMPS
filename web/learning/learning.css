@@ -1,0 +1,175 @@
+/* web/learning/learning.css: Learning lens. */
+
+.om-row { display: grid; grid-template-columns: repeat(auto-fit, minmax(220px, 1fr)); gap: var(--sp-3); }
+.om-tile { background: var(--card); border: 1px solid var(--border); border-radius: 6px; padding: var(--sp-3); cursor: pointer; }
+.om-tile:focus-visible { outline: 2px solid var(--primary); outline-offset: 2px; }
+.om-label { font-size: var(--fs-base); font-weight: 400; margin: 0 0 var(--sp-1); color: var(--muted-fg); }
+.om-value { font-size: var(--fs-xl); margin: 0; font-variant-numeric: tabular-nums; color: var(--fg); }
+.om-absent .om-value { color: var(--muted-fg); }
+.om-tag { font-size: var(--fs-micro); margin: var(--sp-1) 0 0; color: var(--muted-fg); }
+.om-constant .om-tag { color: var(--warning); }
+.om-detail { margin-top: var(--sp-3); border-left: 2px solid var(--primary); padding-left: var(--sp-3); }
+.om-detail h3 { font-size: var(--fs-md); margin: 0; }
+.om-basis { font-size: var(--fs-small); color: var(--muted-fg); max-width: 72ch; }
+.om-refs { list-style: none; padding: 0; margin: 0; display: grid; gap: 2px; }
+.om-ref { font-size: var(--fs-small); padding: 2px var(--sp-1); cursor: pointer; }
+.om-ref code { font-family: 'Fira Code', monospace; }
+.om-ref:hover, .om-ref:has(> .item-btn:focus-visible) { background: var(--muted); }
+
+/* Guard instance rows (web/evaluation/substrate-loop.js's buildGuardInstanceRow)
+   gained a click-to-collapse detail in Task 6 (D17: every row links) - they
+   had no hover/interactive styling of their own before, since the whole row
+   was previously static. Role/tabindex/focus-ring come free from the shared
+   `[role="button"]`/`:focus-visible` rules in styles.css once bindItem wires
+   the row; this only adds the hover feedback. */
+.sl-instance:hover { background: var(--muted); }
+
+/* Registry row detail (web/evaluation/registry.js's buildTableRow, Task 6):
+   .rg-row is a 6-column CSS grid (registry.css), so an appended 7th child
+   must span the full row width on its own line or it collapses into a single
+   grid cell - same fix registry.css's own .rg-empty already applies. */
+.reg-row-detail { grid-column: 1 / -1; font-size: var(--fs-small); padding: var(--sp-1) var(--sp-3); background: var(--muted); }
+.reg-row-detail code { font-family: 'Fira Code', monospace; color: var(--muted-fg); }
+
+/* -- Surface treatment (phase 2, Q3): header, outcome tiles, tab strip. Root
+   tokens only; counts and ids are mono, state words sit in bordered chips. -- */
+.learn-head { display: flex; flex-wrap: wrap; align-items: center; gap: var(--sp-2); padding: var(--sp-2) 0 var(--sp-3); }
+.learn-title { font-size: var(--fs-lg); font-weight: 500; margin: 0 auto 0 0; color: var(--fg); }
+.learn-head-actions { display: flex; gap: var(--sp-2); flex-wrap: wrap; }
+.learn-review {
+  min-height: 32px; padding: 0 var(--sp-3);
+  background: var(--card); color: var(--warning);
+  border: 1px solid color-mix(in srgb, var(--warning) 55%, transparent); border-radius: 4px;
+  font-family: ui-monospace, Menlo, Consolas, monospace; font-size: var(--fs-small);
+}
+.learn-review:hover { border-color: var(--warning); }
+
+.om-label { font-size: var(--fs-micro); font-weight: 600; text-transform: uppercase; letter-spacing: .06em; }
+.om-value { font-family: ui-monospace, Menlo, Consolas, monospace; }
+/* An unmeasurable metric reads as a statement, not a hole where a number goes. */
+.om-absent .om-value { font-size: var(--fs-md); }
+.om-absent .om-tag { color: var(--fg); }
+
+.learn-tabs {
+  /* #lens-root is a flex column; an overflow container would shrink to 0 there. */
+  flex-shrink: 0;
+  display: flex; gap: var(--sp-1); margin-top: var(--sp-4);
+  border-bottom: 1px solid var(--border); overflow-x: auto;
+}
+.learn-tabs-tab {
+  min-height: 36px; padding: 0 var(--sp-3);
+  background: none; border: 0; border-bottom: 2px solid transparent;
+  color: var(--muted-fg); font: inherit; font-size: var(--fs-base); white-space: nowrap;
+}
+.learn-tabs-tab:hover { color: var(--fg); }
+.learn-tabs-tab[aria-selected="true"] { color: var(--fg); border-bottom-color: var(--primary); }
+.learn-tabs-panels { min-width: 0; }
+.learn-tabs-panel { padding-top: var(--sp-3); min-width: 0; }
+/* .an-root and .sl-root set display on the panel; hidden must still win. */
+.learn-tabs-panel[hidden] { display: none; }
+.learn-slot { display: flex; flex-direction: column; gap: var(--sp-3); align-items: flex-start; }
+.learn-slot > .an-panel { align-self: stretch; }
+.learn-link {
+  min-height: 32px; padding: 0 var(--sp-3); background: none; color: var(--fg);
+  border: 1px solid var(--border); border-radius: 4px; font: inherit; font-size: var(--fs-small);
+}
+.learn-link:hover { border-color: var(--info); }
+
+/* Ledger-table chips: kind squares, mono counts, bordered state chips. */
+.sl-dot { border-radius: 2px; }
+.sl-status, .sl-chip-toggle, .rg-kind-chip, .rg-state-chip, .sl-band-badge {
+  border-radius: 4px; font-family: ui-monospace, Menlo, Consolas, monospace;
+}
+.sl-chip-count { font-variant-numeric: tabular-nums; color: var(--muted-fg); }
+.sl-chip-toggle[aria-pressed="true"] .sl-chip-count { color: var(--fg); }
+.sl-filters-count, .sl-pager-info, .rg-pager-info { font-family: ui-monospace, Menlo, Consolas, monospace; font-variant-numeric: tabular-nums; }
+.sl-kpi--regression .an-stat-value { font-size: var(--fs-md); }
+.sl-pager { display: flex; align-items: center; gap: var(--sp-2); padding: var(--sp-2) 0; justify-content: flex-end; }
+.sl-pager[hidden] { display: none; }
+.sl-pager-btn {
+  min-height: 32px; padding: 0 var(--sp-3); background: var(--muted); color: var(--fg);
+  border: 1px solid var(--border); border-radius: 4px; font: inherit; font-size: var(--fs-small);
+}
+.sl-pager-btn:disabled { color: var(--muted-fg); }
+
+@media (max-width: 760px) {
+  .sl-row { grid-template-columns: auto minmax(0, 1fr) auto; }
+  .sl-row-effect { grid-column: 1 / -1; }
+  .sl-row-name { min-width: 0; overflow-wrap: anywhere; }
+  .learn-tabs-tab, .learn-review, .learn-link, .learn-capview, .learn-memory > summary, .sl-pager-btn { min-height: 44px; }
+  /* Four tabs fit a 390 px phone without a scroll bar. */
+  .learn-tabs-tab { padding: 0 var(--sp-2); }
+}
+
+/* Round 2 fidelity (glmps-2-0-63 R3): the LearningSurface layout
+   Header line, four equal tiles, then one Surface panel whose header is the
+   tab strip. Selection is the interactive blue (--info), not the brand teal.
+   Tokens only. */
+.learn-head { align-items: baseline; gap: var(--sp-3); padding: 0 0 var(--sp-1); }
+.learn-title { font-size: var(--fs-lg); font-weight: 600; margin: 0; }
+.learn-summary { color: var(--muted-fg); font-size: var(--fs-base); min-width: 0; }
+.learn-head-actions { margin-left: auto; }
+
+.om-row { grid-template-columns: repeat(4, minmax(0, 1fr)); gap: var(--sp-2); }
+.om-tile { padding: var(--sp-2) var(--sp-3); border-radius: 8px; }
+.om-label { font-size: var(--fs-small); font-weight: 400; text-transform: none; letter-spacing: 0; margin: 0 0 2px; }
+.om-value { font-size: var(--fs-xl); }
+.om-tag { font-size: var(--fs-small); margin: 2px 0 0; }
+
+.learn-card {
+  flex-shrink: 0;
+  min-width: 0;
+  background: var(--card);
+  border: 1px solid var(--border);
+  border-radius: 8px;
+  overflow: hidden;
+}
+.learn-tabs {
+  margin-top: 0;
+  padding: var(--sp-1) var(--sp-2);
+  gap: 2px;
+  border-bottom: 1px solid color-mix(in srgb, var(--border) 60%, transparent);
+}
+.learn-tabs-tab { min-height: 28px; padding: 0 var(--sp-2); border: 0; border-radius: 5px; font-size: var(--fs-base); }
+.learn-tabs-tab[aria-selected="true"] { background: color-mix(in srgb, var(--info) 25%, transparent); color: var(--fg); border-bottom-color: transparent; }
+.learn-tabs-panel { padding: var(--sp-2) var(--sp-3) var(--sp-3); }
+/* The ledger sits in the panel directly; its own boxed look would double the border. */
+.learn-card .an-panel { background: none; border: 0; border-radius: 0; padding: 0; }
+.learn-card .an-panel-title { border-left: 0; padding-left: 0; text-transform: none; letter-spacing: 0; font-size: var(--fs-md); font-weight: 600; color: var(--fg); }
+.learn-card .sl-panel-sub { padding-left: 0; margin: 0; }
+.learn-loop-metrics { margin-top: var(--sp-3); }
+.learn-loop-metrics > summary { min-height: 32px; display: flex; align-items: center; color: var(--muted-fg); font-size: var(--fs-small); cursor: pointer; }
+.learn-loop-metrics[open] > summary { color: var(--fg); }
+
+@media (max-width: 1000px) { .om-row { grid-template-columns: repeat(2, minmax(0, 1fr)); } }
+@media (max-width: 560px) {
+  .om-row { grid-template-columns: minmax(0, 1fr); }
+  .learn-head { flex-direction: column; align-items: flex-start; gap: var(--sp-1); }
+  .learn-head-actions { margin-left: 0; }
+}
+
+/* Capabilities (card glmps-2-0-runtime-137 phase 3): the Registry / Instruction
+   files switch, the memory disclosure that took over the Memory tab, and the
+   North-Star trend that only exists once the scoreboard has buckets. */
+.learn-capviews { display: inline-flex; gap: 2px; padding: 2px; margin-bottom: var(--sp-2); background: var(--muted); border: 1px solid var(--border); border-radius: 6px; }
+.learn-capview {
+  min-height: 28px; padding: 0 var(--sp-3); background: none; color: var(--muted-fg);
+  border: 0; border-radius: 4px; font: inherit; font-size: var(--fs-small); cursor: pointer;
+}
+.learn-capview:hover { color: var(--fg); }
+.learn-capview[aria-pressed="true"] { background: var(--card); color: var(--fg); box-shadow: 0 0 0 1px var(--border); }
+.learn-capview:focus-visible, .learn-memory > summary:focus-visible { outline: 2px solid var(--primary); outline-offset: 2px; }
+.learn-capview-body[hidden] { display: none; }
+.learn-memory { margin-bottom: var(--sp-2); border: 1px solid var(--border); border-radius: 6px; }
+.learn-memory > summary { padding: var(--sp-1) var(--sp-3); min-height: 32px; display: flex; align-items: center; color: var(--muted-fg); font-size: var(--fs-small); cursor: pointer; }
+.learn-memory[open] > summary { color: var(--fg); }
+.learn-memory > .learn-slot { padding: 0 var(--sp-3) var(--sp-3); }
+.learn-lessons { margin-bottom: var(--sp-3); }
+.sl-northstar { margin-top: var(--sp-3); }
+.sl-northstar-list { list-style: none; margin: 0; padding: 0; display: grid; gap: 2px; }
+.sl-northstar-row { display: flex; justify-content: space-between; gap: var(--sp-3); font-size: var(--fs-small); }
+.sl-northstar-value { font-family: ui-monospace, Menlo, Consolas, monospace; font-variant-numeric: tabular-nums; }
+/* Learning loop status and Run now, moved from Settings (card glmps-2-0-140). */
+.learn-synth { gap: 0; margin-bottom: var(--sp-3); }
+.learn-synth .set-divider { display: none; }
+.learn-synth .set-action-btn { width: auto; display: inline-block; align-self: flex-start; }

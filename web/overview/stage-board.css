@@ -1,0 +1,705 @@
+/* P3 pin (card glmps-2-0-53): the root tokens moved to the Surface palette;
+   Fleet keeps the pre-P3 ground and warm status hues for its subtree (the teal ones
+   were dropped in glmps-2-0-63 round 3 so it follows the blue --primary),
+   including the aliases (resolved at :root, so they must be re-resolved here)
+   and the inherited text colour and ground. Later phases drop this block. */
+#view-stageboard {
+  --bg:          #0a0b0d;
+  --warning:     #e0a23a;
+  --destructive: #964734;
+  --destructive-strong: #b07567;
+  --accent:      #964734;
+  --panel:   var(--card);
+  --panel-2: var(--muted);
+  --text:    var(--fg);
+  --gold:    var(--primary);
+  --green:   var(--success);
+  --amber:   var(--warning);
+  --red:     var(--destructive);
+  --blue:    var(--info);
+  --purple:  var(--accent);
+  color: var(--fg);
+  background: var(--bg);
+}
+
+/* web/overview/stage-board.css - Stage Board view (Overview pillar).
+   Faithful port of the locked mockup variant H ("Hybrid stage board") - 
+   web/mockups/overview-redesign.html, search "===== H hybrid". Every
+   selector is scoped under #view-stageboard so nothing collides with the
+   rest of the dashboard CSS. Uses design tokens from web/styles.css
+   (--bg,--fg,--card,--muted-fg,--border,--primary,--warning,--destructive,
+   --sp-1..4,--fs-micro..xl,--st-orch/exec/adv/gate/commit/learn); stage-hue
+   tokens fall back to --primary via var(--st-*, var(--primary)) since they
+   are declared inline in JS, not referenced bare here. */
+
+#view-stageboard {
+  flex-direction: column;
+  overflow: hidden;
+  gap: var(--sp-2);
+  padding: var(--sp-3) var(--sp-4);
+}
+
+/* Grid, not flex: ten tiles (two logical rows of five) with room for more
+   later - an eleventh tile just flows onto a third row at the same per-tile
+   width, no layout rework needed. Row height is auto/content-driven so both
+   rows stay visually even without a fixed height guess. */
+#view-stageboard .sb-vitals {
+  flex: none;
+  display: grid;
+  grid-template-columns: repeat(5, minmax(0, 1fr));
+  grid-auto-rows: minmax(0, auto);
+  gap: var(--sp-2);
+}
+#view-stageboard .sb-vtile {
+  min-width: 0;
+  display: flex;
+  flex-direction: column;
+  gap: 1px;
+  padding: 7px var(--sp-3);
+  border: 1px solid var(--border);
+  border-radius: 10px;
+  background: var(--card);
+}
+/* Value line + delta chip on one row, baseline-aligned (Step 2 of
+   docs/superpowers/specs/2026-07-22-vitals-trends-design.md). The delta chip
+   node always exists (see buildDeltaChip in stage-board.js) so its footprint
+   is reserved whether or not it currently has content - appearing/
+   disappearing never reflows .sb-vv or changes the tile's height. */
+#view-stageboard .sb-vt-vv-row { display: flex; align-items: baseline; gap: 6px; min-width: 0; }
+#view-stageboard .sb-vv {
+  font: 600 var(--fs-lg)/1 ui-monospace, SFMono-Regular, Menlo, Consolas, monospace;
+  font-variant-numeric: tabular-nums;
+}
+#view-stageboard .sb-vt-warn .sb-vv { color: var(--warning); }
+/* --danger-ink, not var(--destructive): that token is under this theme's text-
+   contrast floor (see the QA-health tile note below, glmps-91). Any tile can
+   reach the "bad" tier, not just QA, so this lives in the shared tile rules. */
+#view-stageboard .sb-vt-bad .sb-vv { color: var(--danger-ink); }
+#view-stageboard .sb-vl {
+  font-size: var(--fs-micro);
+  text-transform: uppercase;
+  letter-spacing: 1px;
+  color: var(--muted-fg);
+}
+#view-stageboard .sb-vs {
+  font-size: var(--fs-micro);
+  color: var(--muted-fg);
+  overflow: hidden;
+  text-overflow: ellipsis;
+  white-space: nowrap;
+}
+#view-stageboard .sb-vs.sb-vt-sub-good { color: var(--success); }
+#view-stageboard .sb-vs.sb-vt-sub-bad  { color: var(--danger-ink); } /* see header note */
+
+/* Delta chip (value vs. the point nearest one hour ago - Step 2 of the trend
+   design doc). min-width holds its footprint stable across the empty/flat/
+   up/down states so the value line never shifts noticeably when it changes.
+   Direction is never colour alone: the arrow glyph (-> / up-triangle /
+   down-triangle) and the +/- sign carry the meaning on their own; colour only
+   reinforces. Never green - "up" is not treated as an improvement on any
+   tile, so the only non-neutral tone here is the shared warning token. */
+#view-stageboard .sb-vt-delta {
+  display: inline-flex;
+  align-items: center;
+  gap: 2px;
+  min-width: 30px;
+  font-family: ui-monospace, SFMono-Regular, Menlo, Consolas, monospace;
+  font-size: var(--fs-micro);
+  font-weight: 700;
+  color: var(--muted-fg);
+  white-space: nowrap;
+  line-height: 1;
+}
+#view-stageboard .sb-vt-delta-arrow { font-size: var(--fs-micro); line-height: 1; }
+#view-stageboard .sb-vt-delta--empty { visibility: hidden; }
+#view-stageboard .sb-vt-delta--flat  { color: var(--muted-fg); }
+#view-stageboard .sb-vt-delta--warn  { color: var(--warning); }
+
+/* Generic tile anatomy for tiles with a right-side accessory
+   Any tile can opt into a `.sb-vt-stack` (value/label/sub column) plus a
+   fixed-size `.sb-vt-aside` slot (sparkline) by adding `.sb-vt-split` for the
+   row layout. `.sb-vt-clickable` is the separate interaction affordance
+   (cursor, hover wash, focus ring) - a tile can have either, both, or
+   neither. The QA-health tile originated this pattern (formerly qat-prefixed
+   and QA-only); it now reuses these same classes for every tile that carries
+   a sparkline (Active, Uncommitted, Budget, Queue - Step 2 of the trend
+   design doc) instead of a second system. */
+#view-stageboard .sb-vtile.sb-vt-split {
+  flex-direction: row;
+  align-items: center;
+  gap: var(--sp-2);
+}
+#view-stageboard .sb-vtile.sb-vt-clickable {
+  cursor: pointer;
+  transition: background 0.15s, border-color 0.15s;
+}
+#view-stageboard .sb-vtile.sb-vt-clickable:hover { background: rgb(var(--primary-rgb) / 0.08); border-color: rgb(var(--primary-rgb) / 0.35); }
+#view-stageboard .sb-vtile.sb-vt-clickable:focus-visible { outline: 2px solid var(--primary); outline-offset: -2px; }
+/* Click-to-filter pressed state (Active sessions / Uncommitted / At gate/
+   review - see toggleFilter in stage-board.js). aria-pressed carries the
+   state for assistive tech; the border/background wash plus bolding the
+   label are the sighted "visible pressed style" the design doc requires
+   alongside it, so pressed state is never colour alone either. */
+#view-stageboard .sb-vtile.sb-vt-clickable[aria-pressed="true"] {
+  border-color: var(--primary);
+  background: rgb(var(--primary-rgb) / 0.12);
+}
+#view-stageboard .sb-vtile.sb-vt-clickable[aria-pressed="true"] .sb-vl {
+  color: var(--fg);
+  font-weight: 700;
+}
+
+/* glmps-150: Capture tile click-through. The tile anchors a detail popover
+   listing every degraded capture adapter (state.adapterHealth) - id, miss count,
+   last drift reason, how long ago - or a healthy empty state. position:relative
+   on the tile so the panel drops below it; z-index + solid card bg + shadow so it
+   reads above the neighbouring tiles/board. Open state mirrors the filter tiles'
+   pressed wash so the tile shows it is active, never colour alone. */
+#view-stageboard .sb-vt-capture { position: relative; }
+#view-stageboard .sb-vtile.sb-vt-clickable[aria-expanded="true"] {
+  border-color: var(--primary);
+  background: rgb(var(--primary-rgb) / 0.12);
+}
+#view-stageboard .sb-cap-detail {
+  position: absolute;
+  top: calc(100% + 6px);
+  right: 0;
+  left: auto;
+  min-width: 260px;
+  max-width: 340px;
+  z-index: 40;
+  padding: var(--sp-2) var(--sp-3) var(--sp-3);
+  background: var(--card);
+  border: 1px solid var(--border);
+  border-radius: 14px;
+  box-shadow: 0 12px 32px rgba(0, 0, 0, 0.45);
+  backdrop-filter: blur(24px);
+  -webkit-backdrop-filter: blur(24px);
+  text-align: left;
+  cursor: default;
+}
+#view-stageboard .sb-cap-detail.hidden { display: none; }
+#view-stageboard .sb-cap-detail-h {
+  font-size: var(--fs-micro);
+  text-transform: uppercase;
+  letter-spacing: 0.07em;
+  font-weight: 700;
+  color: var(--muted-fg);
+  padding-bottom: var(--sp-1);
+  border-bottom: 1px solid var(--border);
+  margin-bottom: var(--sp-2);
+}
+#view-stageboard .sb-cap-empty {
+  font-size: var(--fs-small);
+  color: var(--muted-fg);
+  font-style: italic;
+}
+#view-stageboard .sb-cap-list {
+  list-style: none;
+  margin: 0;
+  padding: 0;
+  display: flex;
+  flex-direction: column;
+  gap: var(--sp-2);
+  max-height: 320px;
+  overflow-y: auto;
+}
+#view-stageboard .sb-cap-row {
+  display: flex;
+  flex-direction: column;
+  gap: 2px;
+  padding-bottom: var(--sp-2);
+  border-bottom: 1px solid var(--border);
+}
+#view-stageboard .sb-cap-row:last-child { border-bottom: none; padding-bottom: 0; }
+#view-stageboard .sb-cap-row-h {
+  display: flex;
+  align-items: center;
+  justify-content: space-between;
+  gap: var(--sp-2);
+}
+#view-stageboard .sb-cap-name {
+  font-family: ui-monospace, SFMono-Regular, Menlo, Consolas, monospace;
+  font-size: var(--fs-small);
+  font-weight: 600;
+  color: var(--fg);
+  word-break: break-all;
+}
+#view-stageboard .sb-cap-misses {
+  font-size: var(--fs-micro);
+  font-weight: 700;
+  color: var(--warning);
+  white-space: nowrap;
+}
+#view-stageboard .sb-cap-reason {
+  font-size: var(--fs-small);
+  color: var(--fg);
+  word-break: break-word;
+}
+#view-stageboard .sb-cap-seen {
+  font-size: var(--fs-micro);
+  color: var(--muted-fg);
+}
+
+#view-stageboard .sb-vt-stack {
+  flex: 1;
+  min-width: 0;
+  display: flex;
+  flex-direction: column;
+  gap: 1px;
+}
+/* Value line paired with a muted unit ("44" + "%", "128" + "tests"),
+   baseline-aligned so the number still reads at the same weight as a bare
+   .sb-vv numeral. */
+#view-stageboard .sb-vt-vv-unit { display: flex; align-items: baseline; gap: 5px; min-width: 0; }
+#view-stageboard .sb-vt-unit {
+  font-size: var(--fs-micro);
+  font-weight: 500;
+  color: var(--muted-fg);
+  white-space: nowrap;
+}
+#view-stageboard .sb-grid {
+  flex: 1;
+  min-height: 0;
+  display: grid;
+  gap: var(--sp-2);
+  grid-template-rows: minmax(0, 1fr);
+}
+
+#view-stageboard .sb-boardcard {
+  display: flex;
+  flex-direction: column;
+  min-height: 0;
+  border: 1px solid var(--border);
+  border-radius: 10px;
+  background: var(--card);
+}
+
+#view-stageboard .sb-head {
+  display: grid;
+  grid-template-columns: 230px 1fr;
+  border-bottom: 1px solid var(--border);
+}
+#view-stageboard .sb-corner {
+  padding: 8px var(--sp-3);
+  font-size: var(--fs-micro);
+  text-transform: uppercase;
+  letter-spacing: 1px;
+  color: var(--muted-fg);
+  display: flex;
+  align-items: flex-end;
+}
+#view-stageboard .sb-stages { display: flex; }
+#view-stageboard .sb-stage {
+  flex: 1;
+  display: flex;
+  flex-direction: column;
+  align-items: center;
+  gap: 3px;
+  padding: 8px 4px;
+  border-left: 1px solid var(--border);
+  text-align: center;
+  --sc: var(--primary);
+}
+#view-stageboard .sb-sh { display: flex; align-items: center; gap: 6px; }
+#view-stageboard .sb-node-mini {
+  width: 22px;
+  height: 22px;
+  border-radius: 6px;
+  border: 1px solid var(--sc);
+  display: flex;
+  align-items: center;
+  justify-content: center;
+  flex: none;
+}
+#view-stageboard .sb-icon {
+  width: 13px;
+  height: 13px;
+  flex: none;
+  color: var(--sc);
+  stroke: currentColor;
+  stroke-width: 1.7;
+  fill: none;
+  stroke-linecap: round;
+  stroke-linejoin: round;
+}
+#view-stageboard .sb-name { font-weight: 600; font-size: var(--fs-small); }
+#view-stageboard .sb-cnt {
+  font-family: ui-monospace, SFMono-Regular, Menlo, Consolas, monospace;
+  font-variant-numeric: tabular-nums;
+  font-size: var(--fs-micro);
+  min-width: 18px;
+  height: 17px;
+  line-height: 17px;
+  text-align: center;
+  border-radius: 8px;
+  background: var(--sc);
+  color: var(--on-stage);
+  padding: 0 4px;
+  font-weight: 700;
+}
+#view-stageboard .sb-detail { font-size: var(--fs-micro); color: var(--muted-fg); }
+
+/* Animated histogram sparkline - 10 bars, pure-CSS staggered scaleY keyframe.
+   Bars are built once at mount with negative animation-delay so the loop
+   never restarts on refresh. */
+#view-stageboard .sb-spark {
+  display: flex;
+  align-items: flex-end;
+  gap: 2px;
+  height: 15px;
+  width: 80%;
+  max-width: 132px;
+  margin-top: 2px;
+}
+#view-stageboard .sb-spark i {
+  flex: 1;
+  min-width: 2px;
+  border-radius: 1px;
+  opacity: 0.6;
+  transform-origin: bottom;
+  animation: sb-spark-pulse 2.6s ease-in-out infinite;
+}
+@keyframes sb-spark-pulse {
+  0%, 100% { transform: scaleY(0.3); }
+  50%      { transform: scaleY(1); }
+}
+
+/* this body is built as a completely empty div (renderStageBoard)
+   and only gets its session rows (each with its own 100px min-height, below)
+   once updateStageBoard runs on the first SSE tick. #view-stageboard has no
+   ancestor that bounds its own height here (unlike its 1.x life as a
+   full-screen view), so flex:1/min-height:0 alone never actually capped this
+   box - it just grew with however many rows arrived. min-height == max-height
+   gives it the same footprint from the empty first paint onward;
+   overflow:auto scrolls internally past that
+   instead of growing the page. */
+#view-stageboard .sb-body {
+  flex: 1;
+  min-height: 320px;
+  max-height: 320px;
+  overflow: auto;
+  display: flex;
+  flex-direction: column;
+}
+/* Click-to-filter status line ("showing N of M"), prepended to .sb-body only
+   while a filter tile is pressed - see updateBody/toggleFilter. */
+#view-stageboard .sb-filter-info {
+  flex: none;
+  padding: 6px var(--sp-3);
+  font-size: var(--fs-micro);
+  color: var(--muted-fg);
+  border-bottom: 1px solid var(--border);
+}
+/* flex: 1 alone is a zero basis that lets the session list squeeze every row
+   to its min-height whatever it holds; an auto basis keeps the row at least
+   as tall as its content and still lets a short list fill the board. */
+#view-stageboard .sb-row {
+  flex: 1 0 auto;
+  display: grid;
+  grid-template-columns: 230px 1fr;
+  align-items: stretch;
+  border-bottom: 1px solid var(--border);
+  min-height: 100px;
+  transition: background 0.15s;
+}
+#view-stageboard .sb-row:hover { background: rgb(var(--primary-rgb) / 0.08); }
+#view-stageboard .sb-row.sb-clickable { cursor: pointer; }
+#view-stageboard .sb-row.sb-clickable:focus-visible {
+  outline: 2px solid var(--primary);
+  outline-offset: -2px;
+}
+#view-stageboard .sb-id {
+  padding: 15px var(--sp-3) 8px;
+  display: flex;
+  flex-direction: column;
+  gap: 3px;
+  justify-content: flex-start;
+  min-width: 0;
+  border-right: 1px solid var(--border);
+}
+#view-stageboard .sb-proj {
+  font-weight: 600;
+  font-size: var(--fs-md);
+  overflow: hidden;
+  text-overflow: ellipsis;
+  white-space: nowrap;
+}
+#view-stageboard .sb-sub { font-size: var(--fs-micro); color: var(--muted-fg); }
+#view-stageboard .sb-sub .sb-mono { color: var(--fg); }
+
+/* Two grid rows: the six stage dots, then the session's detail card. The card
+   used to be absolutely positioned, so it never counted toward the row height
+   and a two-line file name hung it into the next row (glmps-2-0-148). */
+#view-stageboard .sb-track {
+  position: relative;
+  display: grid;
+  grid-template-columns: repeat(6, minmax(0, 1fr));
+  grid-template-rows: auto auto;
+  align-items: start;
+  padding-bottom: var(--sp-2);
+}
+#view-stageboard .sb-track::before {
+  content: "";
+  position: absolute;
+  left: 8.33%;
+  right: 8.33%;
+  top: 28px;
+  height: 2px;
+  margin-top: -1px;
+  background: rgba(175, 221, 229, 0.14);
+  z-index: 0;
+}
+#view-stageboard .sb-track::after {
+  content: "";
+  position: absolute;
+  left: 8.33%;
+  top: 28px;
+  height: 2px;
+  margin-top: -1px;
+  width: calc(83.33% * var(--f, 0));
+  background: var(--primary);
+  z-index: 0;
+}
+#view-stageboard .sb-col {
+  grid-row: 1;
+  display: flex;
+  flex-direction: column;
+  align-items: center;
+  padding-top: 20px;
+  position: relative;
+  z-index: 1;
+}
+#view-stageboard .sb-col.sb-cur { z-index: 3; }
+
+#view-stageboard .sb-stn {
+  width: 16px;
+  height: 16px;
+  border-radius: 50%;
+  border: 2px solid rgba(175, 221, 229, 0.25);
+  background: var(--bg);
+  flex: none;
+}
+#view-stageboard .sb-stn.sb-done { background: var(--primary); border-color: var(--primary); }
+#view-stageboard .sb-stn.sb-here {
+  border-color: var(--primary);
+  background: rgb(var(--primary-rgb) / 0.2);
+  animation: sb-halo 1.9s ease-in-out infinite;
+}
+#view-stageboard .sb-stn.sb-here.sb-aging { border-color: var(--warning); }
+#view-stageboard .sb-stn.sb-here.sb-old { border-color: var(--destructive); }
+#view-stageboard .sb-stn.sb-commit-dirty {
+  border-color: var(--destructive);
+  background: var(--destructive);
+  box-shadow: 0 0 8px -1px var(--destructive);
+}
+@keyframes sb-halo {
+  0%, 100% { box-shadow: 0 0 0 3px rgb(var(--primary-rgb) / 0.16); }
+  50%      { box-shadow: 0 0 0 7px rgb(var(--primary-rgb) / 0.02); }
+}
+
+#view-stageboard .sb-cx {
+  position: absolute;
+  top: 36px;
+  left: 50%;
+  transform: translateX(-50%);
+  width: 1px;
+  height: 11px;
+  background: rgba(175, 221, 229, 0.35);
+  z-index: 2;
+}
+
+/* Detail card hanging under the session's current stage dot. `left` is set
+   inline per-row via clamp(106px, <dotcenter>%, calc(100% - 106px)) so it
+   never overflows the track edges. Relative positioning shifts it sideways
+   while it stays in flow, so the row grows to hold it. */
+#view-stageboard .sb-pop {
+  position: relative;
+  grid-row: 2;
+  grid-column: 1 / -1;
+  justify-self: start;
+  margin-top: 2px;
+  transform: translateX(-50%);
+  width: 212px;
+  z-index: 4;
+  background: rgb(var(--primary-rgb) / 0.16);
+  border: 1px solid var(--border);
+  border-radius: 8px;
+  padding: 5px 9px;
+  display: flex;
+  flex-direction: column;
+  gap: 2px;
+  box-shadow: 0 6px 16px -8px rgba(0, 0, 0, 0.6);
+}
+#view-stageboard .sb-pr {
+  display: flex;
+  align-items: center;
+  gap: 7px;
+  justify-content: center;
+  flex-wrap: wrap;
+}
+#view-stageboard .sb-mono {
+  font-family: ui-monospace, SFMono-Regular, Menlo, Consolas, monospace;
+  font-variant-numeric: tabular-nums;
+  font-size: var(--fs-micro);
+}
+#view-stageboard .sb-muted { color: var(--muted-fg); }
+#view-stageboard .sb-pr .sb-aging { color: var(--warning); }
+#view-stageboard .sb-pr .sb-old { color: var(--st-gate, var(--destructive)); }
+
+#view-stageboard .sb-phase {
+  font-size: var(--fs-micro);
+  font-weight: 600;
+  padding: 2px 8px;
+  border-radius: 999px;
+  color: var(--primary);
+  border: 1px solid var(--border);
+  background: rgb(var(--primary-rgb) / 0.12);
+}
+
+#view-stageboard .sb-gbadge {
+  font-family: ui-monospace, SFMono-Regular, Menlo, Consolas, monospace;
+  font-size: var(--fs-micro);
+  display: inline-flex;
+  align-items: center;
+  gap: 4px;
+  padding: 2px 7px;
+  border-radius: 6px;
+  border: 1px solid var(--border);
+  color: var(--muted-fg);
+}
+#view-stageboard .sb-gbadge.sb-dirty { color: var(--warning); border-color: rgba(224, 162, 58, 0.4); }
+#view-stageboard .sb-gbadge.sb-ahead { color: var(--st-exec, var(--primary)); }
+
+#view-stageboard .sb-bkbadge {
+  font-family: ui-monospace, SFMono-Regular, Menlo, Consolas, monospace;
+  font-size: var(--fs-micro);
+  color: var(--fg);
+  background: rgba(224, 162, 58, 0.14);
+  border: 1px solid rgba(224, 162, 58, 0.32);
+  padding: 2px 7px;
+  border-radius: 6px;
+}
+
+#view-stageboard .sb-empty { font-size: var(--fs-small); color: var(--muted-fg); padding: var(--sp-2) var(--sp-3); }
+
+/* QA-health tile (row 1)
+   "Is QA healthy right now and which way is it trending" read, scanned
+   alongside the other tracking numbers. It carries .sb-vtile plus the
+   generic .sb-vt-split (row layout with a stack + aside) and .sb-vt-clickable
+   (click -> /qa-trends) classes defined above; .sb-qatile itself carries no
+   rules of its own anymore, kept only as a marker for this tile's identity.
+   Colors reuse the exact good/bad tokens qa-trends.js/.css already
+   established for this feature (var(--success) cyan for pass,
+   var(--danger-ink) for fail via the shared .sb-vt-bad rule above, NOT
+   var(--destructive), which is under the text-contrast floor on this theme;
+   see qa-trends.js's header comment / styles.css glmps-91). */
+
+@media (prefers-reduced-motion: reduce) {
+  #view-stageboard .sb-spark i,
+  #view-stageboard .sb-stn.sb-here {
+    animation: none !important;
+  }
+}
+
+/* Responsive: board scrolls horizontally below ~1400px (glmps-108)
+   The 6 stage columns never get clipped/invisible below this width - instead
+   .sb-boardcard becomes ONE scroll container for both axes, with the stage
+   header pinned via sticky-top and the session rail pinned via sticky-left
+   (the standard "frozen pane" pattern). This sidesteps the known MC scroll-
+   container gotcha: giving an ancestor overflow-x while a descendant
+   (.sb-body) independently owns overflow-y desyncs the header from the rows,
+   because each ends up scrolling on its own axis out of lockstep. Collapsing
+   to a single scrolling ancestor avoids that entirely. .sb-boardcard's own
+   box stays width-bound to the page (every ancestor up to it sizes via
+   flex "stretch", not shrink-to-fit), so this scroll never escapes to
+   #view-stageboard/.view/body - those stay overflow:hidden (styles.css),
+   i.e. the PAGE never scrolls horizontally, only the board region does.
+   Desktop (>=1400px) rules above are untouched. */
+@media (max-width: 1400px) {
+  #view-stageboard .sb-boardcard {
+    overflow: auto; /* single scroll container: x for columns, y for rows */
+  }
+  #view-stageboard .sb-body {
+    flex: none;      /* stop competing for the vertical scroll - see above */
+    overflow: visible;
+  }
+  #view-stageboard .sb-head,
+  #view-stageboard .sb-corner,
+  #view-stageboard .sb-id {
+    /* The house dark-glass flyout tint (styles.css's .term-menu/.set-menu)
+       made fully opaque: any alpha lets scrolled rows ghost through the
+       frozen pane (glmps-2-0-127). */
+    background: rgb(0, 30, 35);
+  }
+  /* Rows carry their own stacked layers (.sb-col 1, .sb-cur 3, .sb-cx 2,
+     .sb-pop 4) in this same stacking context, so the frozen panes must sit
+     above all of them or the detail cards paint over the header
+     (glmps-2-0-127). */
+  #view-stageboard .sb-head {
+    position: sticky;
+    top: 0;
+    z-index: 6;
+  }
+  #view-stageboard .sb-corner {
+    position: sticky;
+    left: 0;
+    z-index: 7; /* above the header's stages when scrolled sideways */
+    border-right: 1px solid var(--border);
+  }
+  #view-stageboard .sb-id {
+    position: sticky;
+    left: 0;
+    z-index: 5; /* above the scrolling track content, below the header/corner */
+  }
+  #view-stageboard .sb-head,
+  #view-stageboard .sb-row {
+    grid-template-columns: 230px minmax(780px, 1fr);
+  }
+  #view-stageboard .sb-stage,
+  #view-stageboard .sb-col {
+    min-width: 130px; /* fits "Adversarial"/"Orchestrate" without overlap */
+  }
+  /* Four across instead of five: at this width five tiles' labels start
+     crowding. Row count adjusts automatically (grid-auto-rows), so ten
+     tiles become 4/4/2 instead of two even rows of five. */
+  #view-stageboard .sb-vitals { grid-template-columns: repeat(4, minmax(0, 1fr)); }
+}
+
+/* Narrower still: shrink the session rail so more of the board is visible
+   without scrolling, and drop to three tiles across (their labels would
+   otherwise wrap into unreadable slivers at four). */
+@media (max-width: 1000px) {
+  #view-stageboard .sb-head,
+  #view-stageboard .sb-row {
+    grid-template-columns: 168px minmax(720px, 1fr);
+  }
+  #view-stageboard .sb-stage,
+  #view-stageboard .sb-col {
+    min-width: 120px;
+  }
+  #view-stageboard .sb-vitals { grid-template-columns: repeat(3, minmax(0, 1fr)); }
+}
+
+/* Smallest tier: rail narrows to just fit the project name, columns shrink
+   to their legible floor (labels still fit at --fs-small without wrapping);
+   vital tiles drop to two across. */
+@media (max-width: 760px) {
+  #view-stageboard { padding: var(--sp-2) var(--sp-3); }
+  #view-stageboard .sb-head,
+  #view-stageboard .sb-row {
+    grid-template-columns: 132px minmax(624px, 1fr);
+  }
+  #view-stageboard .sb-stage,
+  #view-stageboard .sb-col {
+    min-width: 104px;
+  }
+  #view-stageboard .sb-vitals { grid-template-columns: repeat(2, minmax(0, 1fr)); }
+}
+
+/* the file in a Fleet bubble is a button that opens the diff popup. */
+#view-stageboard .sb-filebtn { font: inherit; font-size: var(--fs-micro); font-family: ui-monospace, SFMono-Regular, Menlo, Consolas, monospace; color: var(--fg); background: none; border: 0; border-bottom: 1px dotted var(--primary); padding: 0; cursor: pointer; }
+#view-stageboard .sb-filebtn:hover { color: var(--primary); }
+#view-stageboard .sb-filebtn:focus-visible { outline: 2px solid var(--primary); outline-offset: 2px; }
+#view-stageboard .sb-card-id { color: var(--muted-fg); font-size: var(--fs-micro); }
+.diff-popup .diff-empty { padding: var(--sp-2); font-size: var(--fs-small); color: var(--muted-fg); }

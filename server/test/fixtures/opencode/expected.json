@@ -1,0 +1,32 @@
+{
+  "title": "Golden opencode session",
+  "events": [
+    {
+      "kind": "tool",
+      "lane": "feed",
+      "tool": "user",
+      "path": null,
+      "ts": 1751400000001,
+      "sessionId": "golden",
+      "label": "User: Add a retry to the fetch helper"
+    },
+    {
+      "kind": "command",
+      "lane": "feed",
+      "tool": "Bash",
+      "path": null,
+      "ts": 1751400000002,
+      "sessionId": "golden",
+      "label": "npm test"
+    },
+    {
+      "kind": "file-edit",
+      "lane": "feed",
+      "tool": "Edit",
+      "path": "D:/proj/fetch.ts",
+      "ts": 1751400000002,
+      "sessionId": "golden",
+      "label": "D:/proj/fetch.ts"
+    }
+  ]
+}

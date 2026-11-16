@@ -1,0 +1,33 @@
+<!doctype html>
+<html lang="en">
+<head>
+<meta charset="utf-8">
+<meta http-equiv="Content-Security-Policy" content="default-src 'none'; style-src 'self'; script-src 'self'; img-src 'self' data:">
+<link rel="stylesheet" href="picker.css">
+<title>Share your screen</title>
+</head>
+<body>
+<main class="sheet">
+  <header class="head">
+    <h1>Choose what to share</h1>
+    <p class="lead">Everyone in the huddle will see this until you stop sharing.</p>
+  </header>
+  <div id="groups" class="groups"></div>
+  <p id="empty" class="empty" hidden>Nothing is available to share right now.</p>
+  <footer class="foot">
+    <div id="audio-row" class="audio-row" hidden>
+      <label class="audio-label">
+        <input type="checkbox" id="audio">
+        Share this device's audio too
+      </label>
+      <p class="audio-warn">Others in the huddle may hear this echoed back.</p>
+    </div>
+    <div class="actions">
+      <button id="cancel" type="button" class="quiet">Cancel</button>
+      <button id="share" type="button" class="primary" disabled>Share</button>
+    </div>
+  </footer>
+</main>
+<script src="picker.js"></script>
+</body>
+</html>

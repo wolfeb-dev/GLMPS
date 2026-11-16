@@ -1,0 +1,23 @@
+{
+  "note": "Raw hex colour literals per stylesheet; may only go down. See scripts/css-hex-gate.mjs.",
+  "files": {
+    "web/evaluation/registry.css": 0,
+    "web/evaluation/substrate-loop.css": 0,
+    "web/learning/learning.css": 0,
+    "web/observability/alerts.css": 0,
+    "web/observability/budget.css": 0,
+    "web/observability/decisions.css": 0,
+    "web/observability/map.css": 0,
+    "web/observability/qa-trends.css": 0,
+    "web/observability/wiki-doc.css": 0,
+    "web/observability/wiki.css": 0,
+    "web/orchestration/board.css": 0,
+    "web/overview/stage-board.css": 0,
+    "web/shared/huddle.css": 0,
+    "web/shared/roster.css": 0,
+    "web/shared/tokens.css": 0,
+    "web/styles.css": 0,
+    "web/surface/surface.css": 0,
+    "web/work/work.css": 0
+  }
+}

@@ -1,0 +1,14 @@
+Paths in index.js for github, slack, anthropic and googlegemini are copied
+byte for byte from the simple-icons npm package, version 15.22.0
+(https://github.com/simple-icons/simple-icons, tag 15.22.0), icons/<name>.svg.
+Licence: CC0-1.0 (package/LICENSE.md in that release).
+
+Version 15.22.0 is pinned on purpose: simple-icons removed its Slack icon in a
+later major release (16.37.0, checked 2026-11-14, has no slack.svg), and this
+is the newest release found that carries all four. A brand name or logo stays
+its owner's trademark whatever the licence of the drawing; the logos here
+identify the services the Surface globe places, nothing more.
+
+The GLMPS mark is not from simple-icons: it is the geometric G of
+web/glmps-mark.svg (arc and bar, 12 unit stroke on a 200 unit box), reduced to
+a single stroke so it can take one light fill on the dark globe.

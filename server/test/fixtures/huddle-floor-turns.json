@@ -1,0 +1,22 @@
+[
+  { "text": "Builder, how long would a typed huddle dock take?", "expected": ["bill"], "addressed": true },
+  { "text": "Critic, what is the weakest part of this design?", "expected": ["medeiros"], "addressed": true },
+  { "text": "Researcher, has anyone shipped a multi-agent voice product?", "expected": ["homer"], "addressed": true },
+  { "text": "Reviewer, is streaming sentence by sentence going to bite us?", "expected": ["garfield"], "addressed": true },
+  { "text": "Scout, what would you look at next if this works?", "expected": ["mario"], "addressed": true },
+  { "text": "Assistant, can you keep track of what we decided so far?", "expected": ["guppy"], "addressed": true },
+  { "text": "Mario, is there a cheaper way to get distinct voices?", "expected": ["mario"], "addressed": true },
+  { "text": "Bill, what breaks first when the transcript gets long?", "expected": ["bill"], "addressed": true },
+  { "text": "Garfield, would you merge a dock that keeps state in a module-level variable?", "expected": ["garfield"], "addressed": true },
+  { "text": "Medeiros, convince me we should not build this at all.", "expected": ["medeiros"], "addressed": true },
+  { "text": "How long would it take to build the dock?", "expected": ["bill"], "addressed": false },
+  { "text": "What is the strongest argument against the whole huddle idea?", "expected": ["medeiros", "garfield"], "addressed": false },
+  { "text": "Has anyone published latency numbers for cascaded voice pipelines?", "expected": ["homer"], "addressed": false },
+  { "text": "Is the sentence-boundary streaming approach sound, or are we fooling ourselves?", "expected": ["garfield", "medeiros"], "addressed": false },
+  { "text": "What adjacent ideas should we explore if the text huddle works?", "expected": ["mario"], "addressed": false },
+  { "text": "Can someone summarise where we landed on the phone question?", "expected": ["guppy"], "addressed": false },
+  { "text": "I am thinking the dock should slide in from the right rather than the bottom.", "expected": [], "addressed": false },
+  { "text": "Which of the two voice vendors would you measure first, and why?", "expected": ["homer", "medeiros"], "addressed": false },
+  { "text": "Give me the two-day version of spike 1, not the two-week one.", "expected": ["bill"], "addressed": false },
+  { "text": "Does this conflict with the one-agent-per-worktree rule in the upgrade plan?", "expected": ["garfield", "medeiros"], "addressed": false }
+]

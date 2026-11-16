@@ -1,0 +1,80 @@
+{
+  "events": [
+    {
+      "kind": "meta",
+      "lane": "feed",
+      "label": "cwd",
+      "path": "/home/ada/proj",
+      "sessionId": "golden"
+    },
+    {
+      "kind": "meta",
+      "lane": "feed",
+      "label": "cwd",
+      "path": "/home/ada/proj",
+      "sessionId": "golden"
+    },
+    {
+      "kind": "meta",
+      "lane": "feed",
+      "label": "model",
+      "model": "claude-sonnet-4-5",
+      "sessionId": "golden"
+    },
+    {
+      "kind": "tool",
+      "lane": "feed",
+      "tool": "user",
+      "path": null,
+      "ts": "2026-05-01T10:00:01.000Z",
+      "sessionId": "golden",
+      "label": "User: add a health check endpoint"
+    },
+    {
+      "kind": "tool",
+      "lane": "feed",
+      "tool": "Read",
+      "path": "/home/ada/proj/server.js",
+      "ts": "2026-05-01T10:00:04.000Z",
+      "sessionId": "golden",
+      "label": "/home/ada/proj/server.js"
+    },
+    {
+      "kind": "file-edit",
+      "lane": "feed",
+      "tool": "Edit",
+      "path": "/home/ada/proj/server.js",
+      "ts": "2026-05-01T10:00:08.000Z",
+      "sessionId": "golden",
+      "label": "/home/ada/proj/server.js"
+    },
+    {
+      "kind": "command",
+      "lane": "feed",
+      "tool": "Bash",
+      "path": null,
+      "ts": "2026-05-01T10:00:12.000Z",
+      "sessionId": "golden",
+      "label": "npm test"
+    },
+    {
+      "kind": "git",
+      "lane": "context",
+      "gitOp": "commit",
+      "label": "commit: feat: add health endpoint",
+      "tool": "Bash",
+      "path": null,
+      "ts": "2026-05-01T10:00:20.000Z",
+      "sessionId": "golden"
+    },
+    {
+      "kind": "tool",
+      "lane": "feed",
+      "tool": "user",
+      "path": null,
+      "ts": "2026-05-01T10:01:00.000Z",
+      "sessionId": "golden",
+      "label": "User: now document it in the README"
+    }
+  ]
+}

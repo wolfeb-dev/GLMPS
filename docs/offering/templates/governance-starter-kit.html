@@ -1,0 +1,1046 @@
+<!DOCTYPE html>
+<!--
+  GOVERNANCE STARTER KIT — AI Readiness & Governance Audit
+  Fill every {{TOKEN}} before handing to the client. Search for "{{" to find all slots.
+  Delete .howto-box and all .guidance elements before client distribution.
+  Fonts: Montserrat (headings) · Roboto (body) · Roboto Mono (labels/codes)
+  Accent: #2563eb (blue) — matches the GLMPS AI Usage & Risk Baseline report.
+-->
+<html lang="en">
+<head>
+<meta charset="UTF-8" />
+<meta name="viewport" content="width=device-width, initial-scale=1.0" />
+<title>Governance Starter Kit — {{CLIENT_NAME}}</title>
+<link rel="preconnect" href="https://fonts.googleapis.com" />
+<link rel="preconnect" href="https://fonts.gstatic.com" crossorigin />
+<link href="https://fonts.googleapis.com/css2?family=Montserrat:wght@400;500;600;700;800&family=Roboto+Mono:wght@400;500;600&family=Roboto:wght@300;400;500;700&display=swap" rel="stylesheet" />
+<style>
+/* ── Design tokens (mirrors GLMPS storm-research report-template.html) ─── */
+:root {
+  --blue: #2563eb; --blue-dark: #1e3a8a; --ink: #16203a; --muted: #5b6677;
+  --line: #e4e9f2; --bg-soft: #f6f8fc; --green: #15803d; --green-bg: #e9f6ee;
+  --amber: #b45309; --amber-bg: #fdf3e7; --slate: #475569; --slate-bg: #eef1f6;
+  --red: #b91c1c; --red-bg: #fdecec;
+  --slot-bg: #fef9c3; --slot-border: #fbbf24; --slot-text: #92400e;
+}
+* { box-sizing: border-box; margin: 0; padding: 0; }
+body {
+  font-family: 'Roboto', system-ui, -apple-system, sans-serif;
+  color: var(--ink); background: #eef1f6;
+  line-height: 1.62; font-weight: 400; -webkit-font-smoothing: antialiased;
+}
+.page {
+  max-width: 900px; margin: 0 auto; background: #fff;
+  padding: 64px 72px 80px;
+  box-shadow: 0 1px 40px rgba(22,32,58,0.08);
+}
+
+/* ── Document header ─── */
+.doc-brand { display: flex; align-items: baseline; gap: 12px; margin-bottom: 22px; }
+.brand-mark {
+  font-family: 'Montserrat', sans-serif; font-weight: 800; font-size: 17px;
+  color: var(--blue); letter-spacing: 0.04em;
+}
+.brand-sep { color: var(--line); font-weight: 300; font-size: 18px; }
+.brand-label {
+  font-family: 'Roboto Mono', monospace; font-size: 11px; font-weight: 600;
+  letter-spacing: 0.14em; text-transform: uppercase; color: var(--muted);
+}
+.doc-title {
+  font-family: 'Montserrat', sans-serif; font-weight: 800; font-size: 38px;
+  line-height: 1.1; letter-spacing: -0.02em; color: var(--ink); margin-bottom: 12px;
+}
+.doc-lede { font-size: 16px; color: var(--muted); max-width: 600px; margin-bottom: 26px; line-height: 1.6; }
+.doc-meta {
+  display: grid; grid-template-columns: repeat(auto-fit, minmax(150px, 1fr));
+  gap: 16px; padding: 20px 0; border-top: 2px solid var(--line);
+  border-bottom: 2px solid var(--line); margin-bottom: 22px;
+}
+.meta-item { display: flex; flex-direction: column; gap: 4px; }
+.meta-label {
+  font-family: 'Roboto Mono', monospace; font-size: 10px; font-weight: 600;
+  letter-spacing: 0.13em; text-transform: uppercase; color: var(--muted);
+}
+.meta-value { font-size: 14px; font-weight: 500; color: var(--ink); }
+
+/* ── Consultant howto box (delete before client handoff) ─── */
+.howto-box {
+  background: var(--amber-bg); border: 1px solid #f0d9b5;
+  border-left: 4px solid var(--amber); border-radius: 6px;
+  padding: 16px 20px;
+}
+.howto-label {
+  font-family: 'Roboto Mono', monospace; font-size: 10.5px; font-weight: 600;
+  letter-spacing: 0.1em; text-transform: uppercase; color: var(--amber); margin-bottom: 10px;
+}
+.howto-box ul { list-style: none; }
+.howto-box li {
+  font-size: 13.5px; color: #4a3a22; margin-bottom: 7px;
+  padding-left: 16px; position: relative; line-height: 1.5;
+}
+.howto-box li::before { content: "›"; position: absolute; left: 0; color: var(--amber); font-weight: 700; }
+.howto-box code {
+  font-family: 'Roboto Mono', monospace; font-size: 12px;
+  background: rgba(0,0,0,0.06); padding: 1px 5px; border-radius: 3px;
+}
+
+/* ── Fill-in slot styling ─── */
+.slot {
+  background: var(--slot-bg); border: 1px dashed var(--slot-border);
+  border-radius: 3px; padding: 1px 7px;
+  font-family: 'Roboto Mono', monospace; font-size: 0.88em;
+  font-style: italic; color: var(--slot-text);
+}
+.guidance {
+  display: block; font-size: 12px; font-style: italic;
+  color: var(--amber); margin-top: 5px; line-height: 1.5;
+}
+.fill-region {
+  border: 1.5px dashed var(--slot-border); background: #fefce8;
+  border-radius: 6px; padding: 14px 18px; margin: 10px 0 14px; min-height: 52px;
+}
+.fill-region .placeholder-text {
+  color: var(--slot-text); font-style: italic; font-size: 13.5px; line-height: 1.55;
+}
+
+/* ── Section layout (mirrors storm-research) ─── */
+.section { margin-top: 56px; }
+.section-num {
+  font-family: 'Roboto Mono', monospace; font-size: 13px; font-weight: 600;
+  color: var(--blue); letter-spacing: 0.05em;
+}
+h2 {
+  font-family: 'Montserrat', sans-serif; font-weight: 700; font-size: 24px;
+  letter-spacing: -0.01em; color: var(--ink); margin: 6px 0 16px; line-height: 1.2;
+}
+h2 .bar {
+  display: inline-block; width: 34px; height: 4px; background: var(--blue);
+  border-radius: 2px; vertical-align: middle; margin-right: 12px;
+}
+.section-lede { font-size: 15px; color: var(--muted); margin-bottom: 24px; line-height: 1.6; }
+p { margin-bottom: 14px; font-size: 14.5px; }
+ul, ol { margin: 0 0 14px 22px; }
+li { margin-bottom: 6px; line-height: 1.55; font-size: 14.5px; }
+strong { font-weight: 600; }
+
+/* ── Policy document container ─── */
+.policy-doc {
+  border: 1px solid var(--line); border-radius: 8px;
+  padding: 32px 36px; background: var(--bg-soft);
+}
+.policy-header { margin-bottom: 22px; padding-bottom: 18px; border-bottom: 2px solid var(--line); }
+.policy-header h3 {
+  font-family: 'Montserrat', sans-serif; font-weight: 700; font-size: 19px;
+  color: var(--ink); margin-bottom: 10px;
+}
+.policy-meta-row {
+  display: flex; flex-wrap: wrap; gap: 6px 20px;
+  font-family: 'Roboto Mono', monospace; font-size: 12px; color: var(--muted);
+}
+.policy-section { margin-bottom: 26px; padding-bottom: 26px; border-bottom: 1px solid var(--line); }
+.policy-section:last-child { border-bottom: none; margin-bottom: 0; padding-bottom: 0; }
+.policy-section h4 {
+  font-family: 'Montserrat', sans-serif; font-weight: 600; font-size: 15px;
+  color: var(--ink); margin-bottom: 10px;
+}
+.policy-section p { font-size: 14px; }
+.policy-section ul li { font-size: 14px; }
+
+/* ── Tables ─── */
+.policy-table { width: 100%; border-collapse: collapse; margin: 12px 0 14px; font-size: 13.5px; }
+.policy-table thead th {
+  background: var(--line); padding: 8px 10px; text-align: left;
+  font-family: 'Roboto Mono', monospace; font-size: 10.5px; font-weight: 600;
+  letter-spacing: 0.06em; text-transform: uppercase; color: var(--slate);
+}
+.policy-table tbody td { padding: 8px 10px; border-bottom: 1px solid var(--line); vertical-align: top; line-height: 1.5; }
+.policy-table tbody tr:last-child td { border-bottom: none; }
+.add-row td { font-style: italic; color: var(--muted); font-size: 12.5px; background: var(--bg-soft); }
+
+/* ── Signature block ─── */
+.sign-block { margin-top: 22px; padding-top: 22px; border-top: 1px solid var(--line); }
+.sign-row { display: flex; gap: 28px; }
+.sign-field { flex: 1; }
+.sign-field-sm { flex: 0 0 130px; }
+.sign-line { height: 1px; background: var(--ink); margin-bottom: 6px; margin-top: 32px; }
+.sign-label { font-family: 'Roboto Mono', monospace; font-size: 10.5px; color: var(--muted); }
+
+/* ── Checklist (Section 02) ─── */
+.checklist-group { margin-bottom: 26px; }
+.checklist-group-title {
+  font-family: 'Montserrat', sans-serif; font-weight: 600; font-size: 14px;
+  color: var(--ink); padding: 10px 14px;
+  background: var(--blue-dark); color: #fff;
+  border-radius: 6px 6px 0 0;
+}
+.checklist-item {
+  display: flex; align-items: flex-start; gap: 12px;
+  padding: 11px 14px; border: 1px solid var(--line); border-top: none;
+  font-size: 14px; line-height: 1.55; cursor: pointer;
+  transition: background 0.15s;
+}
+.checklist-item:last-child { border-radius: 0 0 6px 6px; }
+.checklist-item:hover { background: var(--bg-soft); }
+.checklist-item input[type="checkbox"] {
+  flex-shrink: 0; width: 16px; height: 16px; margin-top: 2px;
+  accent-color: var(--blue); cursor: pointer;
+}
+.checklist-item span { color: #283449; }
+
+/* ── Gap-map tables (Section 03) ─── */
+.gap-map-block { margin-bottom: 36px; }
+.gap-map-heading {
+  font-family: 'Montserrat', sans-serif; font-weight: 700; font-size: 14.5px;
+  padding: 12px 16px; background: var(--blue-dark); color: #fff;
+  border-radius: 6px 6px 0 0;
+}
+.gap-table {
+  width: 100%; border-collapse: collapse; font-size: 13px;
+  border: 1px solid var(--line); border-top: none; border-radius: 0 0 6px 6px;
+}
+.gap-table thead th {
+  background: var(--bg-soft); padding: 9px 12px; text-align: left;
+  font-family: 'Roboto Mono', monospace; font-size: 10px; font-weight: 600;
+  letter-spacing: 0.06em; text-transform: uppercase; color: var(--muted);
+  border-bottom: 1px solid var(--line);
+}
+.gap-table tbody td { padding: 9px 12px; border-bottom: 1px solid var(--line); vertical-align: top; line-height: 1.5; }
+.gap-table tbody tr:last-child td { border-bottom: none; }
+.cat-label {
+  font-family: 'Roboto Mono', monospace; font-size: 11px; font-weight: 600;
+  color: var(--blue); white-space: nowrap;
+}
+.state-slot {
+  background: var(--slot-bg); border: 1px dashed var(--slot-border);
+  border-radius: 3px; padding: 2px 8px;
+  font-family: 'Roboto Mono', monospace; font-size: 11px;
+  font-style: italic; color: var(--slot-text);
+}
+.fill-cell { background: #fefce8; }
+
+/* ── Defense-in-depth layers (Section 04) ─── */
+.depth-intro { font-size: 14.5px; line-height: 1.65; margin-bottom: 28px; }
+.depth-intro ul { margin: 10px 0 10px 22px; }
+.depth-intro li { margin-bottom: 8px; font-size: 14px; }
+
+.layer-stack { display: flex; flex-direction: column; gap: 14px; margin-bottom: 22px; }
+.layer { border-radius: 8px; overflow: hidden; border: 1px solid var(--line); }
+.layer-header { display: flex; align-items: center; gap: 14px; padding: 13px 20px; flex-wrap: wrap; }
+.layer-badge {
+  font-family: 'Roboto Mono', monospace; font-size: 10.5px; font-weight: 700;
+  letter-spacing: 0.1em; text-transform: uppercase; padding: 4px 10px; border-radius: 4px;
+  flex-shrink: 0;
+}
+.layer-name { font-family: 'Montserrat', sans-serif; font-weight: 700; font-size: 17px; }
+.layer-strength {
+  font-family: 'Roboto Mono', monospace; font-size: 11px; color: var(--muted);
+  margin-left: auto;
+}
+.layer-body { padding: 18px 20px 20px; border-top: 1px solid var(--line); font-size: 14px; line-height: 1.62; }
+.layer-body p { margin-bottom: 10px; font-size: 14px; }
+.layer-body ul { margin: 0 0 0 20px; }
+.layer-body li { margin-bottom: 7px; font-size: 13.5px; }
+.layer-examples { margin-top: 14px; background: rgba(255,255,255,0.65); border-radius: 6px; padding: 12px 16px; }
+.layer-example-label {
+  font-family: 'Roboto Mono', monospace; font-size: 10px; font-weight: 600;
+  letter-spacing: 0.08em; text-transform: uppercase; color: var(--muted); margin-bottom: 8px;
+}
+
+/* Layer colour themes — weakest to strongest */
+.layer-advisory { background: #f8fafc; }
+.layer-advisory .layer-header { background: #f1f5f9; }
+.layer-advisory .layer-badge { background: #e2e8f0; color: #475569; }
+.layer-advisory .layer-name { color: #475569; }
+
+.layer-enforcing { background: #fffdf5; }
+.layer-enforcing .layer-header { background: var(--amber-bg); }
+.layer-enforcing .layer-badge { background: #fef08a; color: #78350f; }
+.layer-enforcing .layer-name { color: var(--amber); }
+
+.layer-environment { background: #f0f6ff; }
+.layer-environment .layer-header { background: #dbeafe; }
+.layer-environment .layer-badge { background: #bfdbfe; color: #1e3a8a; }
+.layer-environment .layer-name { color: var(--blue-dark); }
+
+.layer-detective { background: #f0fdf4; }
+.layer-detective .layer-header { background: var(--green-bg); }
+.layer-detective .layer-badge { background: #bbf7d0; color: #14532d; }
+.layer-detective .layer-name { color: var(--green); }
+
+/* Principle callout */
+.depth-callout {
+  display: flex; gap: 16px; align-items: flex-start;
+  background: #eff6ff; border: 2px solid var(--blue);
+  border-radius: 8px; padding: 20px 24px; margin-top: 8px;
+}
+.depth-callout-icon { flex-shrink: 0; margin-top: 1px; }
+.depth-callout-body { font-size: 15px; line-height: 1.65; color: var(--blue-dark); }
+
+/* ── Remediation table (Section 05) ─── */
+.remediation-table { width: 100%; border-collapse: collapse; font-size: 13px; }
+.remediation-table thead th {
+  background: var(--bg-soft); padding: 9px 10px; text-align: left;
+  font-family: 'Roboto Mono', monospace; font-size: 10px; font-weight: 600;
+  letter-spacing: 0.06em; text-transform: uppercase; color: var(--muted);
+  border-bottom: 2px solid var(--line);
+}
+.remediation-table tbody td { padding: 9px 10px; border-bottom: 1px solid var(--line); vertical-align: top; line-height: 1.5; }
+.remediation-table .add-row td { font-style: italic; color: var(--muted); font-size: 12.5px; background: var(--bg-soft); }
+
+.sev {
+  font-family: 'Roboto Mono', monospace; font-size: 10.5px; font-weight: 700;
+  letter-spacing: 0.05em; text-transform: uppercase; padding: 3px 8px;
+  border-radius: 4px; white-space: nowrap;
+}
+.sev-critical { background: var(--red-bg); color: var(--red); }
+.sev-high { background: var(--amber-bg); color: var(--amber); }
+.sev-medium { background: #fef9c3; color: #92400e; }
+.sev-low { background: var(--green-bg); color: var(--green); }
+.status-open {
+  font-family: 'Roboto Mono', monospace; font-size: 10.5px; font-weight: 600;
+  padding: 3px 8px; border-radius: 4px; background: var(--slate-bg); color: var(--slate);
+}
+.status-done {
+  font-family: 'Roboto Mono', monospace; font-size: 10.5px; font-weight: 600;
+  padding: 3px 8px; border-radius: 4px; background: var(--green-bg); color: var(--green);
+}
+
+/* ── Footer ─── */
+.doc-footer {
+  margin-top: 48px; padding-top: 20px; border-top: 2px solid var(--line);
+  font-family: 'Roboto Mono', monospace; font-size: 11px; color: var(--muted);
+  display: flex; flex-direction: column; gap: 4px;
+}
+
+/* ── Responsive ─── */
+@media (max-width: 640px) {
+  .page { padding: 32px 22px 48px; }
+  .doc-title { font-size: 28px; }
+  h2 { font-size: 20px; }
+  .sign-row { flex-direction: column; }
+  .layer-strength { display: none; }
+  .policy-doc { padding: 22px 18px; }
+}
+
+/* ── Print ─── */
+@media print {
+  body { background: #fff; }
+  .page { box-shadow: none; max-width: 100%; padding: 0; }
+  .howto-box { display: none; }
+  .guidance { color: #999; }
+  .layer-advisory .layer-header,
+  .layer-enforcing .layer-header,
+  .layer-environment .layer-header,
+  .layer-detective .layer-header,
+  .gap-map-heading,
+  .checklist-group-title,
+  .sev, .slot, .state-slot, .status-open, .status-done {
+    -webkit-print-color-adjust: exact; print-color-adjust: exact;
+  }
+  .section { page-break-inside: avoid; }
+  .layer { page-break-inside: avoid; }
+  .checklist-group { page-break-inside: avoid; }
+  .gap-map-block { page-break-inside: avoid; }
+  h2 { page-break-after: avoid; }
+  .depth-callout { -webkit-print-color-adjust: exact; print-color-adjust: exact; }
+}
+</style>
+</head>
+<body>
+<div class="page">
+
+  <!-- DOCUMENT HEADER -->
+  <header>
+    <div class="doc-brand">
+      <span class="brand-mark">GLMPS</span>
+      <span class="brand-sep">/</span>
+      <span class="brand-label">AI Readiness &amp; Governance Audit</span>
+    </div>
+    <h1 class="doc-title">Governance Starter Kit</h1>
+    <p class="doc-lede">Policy template, guardrail configuration checklist, standards gap-map, defense-in-depth framework, and prioritized remediation list — ready to fill in and hand over.</p>
+    <div class="doc-meta">
+      <div class="meta-item">
+        <span class="meta-label">Client</span>
+        <span class="meta-value"><span class="slot">{{CLIENT_NAME}}</span></span>
+      </div>
+      <div class="meta-item">
+        <span class="meta-label">Date</span>
+        <span class="meta-value"><span class="slot">{{DATE}}</span></span>
+      </div>
+      <div class="meta-item">
+        <span class="meta-label">Prepared by</span>
+        <span class="meta-value"><span class="slot">{{CONSULTANT_NAME}}</span></span>
+      </div>
+      <div class="meta-item">
+        <span class="meta-label">Engagement</span>
+        <span class="meta-value"><span class="slot">{{ENGAGEMENT_ID}}</span></span>
+      </div>
+      <div class="meta-item">
+        <span class="meta-label">Version</span>
+        <span class="meta-value"><span class="slot">{{VERSION}}</span> — Draft for review</span>
+      </div>
+    </div>
+    <div class="howto-box">
+      <div class="howto-label">Consultant instructions — delete before client handoff</div>
+      <ul>
+        <li><strong>Yellow text in dashed boxes</strong> marks every fill-in slot. Search for <code>{{</code> to find them all.</li>
+        <li><strong>Italic amber notes</strong> appear below each slot explaining what to put there. Remove them before distribution.</li>
+        <li>Section 01 (AI Use Policy) is a client-facing artifact requiring legal review before distribution to staff.</li>
+        <li>Sections 02–05 are the working governance deliverable. Sections 03–05 stay as consultant tools; share selectively.</li>
+        <li>Delete this box and all guidance notes. Then save as PDF for the client handoff package.</li>
+      </ul>
+    </div>
+  </header>
+
+  <!-- ══════════════════════════════════════════════════════
+       SECTION 01 — AI USE POLICY TEMPLATE
+       ══════════════════════════════════════════════════════ -->
+  <section class="section">
+    <div class="section-num">01</div>
+    <h2><span class="bar"></span>AI Use Policy</h2>
+    <p class="section-lede">Fill in the slots below and have legal review this before distributing to staff. This template covers the minimum viable policy for a company adopting AI coding assistants and generative AI tools.</p>
+
+    <div class="policy-doc">
+      <div class="policy-header">
+        <h3>Artificial Intelligence Use Policy</h3>
+        <div class="policy-meta-row">
+          <span>Effective: <span class="slot">{{EFFECTIVE_DATE}}</span></span>
+          <span>Owner: <span class="slot">{{POLICY_OWNER_ROLE}}</span></span>
+          <span>Version: <span class="slot">{{VERSION}}</span></span>
+          <span>Next review: <span class="slot">{{NEXT_REVIEW_DATE}}</span></span>
+        </div>
+      </div>
+
+      <div class="policy-section">
+        <h4>1.1 Purpose</h4>
+        <p>This policy establishes the rules for using artificial intelligence tools — including AI coding assistants, generative AI platforms, and AI-powered productivity tools — within <span class="slot">{{COMPANY_LEGAL_NAME}}</span> ("the Company"). It applies to all employees, contractors, and vendors who use company systems or process company data.</p>
+        <p>The goal is to enable teams to benefit from AI tools while protecting the Company from data exposure, legal liability, and security risk that arise from unmanaged AI use.</p>
+      </div>
+
+      <div class="policy-section">
+        <h4>1.2 Scope</h4>
+        <p>This policy covers:</p>
+        <ul>
+          <li>AI coding assistants (GitHub Copilot, Claude Code, Cursor, Gemini CLI, Cline, and equivalents)</li>
+          <li>Generative AI chat and completion services (ChatGPT, Claude.ai, Gemini, Copilot Chat, and equivalents)</li>
+          <li>AI-powered features embedded in third-party software (e.g., AI-assisted search, auto-complete, summarization)</li>
+          <li>Any AI service accessed via a personal account on a company device or while processing company data</li>
+        </ul>
+        <em class="guidance">Expand this list with the specific tools identified in the Phase 1 Assess baseline. Remove categories that genuinely do not apply to the client's environment.</em>
+      </div>
+
+      <div class="policy-section">
+        <h4>1.3 Sanctioned Tools</h4>
+        <p>The following tools are approved for use with company data. All other AI tools require prior written approval from <span class="slot">{{APPROVAL_AUTHORITY}}</span> before use.</p>
+        <table class="policy-table">
+          <thead>
+            <tr>
+              <th>Tool</th>
+              <th>Approved use case</th>
+              <th>Permitted data classification</th>
+              <th>Requirements</th>
+            </tr>
+          </thead>
+          <tbody>
+            <tr>
+              <td><span class="slot">{{TOOL_1_NAME}}</span></td>
+              <td><span class="slot">{{TOOL_1_USE}}</span></td>
+              <td><span class="slot">{{TOOL_1_DATA_CLASS}}</span></td>
+              <td><span class="slot">{{TOOL_1_REQUIREMENTS}}</span></td>
+            </tr>
+            <tr>
+              <td><span class="slot">{{TOOL_2_NAME}}</span></td>
+              <td><span class="slot">{{TOOL_2_USE}}</span></td>
+              <td><span class="slot">{{TOOL_2_DATA_CLASS}}</span></td>
+              <td><span class="slot">{{TOOL_2_REQUIREMENTS}}</span></td>
+            </tr>
+            <tr class="add-row">
+              <td colspan="4"><em>Add one row per sanctioned tool from the Phase 1 tool inventory. Confirm no-train and data-retention clauses with each vendor before permitting use with non-public data.</em></td>
+            </tr>
+          </tbody>
+        </table>
+        <em class="guidance">Populate from the AI tool inventory in the baseline report. At minimum one row: the company-provisioned tool and its approved data classification. "Internal/non-PII only" is a safe default until vendor contracts are confirmed.</em>
+      </div>
+
+      <div class="policy-section">
+        <h4>1.4 Acceptable Use</h4>
+        <p>Employees may use sanctioned AI tools to:</p>
+        <ul>
+          <li>Generate, review, refactor, and document code using company source code, within the permitted data classification for that tool.</li>
+          <li>Draft and refine written communications, documents, and summaries using non-confidential information.</li>
+          <li>Research, synthesize, and summarize information from public sources.</li>
+          <li>Automate repetitive tasks within the scope of the employee's role and the tool's permitted data classification.</li>
+        </ul>
+        <div class="fill-region">
+          <div class="placeholder-text">{{ADDITIONAL_APPROVED_USES}} — Add any company-specific approved use cases here. Example: "Analyzing anonymized customer support transcripts for theme identification, using Tool X with written approval from the Privacy team."</div>
+        </div>
+      </div>
+
+      <div class="policy-section">
+        <h4>1.5 Prohibited Use</h4>
+        <p>The following are prohibited regardless of tool, account type, or urgency:</p>
+        <ul>
+          <li><strong>No personal accounts for company data.</strong> Using a personal AI account (personal ChatGPT Plus, personal Claude.ai, personal GitHub Copilot, etc.) to process company data, source code, customer information, or any non-public content is prohibited. Company data must only flow through company-provisioned, company-contractually-bound accounts.</li>
+          <li><strong>No production secrets in AI prompts.</strong> API keys, database credentials, private cryptographic keys, bearer tokens, access tokens, and production environment configuration must not be pasted into any AI tool under any circumstances.</li>
+          <li><strong>No regulated or sensitive personal data.</strong> Personally identifiable information (PII), protected health information (PHI), payment card data, and legally privileged communications are prohibited from AI tools without explicit written approval from <span class="slot">{{PRIVACY_LEGAL_CONTACT}}</span>.</li>
+          <li><strong>No unreviewed AI-generated code in production.</strong> Code generated or co-authored by AI must pass the same review, testing, and approval process as human-authored code. AI authorship is not grounds for exemption from any gate.</li>
+          <li><strong>No unsanctioned tools.</strong> Installing, trialing, or using AI tools not listed in §1.3 on company devices or with company data requires prior written approval from <span class="slot">{{APPROVAL_AUTHORITY}}</span>.</li>
+        </ul>
+        <div class="fill-region">
+          <div class="placeholder-text">{{ADDITIONAL_PROHIBITED_USES}} — Add any company-specific prohibitions. Examples: disclosure requirements for AI-assisted client deliverables; jurisdiction-specific AI act compliance requirements; restrictions on AI in high-stakes decisions (hiring, credit, medical).</div>
+        </div>
+      </div>
+
+      <div class="policy-section">
+        <h4>1.6 Data Handling Rules</h4>
+        <p>Before submitting any content to an AI tool, treat it as if you are sharing that content with an external third party under that tool's terms of service — because you are. Apply the classification below:</p>
+        <table class="policy-table">
+          <thead>
+            <tr>
+              <th>Classification</th>
+              <th>Permitted in AI tools?</th>
+              <th>Conditions</th>
+            </tr>
+          </thead>
+          <tbody>
+            <tr>
+              <td>Public / open-source</td>
+              <td>Yes</td>
+              <td>Any sanctioned tool</td>
+            </tr>
+            <tr>
+              <td>Internal / non-PII</td>
+              <td>Yes, with care</td>
+              <td>Sanctioned tool only; no-train clause confirmed with vendor</td>
+            </tr>
+            <tr>
+              <td>Confidential / proprietary</td>
+              <td>Limited</td>
+              <td>Sanctioned tool only; written approval from manager; no-train + data-retention clause required; data residency confirmed</td>
+            </tr>
+            <tr>
+              <td>PII / PHI / PCI / legally privileged</td>
+              <td>No</td>
+              <td>Prohibited without explicit written waiver from <span class="slot">{{PRIVACY_LEGAL_CONTACT}}</span></td>
+            </tr>
+            <tr>
+              <td>Secrets (keys, tokens, credentials)</td>
+              <td>No</td>
+              <td>Prohibited — no exceptions, no overrides</td>
+            </tr>
+          </tbody>
+        </table>
+      </div>
+
+      <div class="policy-section">
+        <h4>1.7 Incident Reporting</h4>
+        <p>Report the following to <span class="slot">{{INCIDENT_CONTACT}}</span> within <span class="slot">{{REPORTING_WINDOW}}</span>:</p>
+        <ul>
+          <li>Accidental submission of prohibited data (secrets, PII, regulated data) to any AI tool</li>
+          <li>Discovery that a team member is using an unsanctioned tool for company data</li>
+          <li>Unusual AI tool behavior — unexpected data reproduction, anomalous suggestions, or behavior suggesting prompt injection</li>
+          <li>Any alert generated by the AI monitoring system (GLMPS alert center)</li>
+        </ul>
+        <em class="guidance">Set {{INCIDENT_CONTACT}} to the team's security Slack channel, email alias, or ticketing queue. Set {{REPORTING_WINDOW}} to match the client's existing incident-response SLA — "4 business hours" is a reasonable default if they don't have one.</em>
+      </div>
+
+      <div class="policy-section">
+        <h4>1.8 Enforcement and Acknowledgment</h4>
+        <p>Violations of this policy may result in revocation of AI tool access and further disciplinary action under the Company's standard conduct policy. By using any AI tool within the scope of this policy, employees confirm they have read and agree to its terms. Re-acknowledgment is required annually or upon material policy update.</p>
+        <div class="sign-block">
+          <div class="sign-row">
+            <div class="sign-field">
+              <div class="sign-line"></div>
+              <div class="sign-label">Approved by — Name / Title</div>
+            </div>
+            <div class="sign-field">
+              <div class="sign-line"></div>
+              <div class="sign-label">Signature</div>
+            </div>
+            <div class="sign-field sign-field-sm">
+              <div class="sign-line"></div>
+              <div class="sign-label">Date</div>
+            </div>
+          </div>
+        </div>
+      </div>
+    </div>
+  </section>
+
+  <!-- ══════════════════════════════════════════════════════
+       SECTION 02 — GUARDRAIL CONFIGURATION CHECKLIST
+       ══════════════════════════════════════════════════════ -->
+  <section class="section">
+    <div class="section-num">02</div>
+    <h2><span class="bar"></span>Guardrail Configuration Checklist</h2>
+    <p class="section-lede">Work through this checklist during Phase 2 (Govern). Check each item when confirmed and active. Mark N/A with a note if a control is not applicable to this environment. Every unchecked item at engagement close becomes a finding in §05.</p>
+
+    <div class="checklist-group">
+      <div class="checklist-group-title">Dev / Prod Zone Classification</div>
+      <label class="checklist-item"><input type="checkbox"> <span>Dev/prod zones defined in GLMPS zone configuration — production paths, secrets directories, and environment variables identified and labelled.</span></label>
+      <label class="checklist-item"><input type="checkbox"> <span>Zone labels propagated to the session map and verified correct in the dashboard.</span></label>
+      <label class="checklist-item"><input type="checkbox"> <span>File-access events crossing zone boundaries (dev agent touching prod-zone paths) generate alerts in the alert center.</span></label>
+      <label class="checklist-item"><input type="checkbox"> <span><span class="slot">{{CLIENT_SPECIFIC_ZONE_RULE}}</span></span>
+        <em class="guidance">Add any client-specific zone boundary — e.g., "staging DB credentials classified as prod-zone," or "CI environment paths scoped to environment zone."</em></label>
+    </div>
+
+    <div class="checklist-group">
+      <div class="checklist-group-title">Sensitive-Data Egress Detection</div>
+      <label class="checklist-item"><input type="checkbox"> <span>Egress detector enabled and tuned for client's data patterns — secret-file patterns, PII regex, internal domain names, proprietary identifiers.</span></label>
+      <label class="checklist-item"><input type="checkbox"> <span>Baseline egress rate captured over the first 3–5 monitoring days. Baseline recorded: <span class="slot">{{BASELINE_EGRESS_RATE}}</span> flagged events/day.</span></label>
+      <label class="checklist-item"><input type="checkbox"> <span>Alert threshold set and agreed with client: <span class="slot">{{ALERT_THRESHOLD}}</span>. Threshold documented in engagement record.</span></label>
+      <label class="checklist-item"><input type="checkbox"> <span>False-positive review completed. Known-safe patterns added to the allowlist and documented.</span></label>
+    </div>
+
+    <div class="checklist-group">
+      <div class="checklist-group-title">Injection / Poisoning Detection</div>
+      <label class="checklist-item"><input type="checkbox"> <span>Injection detector (poison-scan) enabled. Quarantine gate is active — flagged items require manual approval via POST /api/backlog/:id/approve before execution.</span></label>
+      <label class="checklist-item"><input type="checkbox"> <span>Client briefed on review-grade status: the detector flags for human review, not automatic block, until a labelled evaluation set is built. This limitation is documented in the baseline report.</span></label>
+      <label class="checklist-item"><input type="checkbox"> <span>Review workflow established: <span class="slot">{{QUARANTINE_REVIEWER}}</span> reviews quarantined items within <span class="slot">{{QUARANTINE_SLA}}</span>. Process documented.</span></label>
+      <label class="checklist-item"><input type="checkbox"> <span>File-API secret denylist configured — credential file paths (.env, ~/.aws/credentials, service account key files) blocked from AI file-access even inside an allowed root.</span></label>
+    </div>
+
+    <div class="checklist-group">
+      <div class="checklist-group-title">Live-Install and Write Guards</div>
+      <label class="checklist-item"><input type="checkbox"> <span>Live-install guard active — writes into production install paths are blocked unless the deployment bypass (GLMPS_ALLOW_LIVE_INSTALL=1) is explicitly set.</span></label>
+      <label class="checklist-item"><input type="checkbox"> <span>Production paths registered in the guard configuration: <span class="slot">{{PROD_PATHS_LIST}}</span>.</span></label>
+      <label class="checklist-item"><input type="checkbox"> <span>Bypass authorization procedure documented: who may authorize a guarded deploy, how they signal it, and the audit trail required.</span></label>
+    </div>
+
+    <div class="checklist-group">
+      <div class="checklist-group-title">Alert Center</div>
+      <label class="checklist-item"><input type="checkbox"> <span>Alert center active and surfacing events in the GLMPS dashboard. Test alert triggered and confirmed visible.</span></label>
+      <label class="checklist-item"><input type="checkbox"> <span>Alert routing configured — critical alerts sent to <span class="slot">{{ALERT_CHANNEL}}</span> (Slack channel, PagerDuty, email alias).</span></label>
+      <label class="checklist-item"><input type="checkbox"> <span>Alert suppression/snooze rules documented to prevent alert fatigue during known-noisy maintenance windows.</span></label>
+      <label class="checklist-item"><input type="checkbox"> <span>On-call rotation aware of GLMPS alerts and has runbook for actioning them.</span></label>
+    </div>
+
+    <div class="checklist-group">
+      <div class="checklist-group-title">Cross-Harness Coverage</div>
+      <label class="checklist-item"><input type="checkbox"> <span>Capture-parity matrix reviewed. Every AI harness in active use is classified: fully captured, partially captured (blind spots documented), or explicit coverage gap.</span></label>
+      <label class="checklist-item"><input type="checkbox"> <span>Partial-coverage tools noted in baseline report: <span class="slot">{{PARTIAL_COVERAGE_TOOLS}}</span>.</span></label>
+      <label class="checklist-item"><input type="checkbox"> <span>OTel-emitting tools (if any) pointed at the GLMPS OTLP receiver: <span class="slot">{{OTLP_TOOLS}}</span>.</span></label>
+      <label class="checklist-item"><input type="checkbox"> <span>BYOD and unmanaged devices acknowledged as a permanent coverage blind spot. Scope limitation formally noted in the engagement record and disclosed to the client.</span></label>
+    </div>
+  </section>
+
+  <!-- ══════════════════════════════════════════════════════
+       SECTION 03 — STANDARDS GAP-MAP
+       ══════════════════════════════════════════════════════ -->
+  <section class="section">
+    <div class="section-num">03</div>
+    <h2><span class="bar"></span>Standards Gap-Map</h2>
+    <p class="section-lede">Mark the current state observed during the Phase 1 assessment for each control. Use this map to produce the governance-gap list in the baseline report and to track remediation progress.</p>
+    <em class="guidance">Current-state codes — <strong>MET:</strong> control in place with evidence. <strong>PARTIAL:</strong> partially implemented or evidenced. <strong>GAP:</strong> not in place. <strong>N/A:</strong> not applicable. Fill in "Notes / Evidence" during the assessment; share selectively with the client.</em>
+
+    <div class="gap-map-block" style="margin-top:24px;">
+      <div class="gap-map-heading">NIST AI Risk Management Framework (AI RMF 1.0)</div>
+      <table class="gap-table">
+        <thead>
+          <tr>
+            <th style="width:13%">Function</th>
+            <th style="width:43%">Key requirement</th>
+            <th style="width:13%">Current state</th>
+            <th>Notes / Evidence</th>
+          </tr>
+        </thead>
+        <tbody>
+          <tr>
+            <td class="cat-label">GOVERN</td>
+            <td>AI risk governance roles and responsibilities are defined and assigned.</td>
+            <td><span class="state-slot">{{STATE}}</span></td>
+            <td class="fill-cell"></td>
+          </tr>
+          <tr>
+            <td class="cat-label">GOVERN</td>
+            <td>AI use policy is documented, communicated, and formally acknowledged by staff.</td>
+            <td><span class="state-slot">{{STATE}}</span></td>
+            <td class="fill-cell"></td>
+          </tr>
+          <tr>
+            <td class="cat-label">GOVERN</td>
+            <td>AI vendor contracts include no-train, data-retention, and breach-notification clauses.</td>
+            <td><span class="state-slot">{{STATE}}</span></td>
+            <td class="fill-cell"></td>
+          </tr>
+          <tr>
+            <td class="cat-label">MAP</td>
+            <td>All AI tools in active use — including shadow and unsanctioned tools — are inventoried.</td>
+            <td><span class="state-slot">{{STATE}}</span></td>
+            <td class="fill-cell"></td>
+          </tr>
+          <tr>
+            <td class="cat-label">MAP</td>
+            <td>Risk categorization completed per AI tool: use case, data sensitivity, impact if compromised.</td>
+            <td><span class="state-slot">{{STATE}}</span></td>
+            <td class="fill-cell"></td>
+          </tr>
+          <tr>
+            <td class="cat-label">MEASURE</td>
+            <td>Metrics defined for AI risk: egress rate, AI-related incident rate, guard efficacy.</td>
+            <td><span class="state-slot">{{STATE}}</span></td>
+            <td class="fill-cell"></td>
+          </tr>
+          <tr>
+            <td class="cat-label">MEASURE</td>
+            <td>Monitoring is continuous and automated, not periodic manual point-in-time reviews only.</td>
+            <td><span class="state-slot">{{STATE}}</span></td>
+            <td class="fill-cell"></td>
+          </tr>
+          <tr>
+            <td class="cat-label">MANAGE</td>
+            <td>Incident response plan explicitly covers AI-related events: data egress, model poisoning, shadow AI discovery.</td>
+            <td><span class="state-slot">{{STATE}}</span></td>
+            <td class="fill-cell"></td>
+          </tr>
+          <tr>
+            <td class="cat-label">MANAGE</td>
+            <td>AI tool onboarding and offboarding process defined and followed consistently.</td>
+            <td><span class="state-slot">{{STATE}}</span></td>
+            <td class="fill-cell"></td>
+          </tr>
+        </tbody>
+      </table>
+    </div>
+
+    <div class="gap-map-block">
+      <div class="gap-map-heading">OWASP LLM Top 10 (2025)</div>
+      <table class="gap-table">
+        <thead>
+          <tr>
+            <th style="width:13%">Item</th>
+            <th style="width:43%">Control objective</th>
+            <th style="width:13%">Current state</th>
+            <th>Notes / Evidence</th>
+          </tr>
+        </thead>
+        <tbody>
+          <tr>
+            <td class="cat-label">LLM01</td>
+            <td>Prompt Injection: AI-generated actions are reviewed before execution; injection patterns are monitored and flagged.</td>
+            <td><span class="state-slot">{{STATE}}</span></td>
+            <td class="fill-cell"></td>
+          </tr>
+          <tr>
+            <td class="cat-label">LLM02</td>
+            <td>Sensitive Info Disclosure: Data classification applied before AI submission; secrets categorically excluded.</td>
+            <td><span class="state-slot">{{STATE}}</span></td>
+            <td class="fill-cell"></td>
+          </tr>
+          <tr>
+            <td class="cat-label">LLM03</td>
+            <td>Supply Chain: AI tool vendor security posture reviewed; third-party model and plugin risks assessed.</td>
+            <td><span class="state-slot">{{STATE}}</span></td>
+            <td class="fill-cell"></td>
+          </tr>
+          <tr>
+            <td class="cat-label">LLM06</td>
+            <td>Excessive Agency: AI tools operate under least-privilege; filesystem and API access scoped to minimum required.</td>
+            <td><span class="state-slot">{{STATE}}</span></td>
+            <td class="fill-cell"></td>
+          </tr>
+          <tr>
+            <td class="cat-label">LLM07</td>
+            <td>System Prompt Leakage: Instruction files and system prompts do not contain secrets or credentials.</td>
+            <td><span class="state-slot">{{STATE}}</span></td>
+            <td class="fill-cell"></td>
+          </tr>
+          <tr>
+            <td class="cat-label">LLM08</td>
+            <td>Vector / Embedding: RAG data sources are access-controlled; retrieval scope does not over-permit.</td>
+            <td><span class="state-slot">{{STATE}}</span></td>
+            <td class="fill-cell"></td>
+          </tr>
+          <tr>
+            <td class="cat-label">LLM09</td>
+            <td>Misinformation: AI outputs in customer-facing or high-stakes contexts have a mandatory human review gate.</td>
+            <td><span class="state-slot">{{STATE}}</span></td>
+            <td class="fill-cell"></td>
+          </tr>
+          <tr>
+            <td class="cat-label">LLM10</td>
+            <td>Unbounded Consumption: AI usage costs are monitored; per-user rate limits and budget caps are in place.</td>
+            <td><span class="state-slot">{{STATE}}</span></td>
+            <td class="fill-cell"></td>
+          </tr>
+        </tbody>
+      </table>
+    </div>
+
+    <div class="gap-map-block">
+      <div class="gap-map-heading">ISO/IEC 42001:2023 — AI Management System</div>
+      <table class="gap-table">
+        <thead>
+          <tr>
+            <th style="width:13%">Clause</th>
+            <th style="width:43%">Requirement</th>
+            <th style="width:13%">Current state</th>
+            <th>Notes / Evidence</th>
+          </tr>
+        </thead>
+        <tbody>
+          <tr>
+            <td class="cat-label">4.1 / 4.2</td>
+            <td>Organizational context and stakeholder requirements for AI management understood and documented.</td>
+            <td><span class="state-slot">{{STATE}}</span></td>
+            <td class="fill-cell"></td>
+          </tr>
+          <tr>
+            <td class="cat-label">5.2</td>
+            <td>AI policy established by top management; communicated internally and to relevant external parties.</td>
+            <td><span class="state-slot">{{STATE}}</span></td>
+            <td class="fill-cell"></td>
+          </tr>
+          <tr>
+            <td class="cat-label">6.1</td>
+            <td>AI-related risks and opportunities assessed; risk treatment plan documented and tracked.</td>
+            <td><span class="state-slot">{{STATE}}</span></td>
+            <td class="fill-cell"></td>
+          </tr>
+          <tr>
+            <td class="cat-label">8.4</td>
+            <td>AI system impact assessments completed and documented before deployment of new AI tools or use cases.</td>
+            <td><span class="state-slot">{{STATE}}</span></td>
+            <td class="fill-cell"></td>
+          </tr>
+          <tr>
+            <td class="cat-label">9.1</td>
+            <td>AI management system performance is monitored, measured, analyzed, and evaluated on a defined schedule.</td>
+            <td><span class="state-slot">{{STATE}}</span></td>
+            <td class="fill-cell"></td>
+          </tr>
+          <tr>
+            <td class="cat-label">10.1</td>
+            <td>Nonconformities are identified, corrective actions are taken, and root causes are addressed and documented.</td>
+            <td><span class="state-slot">{{STATE}}</span></td>
+            <td class="fill-cell"></td>
+          </tr>
+        </tbody>
+      </table>
+    </div>
+  </section>
+
+  <!-- ══════════════════════════════════════════════════════
+       SECTION 04 — CONTROL DURABILITY: DEFENSE-IN-DEPTH
+       ══════════════════════════════════════════════════════ -->
+  <section class="section">
+    <div class="section-num">04</div>
+    <h2><span class="bar"></span>Control Durability: Defense-in-Depth Layers</h2>
+    <p class="section-lede">Use this section when discussing with the client what will actually hold under real-world pressure — and what will not. The most common mistake in AI governance is treating instruction files as controls. They are not.</p>
+
+    <div class="depth-intro">
+      <p>Every AI governance control lives at one of four layers, ordered below from weakest to strongest. Understanding this stack determines which gaps are cosmetic and which are structural.</p>
+      <p><strong>Why instruction files alone are insufficient:</strong></p>
+      <ul>
+        <li>They are mutable by the very AI they constrain — an agent with write access to its own configuration can modify or overwrite the rules it operates under.</li>
+        <li>They are mutable by users — a developer under deadline pressure can edit the policy out of the file in seconds, with no audit trail.</li>
+        <li>They are vendor-specific — a CLAUDE.md is invisible to Copilot; a copilot-instructions.md is invisible to Cursor. Switch tools and the governance silently disappears, unless the same policy is written into every vendor's instruction file.</li>
+        <li>They are unmonitored — without a detective layer, nobody knows if the file has been changed, emptied, or if a new tool is in use that ignores it entirely.</li>
+      </ul>
+      <p>Build all four layers. Never treat any single layer as sufficient on its own.</p>
+    </div>
+
+    <div class="layer-stack">
+
+      <div class="layer layer-advisory">
+        <div class="layer-header">
+          <div class="layer-badge layer-badge-advisory">Layer 1</div>
+          <div class="layer-name">Advisory</div>
+          <div class="layer-strength">Weakest — necessary, not sufficient</div>
+        </div>
+        <div class="layer-body">
+          <p><strong>What it is:</strong> Instruction files (CLAUDE.md, AGENTS.md, .cursorrules, Copilot system prompts) that direct the AI's behavior. Also: developer training, written policy, and awareness programs.</p>
+          <p><strong>What it provides:</strong> Improved defaults. A well-written instruction file reduces casual misuse and communicates intent. It is the lowest-cost layer to implement and should be the first one in place.</p>
+          <p><strong>What it does not provide:</strong> Enforcement. The AI can be instructed to ignore it. The user can delete it. A different AI tool will not see it. There is no alert when it is changed.</p>
+          <p><strong>Do this anyway, and do it deliberately:</strong> Write the same core policy into every vendor's instruction file so that a tool switch does not silently drop governance. A CLAUDE.md and a .cursorrules that say the same thing mean that switching from one to the other does not create a policy vacuum.</p>
+          <div class="layer-examples">
+            <div class="layer-example-label">Examples in practice</div>
+            <ul>
+              <li>CLAUDE.md rule: "Never read credential files. Never include secrets in prompts. Always ask before writing to production paths."</li>
+              <li>Copilot system prompt: "Do not suggest code that accesses production databases directly without explicit authorization."</li>
+              <li>Developer onboarding checklist: "Read the AI Use Policy before using any AI coding tool. Acknowledge annually."</li>
+            </ul>
+          </div>
+        </div>
+      </div>
+
+      <div class="layer layer-enforcing">
+        <div class="layer-header">
+          <div class="layer-badge layer-badge-enforcing">Layer 2</div>
+          <div class="layer-name">Enforcing</div>
+          <div class="layer-strength">Medium — blocks common violation paths</div>
+        </div>
+        <div class="layer-body">
+          <p><strong>What it is:</strong> Technical controls that block prohibited actions at the tool or operating-system level. Hooks that intercept and reject actions before they execute. File-system permissions that prevent writes. Least-privilege credential scoping. A secret broker so the agent never holds the real credential.</p>
+          <p><strong>What it provides:</strong> Real enforcement for the actions it covers. A hook that blocks writes to production paths will block them even if the instruction file has been deleted, and even if the developer forgot the policy exists.</p>
+          <p><strong>What it does not provide:</strong> Coverage of paths not explicitly blocked. A hook on tool A does not protect tool B. Enforcing controls require maintenance as tools, paths, and workflows change.</p>
+          <div class="layer-examples">
+            <div class="layer-example-label">Examples in practice</div>
+            <ul>
+              <li>GLMPS live-install guard: a PreToolUse hook intercepts filesystem writes to registered production paths and blocks them unless the deploy bypass is explicitly active.</li>
+              <li>Secret broker (HashiCorp Vault, AWS Secrets Manager): the agent requests a time-limited, scoped token at runtime and never holds the root credential.</li>
+              <li>OS file permissions: credential files (e.g., ~/.aws/credentials, .env) set to read-only by owner, not accessible by the agent's effective user.</li>
+              <li>GLMPS file-API denylist: the API refuses to read or write secret-pattern paths even when they fall inside an otherwise-allowed root directory.</li>
+            </ul>
+          </div>
+        </div>
+      </div>
+
+      <div class="layer layer-environment">
+        <div class="layer-header">
+          <div class="layer-badge layer-badge-environment">Layer 3</div>
+          <div class="layer-name">Environment</div>
+          <div class="layer-strength">Strong — bad output cannot ship regardless of what the agent did locally</div>
+        </div>
+        <div class="layer-body">
+          <p><strong>What it is:</strong> Infrastructure controls that constrain outcomes independently of what the AI or user does on their local machine. CI/CD gates and branch protection that block AI-generated code from reaching production without a human review. A managed dev container with policy and tooling baked into the image. A network-level egress or DLP proxy that inspects outbound traffic for sensitive data patterns.</p>
+          <p><strong>What it provides:</strong> Outcome protection. Even if the AI produces something harmful and the developer commits it, the CI gate catches it before it ships. Even if an instruction file is deleted locally, the dev container reinstalls it on the next build.</p>
+          <p><strong>What it does not provide:</strong> Visibility into what happened locally before the gate. A developer can still paste secrets into a prompt; the CI gate catches the output, not the input.</p>
+          <div class="layer-examples">
+            <div class="layer-example-label">Examples in practice</div>
+            <ul>
+              <li>Branch protection: no direct pushes to main; required PR review from a human who did not author or co-author the code with AI.</li>
+              <li>CI secret scanning: Trufflehog or GitGuardian in the pipeline; blocks any commit containing a detected secret pattern before merge.</li>
+              <li>Dev container: GLMPS installed in the base image; policy files present and protected; container rebuild restores them on next start.</li>
+              <li>Egress DLP proxy: inspects outbound HTTPS for PII or proprietary data signatures; alerts on or blocks submissions matching defined patterns.</li>
+            </ul>
+          </div>
+        </div>
+      </div>
+
+      <div class="layer layer-detective">
+        <div class="layer-header">
+          <div class="layer-badge layer-badge-detective">Layer 4</div>
+          <div class="layer-name">Detective</div>
+          <div class="layer-strength">Strongest — closes the loop; catches drift, new tools, and control failure</div>
+        </div>
+        <div class="layer-body">
+          <p><strong>What it is:</strong> Continuous monitoring that verifies the other three layers are still in place, unmodified, and covering whatever AI tools are actually in use — and that alerts when they are not. This is the role GLMPS fills.</p>
+          <p><strong>What it provides:</strong> Durability for the whole stack. Without a detective layer, you do not know when a developer adds a new unmanaged AI tool, when an instruction file is emptied, when a hook is disabled, or when egress has increased since the baseline assessment. Detective controls are the only layer that can catch what was not anticipated during setup.</p>
+          <p><strong>What it does not provide:</strong> Prevention. A detective control generates an alert after the fact. For the highest-severity risks — production secret exposure, for example — pair it with enforcing or environment controls so detection does not arrive too late to matter.</p>
+          <div class="layer-examples">
+            <div class="layer-example-label">Examples in practice</div>
+            <ul>
+              <li>GLMPS continuous session monitoring: every AI agent session captured across harnesses, classified by zone and tool, surfaced in the session map. New or unmanaged tools appear immediately.</li>
+              <li>GLMPS alert center: egress events, zone violations, quarantined injection flags, and guard-status changes generate real-time alerts routed to the designated channel.</li>
+              <li>Memory integrity scan (GET /api/memory/scan): verifies GLMPS memory and configuration files have not been modified by injected content or unauthorized edits.</li>
+              <li>Quarterly AI posture review: compares current-state metrics against the baseline established in Phase 1; surfaces drift, new gaps, and guard efficacy since the last review.</li>
+            </ul>
+          </div>
+        </div>
+      </div>
+
+    </div>
+
+    <div class="depth-callout">
+      <div class="depth-callout-icon">
+        <svg width="22" height="22" viewBox="0 0 24 24" fill="none" aria-hidden="true">
+          <path d="M12 2L2 7l10 5 10-5-10-5zM2 17l10 5 10-5M2 12l10 5 10-5" stroke="#2563eb" stroke-width="2" stroke-linecap="round" stroke-linejoin="round"/>
+        </svg>
+      </div>
+      <div class="depth-callout-body">
+        <strong>The principle to leave with the client:</strong> Instruction-file edits are advisory, not controls. Governance with real teeth lives at the layers the agent cannot rewrite — enforcing hooks at Layer 2, CI/environment gates at Layer 3, and continuous monitoring at Layer 4. Layer 1 is the floor; it is not the ceiling.
+      </div>
+    </div>
+  </section>
+
+  <!-- ══════════════════════════════════════════════════════
+       SECTION 05 — PRIORITIZED REMEDIATION LIST
+       ══════════════════════════════════════════════════════ -->
+  <section class="section">
+    <div class="section-num">05</div>
+    <h2><span class="bar"></span>Prioritized Remediation List</h2>
+    <p class="section-lede">Populate this table from the standards gap-map (§03) and assessment findings. Sort by Severity — Critical first. Assign owners and target dates with the client at the Phase 2 kickoff. Update Status at each check-in.</p>
+    <em class="guidance">Severity: <strong>Critical</strong> — active risk, remediate immediately. <strong>High</strong> — within 30 days. <strong>Medium</strong> — within 90 days. <strong>Low</strong> — within 6 months or formally accept. Every GAP or PARTIAL from §03 should appear here.</em>
+
+    <table class="remediation-table" style="margin-top:20px;">
+      <thead>
+        <tr>
+          <th style="width:4%">#</th>
+          <th style="width:30%">Finding</th>
+          <th style="width:10%">Severity</th>
+          <th style="width:13%">Standard ref.</th>
+          <th style="width:14%">Owner</th>
+          <th style="width:13%">Target date</th>
+          <th style="width:16%">Status</th>
+        </tr>
+      </thead>
+      <tbody>
+        <tr>
+          <td>1</td>
+          <td><span class="slot">{{FINDING}}</span></td>
+          <td><span class="sev sev-critical">Critical</span></td>
+          <td><span class="slot">{{REF}}</span></td>
+          <td><span class="slot">{{OWNER}}</span></td>
+          <td><span class="slot">{{DATE}}</span></td>
+          <td><span class="status-open">Open</span></td>
+        </tr>
+        <tr>
+          <td>2</td>
+          <td><span class="slot">{{FINDING}}</span></td>
+          <td><span class="sev sev-critical">Critical</span></td>
+          <td><span class="slot">{{REF}}</span></td>
+          <td><span class="slot">{{OWNER}}</span></td>
+          <td><span class="slot">{{DATE}}</span></td>
+          <td><span class="status-open">Open</span></td>
+        </tr>
+        <tr>
+          <td>3</td>
+          <td><span class="slot">{{FINDING}}</span></td>
+          <td><span class="sev sev-high">High</span></td>
+          <td><span class="slot">{{REF}}</span></td>
+          <td><span class="slot">{{OWNER}}</span></td>
+          <td><span class="slot">{{DATE}}</span></td>
+          <td><span class="status-open">Open</span></td>
+        </tr>
+        <tr>
+          <td>4</td>
+          <td><span class="slot">{{FINDING}}</span></td>
+          <td><span class="sev sev-high">High</span></td>
+          <td><span class="slot">{{REF}}</span></td>
+          <td><span class="slot">{{OWNER}}</span></td>
+          <td><span class="slot">{{DATE}}</span></td>
+          <td><span class="status-open">Open</span></td>
+        </tr>
+        <tr>
+          <td>5</td>
+          <td><span class="slot">{{FINDING}}</span></td>
+          <td><span class="sev sev-medium">Medium</span></td>
+          <td><span class="slot">{{REF}}</span></td>
+          <td><span class="slot">{{OWNER}}</span></td>
+          <td><span class="slot">{{DATE}}</span></td>
+          <td><span class="status-open">Open</span></td>
+        </tr>
+        <tr>
+          <td>6</td>
+          <td><span class="slot">{{FINDING}}</span></td>
+          <td><span class="sev sev-medium">Medium</span></td>
+          <td><span class="slot">{{REF}}</span></td>
+          <td><span class="slot">{{OWNER}}</span></td>
+          <td><span class="slot">{{DATE}}</span></td>
+          <td><span class="status-open">Open</span></td>
+        </tr>
+        <tr>
+          <td>7</td>
+          <td><span class="slot">{{FINDING}}</span></td>
+          <td><span class="sev sev-low">Low</span></td>
+          <td><span class="slot">{{REF}}</span></td>
+          <td><span class="slot">{{OWNER}}</span></td>
+          <td><span class="slot">{{DATE}}</span></td>
+          <td><span class="status-open">Open</span></td>
+        </tr>
+        <tr class="add-row">
+          <td colspan="7"><em>Add rows as needed. Every GAP or PARTIAL from the standards gap-map (§03) and every unchecked item from the guardrail checklist (§02) should appear here.</em></td>
+        </tr>
+      </tbody>
+    </table>
+  </section>
+
+  <footer class="doc-footer">
+    <div>GLMPS AI Readiness &amp; Governance Audit &middot; Governance Starter Kit &middot; <span class="slot">{{CLIENT_NAME}}</span> &middot; Prepared <span class="slot">{{DATE}}</span></div>
+    <div>Confidential — prepared for <span class="slot">{{CLIENT_NAME}}</span> only. Do not distribute without written permission from <span class="slot">{{CONSULTANT_NAME}}</span>.</div>
+  </footer>
+
+</div>
+</body>
+</html>

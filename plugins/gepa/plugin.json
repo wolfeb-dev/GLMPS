@@ -1,0 +1,3 @@
+{ "name": "gepa", "contract": "proposer@1",
+  "upstream": [ { "kind": "pypi", "name": "gepa", "version": "0.1.4", "files": ["gepa/**", "gepa-0.1.4.dist-info/**"], "license": "MIT" } ],
+  "shims": {}, "patches": [] }

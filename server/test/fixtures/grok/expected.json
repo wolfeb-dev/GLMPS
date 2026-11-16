@@ -1,0 +1,22 @@
+{
+  "events": [
+    {
+      "kind": "tool",
+      "lane": "feed",
+      "tool": "user",
+      "path": null,
+      "ts": "2026-05-01T10:00:01.000Z",
+      "sessionId": "golden",
+      "label": "User: fix i18n keys and keep the ko workspace"
+    },
+    {
+      "kind": "tool",
+      "lane": "feed",
+      "tool": "user",
+      "path": null,
+      "ts": "2026-05-01T10:04:00.000Z",
+      "sessionId": "golden",
+      "label": "User: also bump the changelog"
+    }
+  ]
+}

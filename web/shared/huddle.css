@@ -1,0 +1,185 @@
+/* web/shared/huddle.css - the huddle dock. House tokens only (styles.css). */
+/* #huddle-dock (.dock-root in styles.css) is the last in-flow row of the body column, right aligned, z-index 40.
+   The launcher is its only in-flow child; the panel is positioned off it.
+   Design call: the one memorable element is the roster strip. Each mind is a
+   pill outlined in its stage hue; thinking is a dashed outline, speaking fills
+   and pulses. Everything else stays quiet: operator lines in the data face
+   (Fira Code), minds in Outfit, the model named under each line. */
+.huddle-launch {
+  display: block;
+  margin-left: auto;
+  padding: var(--sp-1) var(--sp-3);
+  font: 500 var(--fs-small) 'Outfit', sans-serif;
+  color: var(--fg);
+  background: var(--muted);
+  border: 1px solid var(--border);
+  border-radius: 6px;
+  cursor: pointer;
+}
+.huddle-launch:hover { border-color: var(--primary); }
+.huddle-launch:focus-visible, .huddle-pick input:focus-visible, .huddle-chip:focus-visible, .huddle-mute:focus-visible, .huddle-btn:focus-visible, .huddle-send:focus-visible, .huddle-input:focus-visible { outline: 2px solid var(--primary); outline-offset: 2px; }
+
+.huddle-dock {
+  position: absolute;
+  right: 0;
+  bottom: calc(100% + var(--sp-2));
+  width: min(880px, calc(100vw - 2 * var(--sp-4)));
+  max-height: min(80vh, 760px);
+  display: flex;
+  flex-direction: column;
+  gap: var(--sp-2);
+  padding: var(--sp-3);
+  background: var(--bg);
+  background-image: linear-gradient(var(--card), var(--card));
+  border: 1px solid var(--border);
+  border-radius: 10px;
+  box-shadow: 0 12px 40px rgba(0, 0, 0, 0.45);
+  color: var(--fg);
+}
+.huddle-dock.hidden { display: none; }
+
+/* 1. The seat row: one cell per seat. A face in the seat's hue, name, role and model, the speaking
+   state in words (never colour alone), and a mute toggle. thinking is dashed, speaking fills and
+   pulses, muted is neutral and struck back; a seat on another engine has a dotted outline. */
+.huddle-strip { flex: 0 0 auto; display: grid; grid-template-columns: repeat(auto-fit, minmax(190px, 1fr)); gap: var(--sp-1); }
+.huddle-seat { display: flex; align-items: stretch; min-width: 0; border: 1px solid var(--chip-hue); border-radius: 8px; transition: opacity 0.15s, background-color 0.15s; }
+.huddle-seat[data-seat] { border-style: dotted; }
+.huddle-seat[data-state="thinking"] { border-style: dashed; }
+.huddle-seat[data-state="speaking"] { background: color-mix(in srgb, var(--chip-hue) 22%, transparent); animation: huddle-pulse 1.2s ease-in-out infinite; }
+.huddle-seat[data-state="muted"] { border-color: var(--border); border-style: solid; opacity: 0.7; }
+.huddle-chip {
+  flex: 1 1 auto;
+  min-width: 0;
+  display: grid;
+  grid-template-columns: auto 1fr;
+  grid-template-areas: "face text" "face state";
+  column-gap: var(--sp-2);
+  align-items: center;
+  padding: 3px var(--sp-2);
+  text-align: left;
+  font: 500 var(--fs-micro) 'Outfit', sans-serif;
+  color: var(--fg);
+  background: transparent;
+  border: 0;
+  border-radius: 8px 0 0 8px;
+  cursor: pointer;
+}
+.huddle-chip:hover:not(:disabled) { background: color-mix(in srgb, var(--chip-hue) 12%, transparent); }
+.huddle-chip:disabled { cursor: default; }
+.huddle-face { grid-area: face; display: inline-grid; place-items: center; width: 28px; height: 28px; border-radius: 50%; border: 1px solid var(--chip-hue); font: 600 var(--fs-small) 'Outfit', sans-serif; }
+.huddle-seat-text { grid-area: text; display: flex; flex-direction: column; min-width: 0; }
+.huddle-seat-name { font: 600 var(--fs-small) 'Outfit', sans-serif; overflow: hidden; text-overflow: ellipsis; white-space: nowrap; }
+.huddle-seat-meta { font: 400 var(--fs-micro) 'Fira Code', monospace; line-height: 1.25; color: var(--muted-fg); overflow-wrap: anywhere; }
+.huddle-seat-state { grid-area: state; font: 500 var(--fs-micro) 'Fira Code', monospace; color: var(--muted-fg); }
+.huddle-seat[data-state="thinking"] .huddle-seat-state, .huddle-seat[data-state="speaking"] .huddle-seat-state { color: var(--fg); }
+.huddle-mute { flex: 0 0 auto; padding: 0 var(--sp-2); font: 500 var(--fs-micro) 'Outfit', sans-serif; color: var(--fg); background: transparent; border: 0; border-left: 1px solid var(--border); border-radius: 0 8px 8px 0; cursor: pointer; }
+.huddle-mute[hidden] { display: none; }
+.huddle-mute:hover:not(:disabled) { background: var(--muted); }
+.huddle-mute[aria-pressed="true"] { background: var(--muted); }
+.huddle-mute:disabled { opacity: 0.5; cursor: default; }
+@keyframes huddle-pulse { 50% { box-shadow: 0 0 0 4px color-mix(in srgb, var(--chip-hue) 25%, transparent); } }
+
+/* The body: captions on the left, the agenda column on the right. */
+.huddle-body { flex: 1 1 auto; min-height: 0; display: grid; grid-template-columns: minmax(0, 1fr) minmax(220px, 280px); gap: var(--sp-2); }
+.huddle-main { min-width: 0; min-height: 0; display: flex; flex-direction: column; gap: var(--sp-2); }
+.huddle-agenda { min-width: 0; min-height: 0; overflow-y: auto; display: flex; flex-direction: column; gap: var(--sp-2); padding: var(--sp-2); border-left: 2px solid var(--st-orch); background: var(--muted); font-size: var(--fs-small); }
+.huddle-agenda-head { display: flex; align-items: center; justify-content: space-between; gap: var(--sp-2); }
+.huddle-agenda-head .huddle-dhead { margin: 0; }
+.huddle-agenda-question { margin: 0; font: 600 var(--fs-base) 'Outfit', sans-serif; line-height: 1.35; overflow-wrap: anywhere; }
+.huddle-agenda-question[hidden] { display: none; }
+.huddle-agenda-list { margin: 0; padding-left: var(--sp-4); display: flex; flex-direction: column; gap: var(--sp-2); }
+.huddle-agenda-item { line-height: 1.35; overflow-wrap: anywhere; }
+.huddle-agenda-item::marker { font: 600 var(--fs-small) 'Fira Code', monospace; }
+.huddle-agenda-text { display: block; }
+.huddle-agenda-lean { display: block; font-size: var(--fs-micro); color: var(--muted-fg); }
+.huddle-agenda-done { display: inline-block; margin-top: 2px; padding: 0 var(--sp-1); font: 500 var(--fs-micro) 'Fira Code', monospace; border: 1px solid var(--border); border-radius: 4px; }
+.huddle-agenda-answered .huddle-agenda-text { text-decoration: line-through; color: var(--muted-fg); }
+.huddle-agenda-note { margin: 0; font-size: var(--fs-micro); color: var(--muted-fg); }
+.huddle-agenda-note[data-level="error"] { color: var(--destructive-strong); }
+.huddle-agenda-toggle { display: none; }
+
+/* 2. Live captions: the operator in the data face, the minds in Outfit; each line names its model. */
+.huddle-captions { flex: 1 1 auto; min-height: 120px; min-width: 0; overflow-y: auto; display: flex; flex-direction: column; gap: var(--sp-2); font-size: var(--fs-base); }
+.huddle-log { display: flex; flex-direction: column; gap: var(--sp-2); }
+.huddle-empty[hidden], .huddle-partial:empty { display: none; }
+.huddle-empty { margin: auto; max-width: 28ch; text-align: center; font-size: var(--fs-small); color: var(--muted-fg); }
+.huddle-line { display: grid; grid-template-columns: 72px 1fr; gap: 2px var(--sp-2); align-items: baseline; }
+.huddle-who { font: 500 var(--fs-micro) 'Fira Code', monospace; color: var(--line-hue); text-transform: lowercase; overflow-wrap: anywhere; }
+.huddle-text { font-family: 'Outfit', sans-serif; line-height: 1.4; overflow-wrap: anywhere; }
+.huddle-model { grid-column: 2; font: 400 var(--fs-micro) 'Fira Code', monospace; color: var(--fg); }
+.huddle-line-operator .huddle-text { font-family: 'Fira Code', monospace; font-size: var(--fs-small); }
+.huddle-line-partial .huddle-text { opacity: 0.7; }
+.huddle-line-truncated .huddle-text { text-decoration: line-through dotted; }
+.huddle-line-pass .huddle-text { color: var(--muted-fg); font-style: italic; }
+.huddle-line-error .huddle-text { color: var(--destructive-strong); }
+/* Outside material: a visible text label (never colour alone) and a dashed rule. */
+.huddle-line-outside { border-left: 2px dashed var(--line-hue); padding-left: var(--sp-2); }
+.huddle-outside { grid-column: 2; font: 500 var(--fs-micro) 'Fira Code', monospace; color: var(--fg); }
+.huddle-summary { margin-top: var(--sp-2); padding: var(--sp-2); font-size: var(--fs-small); border-left: 2px solid var(--primary); background: var(--muted); }
+.huddle-summary-text { line-height: 1.45; white-space: pre-wrap; overflow-wrap: anywhere; }
+.huddle-status { min-height: 1em; font-size: var(--fs-micro); color: var(--fg); }
+.huddle-status[data-level="error"] { color: var(--destructive-strong); }
+/* Ending can take up to 10 seconds: the status line carries a slow sweep so the dock never looks hung. */
+.huddle-status[data-busy="true"] { color: var(--fg); background: linear-gradient(90deg, transparent, color-mix(in srgb, var(--primary) 25%, transparent), transparent) 0 100% / 40% 2px no-repeat; animation: huddle-sweep 1.6s linear infinite; }
+@keyframes huddle-sweep { from { background-position: -40% 100%; } to { background-position: 140% 100%; } }
+
+/* Decisions: under the captions, capped so the input and controls stay on screen. The
+   left rule borrows the summary's idiom; the one filled button is the commit action. */
+.huddle-decide { flex: 0 1 auto; max-height: 40%; min-height: 0; display: flex; flex-direction: column; gap: var(--sp-1); padding: var(--sp-2); border-left: 2px solid var(--st-commit); background: var(--muted); font-size: var(--fs-small); }
+.huddle-decide[hidden] { display: none; }
+.huddle-decide-body { overflow-y: auto; display: flex; flex-direction: column; gap: var(--sp-2); min-height: 0; }
+.huddle-dhead { margin: 0 0 2px; font: 500 var(--fs-micro) 'Fira Code', monospace; color: var(--muted-fg); }
+.huddle-dlist { margin: 0; padding-left: var(--sp-3); line-height: 1.4; }
+.huddle-dlist li { overflow-wrap: anywhere; }
+.huddle-pick { display: flex; gap: var(--sp-2); align-items: baseline; line-height: 1.4; cursor: pointer; }
+.huddle-pick-text { overflow-wrap: anywhere; }
+.huddle-dnone { color: var(--muted-fg); }
+.huddle-kick { display: flex; flex-wrap: wrap; gap: var(--sp-1); align-items: center; }
+.huddle-project { display: inline-flex; align-items: center; gap: var(--sp-1); flex: 1 1 100%; font: 400 var(--fs-small) 'Outfit', sans-serif; color: var(--muted-fg, var(--fg)); }
+.huddle-project-select { flex: 1; min-width: 0; padding: var(--sp-1) var(--sp-2); font: 500 var(--fs-small) 'Outfit', sans-serif; color: var(--fg); background: var(--muted); border: 1px solid var(--border); border-radius: 6px; }
+.huddle-project-select:focus-visible { outline: 2px solid var(--primary); outline-offset: 2px; }
+.huddle-talk[data-live="true"] { border-color: var(--st-exec); background: color-mix(in srgb, var(--st-exec) 22%, var(--muted)); animation: huddle-pulse 1.2s ease-in-out infinite; --chip-hue: var(--st-exec); }
+.huddle-btn-go { border-color: var(--primary); }
+.huddle-btn[aria-pressed="true"] { border-color: var(--primary); background: color-mix(in srgb, var(--primary) 22%, var(--muted)); }
+
+/* 3. Controls: the mic sits in the input row; voices, interrupt, decide, file that, end and save below. */
+.huddle-form { display: flex; gap: var(--sp-1); align-items: stretch; }
+.huddle-input { flex: 1 1 auto; resize: vertical; padding: var(--sp-1) var(--sp-2); font: 400 var(--fs-base) 'Fira Code', monospace; color: var(--fg); background: var(--muted); border: 1px solid var(--border); border-radius: 6px; }
+.huddle-send, .huddle-btn { padding: var(--sp-1) var(--sp-2); font: 500 var(--fs-small) 'Outfit', sans-serif; color: var(--fg); background: var(--muted); border: 1px solid var(--border); border-radius: 6px; cursor: pointer; }
+.huddle-btn:hover:not(:disabled) { border-color: var(--primary); }
+.huddle-send { background: var(--primary); color: var(--bg); border-color: var(--primary); }
+.huddle-send:disabled, .huddle-btn:disabled, .huddle-input:disabled { opacity: 0.5; cursor: default; }
+.huddle-controls { display: flex; flex-wrap: wrap; gap: var(--sp-1); justify-content: flex-end; }
+.huddle-btn-end { border-color: var(--destructive); }
+/* End and save: a modal with the four-part record. */
+.huddle-record { position: fixed; inset: 0; margin: auto; width: min(560px, calc(100vw - 2 * var(--sp-4))); max-height: 85vh; padding: var(--sp-3); color: var(--fg); background: var(--bg); background-image: linear-gradient(var(--card), var(--card)); border: 1px solid var(--border); border-radius: 10px; box-shadow: 0 12px 40px rgba(0, 0, 0, 0.45); }
+.huddle-record[open] { display: flex; flex-direction: column; gap: var(--sp-2); }
+.huddle-record::backdrop { background: rgba(0, 0, 0, 0.55); }
+.huddle-record-title { margin: 0; font: 600 var(--fs-base) 'Outfit', sans-serif; }
+.huddle-record-state { margin: 0; min-height: 1.2em; font-size: var(--fs-small); }
+.huddle-record-state[data-level="error"] { color: var(--destructive-strong); }
+.huddle-record-body { flex: 1 1 auto; min-height: 0; overflow-y: auto; display: flex; flex-direction: column; gap: var(--sp-2); padding: var(--sp-2); border-left: 2px solid var(--st-commit); background: var(--muted); font-size: var(--fs-small); }
+.huddle-record-problem { line-height: 1.4; overflow-wrap: anywhere; }
+.huddle-against { display: block; font-size: var(--fs-micro); color: var(--muted-fg); }
+
+/* Narrow: the agenda is secondary, so it stacks under the captions behind a toggle,
+   the seats go two to a row, and every target is at least 44px. */
+@media (max-width: 720px) {
+  .huddle-body { grid-template-columns: minmax(0, 1fr); }
+  .huddle-agenda { display: none; max-height: 30vh; }
+  .huddle-agenda[data-open="true"] { display: flex; }
+  .huddle-agenda-toggle { display: inline-block; }
+  .huddle-strip { grid-template-columns: repeat(2, minmax(0, 1fr)); }
+  .huddle-seat-meta { display: none; }
+  .huddle-dock { max-height: 78vh; }
+}
+/* Touch targets on narrow screens (the repo's own 560px breakpoint). */
+@media (max-width: 560px) {
+  .huddle-launch, .huddle-send, .huddle-btn, .huddle-chip, .huddle-mute, .huddle-project-select { min-height: 44px; }
+  .huddle-mute { min-width: 44px; }
+  .huddle-pick input { min-width: 24px; min-height: 24px; }
+}
+@media (prefers-reduced-motion: reduce) {
+  .huddle-seat[data-state="speaking"], .huddle-talk[data-live="true"], .huddle-status[data-busy="true"] { animation: none; }
+  .huddle-seat { transition: none; }
+}

@@ -1,0 +1,55 @@
+{
+  "_comment": "Per-client governance baseline template. Copy to the client project root as 'governance-baseline.json' and fill in real values. GLMPS reads this file from the project root (or from config.governanceBaseline if you want a non-default path). Do NOT commit this example file as an active baseline — it would fire drift alerts on every machine that lacks these exact files.",
+
+  "client": "Acme Corp (optional label — appears in report exports)",
+
+  "requiredFiles": [
+    {
+      "label": "Claude Code project policy",
+      "path": "CLAUDE.md",
+      "tool": "claude-code",
+      "_note": "sha256 is optional. When present a content-hash mismatch triggers a 'guardrail-modified' critical. Omit to check presence only.",
+      "sha256": "INSERT_SHA256_HEX_HERE_OR_REMOVE_THIS_FIELD"
+    },
+    {
+      "label": "Cross-tool agent policy",
+      "path": "AGENTS.md",
+      "tool": "*",
+      "_note": "No sha256 here — presence check only."
+    },
+    {
+      "label": "GitHub Copilot instructions",
+      "path": ".github/copilot-instructions.md",
+      "tool": "copilot"
+    },
+    {
+      "label": "Cursor AI rules",
+      "path": ".cursor/rules/policy.mdc",
+      "tool": "cursor-native"
+    }
+  ],
+
+  "requiredHooks": [
+    {
+      "label": "Live-install write guard (Claude Code PreToolUse)",
+      "settingsFile": ".claude/settings.json",
+      "match": "live-install-guard",
+      "event": "PreToolUse",
+      "_note": "GLMPS checks that settingsFile exists and contains the 'match' string. If either is false the hook is considered missing."
+    },
+    {
+      "label": "Done-gate Stop hook",
+      "settingsFile": ".claude/settings.json",
+      "match": "done-gate"
+    }
+  ],
+
+  "_coveredTools_note": "List every AI tool the client uses. Any tool with live GLMPS sessions NOT in this list fires a 'tool-uncovered' warning — the 'what if they switch AI vendor' detector.",
+  "coveredTools": [
+    "claude-code",
+    "copilot-chat",
+    "cursor-native",
+    "gemini-cli",
+    "codex-cli"
+  ]
+}

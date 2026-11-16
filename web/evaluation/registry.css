@@ -1,0 +1,605 @@
+/* Capability Registry (Evolution pillar View 2, glmps-138 Task 6)
+   One unified, filterable table over every capability kind. Reuses house
+   tokens (--sp-1..4, --fs-micro..xl, --primary/--success/--warning/
+   --muted-fg/--border/--card/--fg) and existing component classes
+   (.an-panel/.an-panel-title/.an-empty/.an-root/.an-totals/.an-stat/
+   .exp-header/.exp-header-title/.chip) from styles.css. Visual language
+   mirrors evaluation/scoreboard.css's .sb-row grid-row convention (here:
+   .rg-row) and evaluation/research-candidates.css's action-button tint
+   convention (here: .rg-action-btn--<variant>), only genuinely new pieces
+   get new classes, all under the rg- prefix.
+
+   Color notes (glmps-91 convention, see styles.css :root comment): rust
+   (--destructive) reads only ~2.6-3:1 on this theme's dark teal panels,
+   below the accessible floor for foreground text, so reject/deprecated/
+   retired TEXT uses the literal var(--destructive) (already established via
+   .exp-verdict-badge--reject / .sb-decision--reject / .rc-action-btn--retire)
+   instead of var(--destructive) directly. Every tinted chip/button
+   background below reuses an rgba() value already used for the same
+   semantic hue elsewhere in this pillar, nothing here is a new color. */
+
+/* Fill the view height and let ONLY the list (.rg-table-scroll) scroll, so
+   the header strip, tiled deck, and filter toolbar stay pinned and the list
+   gets every remaining pixel. */
+.rg-root {
+  padding: var(--sp-4);
+  height: 100%;
+  width: 100%;
+  min-height: 0;
+  display: flex;
+  flex-direction: column;
+  gap: var(--sp-3);
+  overflow: hidden;
+}
+
+/* Summary tiles
+   Full-width per-kind panel of full-size stat tiles (guard/skill/memory/...),
+   each an .an-stat that grows to fill the row (flex:1). Kept as an .an-panel
+   so it reads as one pinned strip above the deck, matching the rest of the
+   pillar's stat strips. */
+.rg-summary .an-totals { flex-wrap: wrap; }
+
+/* Tiled info/action deck
+   Wide digest cell (2fr, values in an internal 2-column grid) + a narrow side
+   column (1fr) where the two short action panels stack. Keeps the deck short
+   so the list gets the height, instead of a tall full-width digest.
+   align-items:stretch so the digest panel matches the row height set by the
+   two stacked side tiles (research scanner + shared memory), instead of
+   sitting short at its natural height. */
+.rg-deck {
+  display: grid;
+  grid-template-columns: minmax(0, 2fr) minmax(230px, 1fr);
+  gap: var(--sp-3);
+  align-items: stretch;
+}
+.rg-deck-side { display: flex; flex-direction: column; gap: var(--sp-3); }
+
+/* Memory digest
+   Read-only key/value list, same row-idiom as .rg-row (border-bottom
+   separators, no borders on the container itself) and the same
+   label-muted/value-monospace pairing as .an-rank-name/.an-rank-val and
+   .an-donut-legend-val elsewhere in this pillar. Scoped under
+   .rg-digest-panel so the generic .digest/.k/.v class names (shared verbatim
+   with the render function) never leak into another view. */
+/* Values render in a 2-column grid inside the wide deck cell, so 6 metrics
+   read as 3 short rows rather than 6 full-width ones (keeps the deck short so
+   the list gets the height). Collapses to a single column on narrow screens. */
+.rg-digest-panel .digest {
+  list-style: none;
+  margin: 0;
+  padding: 0;
+  display: grid;
+  grid-template-columns: repeat(2, minmax(0, 1fr));
+  column-gap: var(--sp-4);
+}
+.rg-digest-panel .digest li {
+  display: flex;
+  align-items: baseline;
+  justify-content: space-between;
+  gap: var(--sp-3);
+  padding: var(--sp-1) 0;
+  border-bottom: 1px solid var(--border);
+  font-size: var(--fs-small);
+}
+/* Bottom row of the 2-column grid (last two items) carries no separator. */
+.rg-digest-panel .digest li:nth-last-child(-n+2) { border-bottom: none; }
+.rg-digest-panel .digest .k { color: var(--muted-fg); }
+.rg-digest-panel .digest .v {
+  color: var(--fg);
+  font-weight: 600;
+  font-family: ui-monospace, SFMono-Regular, Menlo, Consolas, monospace;
+  text-align: right;
+}
+
+/* Filter toolbar
+   One compact wrapping row (kind group, state group, search) directly above
+   the list, replacing the old three-row stacked column that ate height. */
+.rg-filterbar {
+  display: flex;
+  flex-wrap: wrap;
+  align-items: center;
+  gap: var(--sp-2) var(--sp-3);
+  background: var(--card);
+  border: 1px solid var(--border);
+  border-radius: 14px;
+  padding: var(--sp-2) var(--sp-3);
+}
+
+.rg-filter-group { display: flex; align-items: center; flex-wrap: wrap; gap: var(--sp-1); }
+.rg-filter-group-label {
+  font-size: var(--fs-micro);
+  text-transform: uppercase;
+  letter-spacing: 0.07em;
+  font-weight: 700;
+  color: var(--muted-fg);
+  margin-right: 2px;
+}
+
+.rg-filter-row { display: flex; flex-wrap: wrap; gap: var(--sp-1); }
+
+.rg-filter-chip {
+  font-family: inherit;
+  font-size: var(--fs-small);
+  padding: 5px 12px;
+  border-radius: 999px;
+  border: 1px solid var(--border);
+  background: var(--muted);
+  color: var(--muted-fg);
+  white-space: nowrap;
+  transition: background 0.12s, border-color 0.12s, color 0.12s;
+}
+.rg-filter-chip:hover { background: rgb(var(--primary-rgb) / 0.12); color: var(--fg); }
+.rg-filter-chip--active {
+  color: var(--primary);
+  background: rgb(var(--primary-rgb) / 0.18);
+  border-color: rgb(var(--primary-rgb) / 0.5);
+  font-weight: 600;
+}
+
+.rg-search-wrap { display: flex; flex: 1; min-width: 200px; margin-left: auto; }
+.rg-search-input {
+  flex: 1;
+  min-width: 200px;
+  max-width: 420px;
+  font-family: inherit;
+  font-size: var(--fs-base);
+  padding: 7px var(--sp-2);
+  border-radius: 10px;
+  border: 1px solid var(--border);
+  background: var(--bg);
+  color: var(--fg);
+}
+.rg-search-input:focus { border-color: var(--primary); }
+
+
+/* The list is the one scroll region in this view: flex:1 so it claims all the
+   height left by the header strip / deck / toolbar, min-height:0 so it can
+   actually shrink-and-scroll instead of pushing them off-screen. overflow
+   handles both axes (the 6-column grid never scrolls the page horizontally,
+   only this container). */
+.rg-table-scroll {
+  flex: 1;
+  min-height: 0;
+  overflow: auto;
+  border: 1px solid var(--border);
+  border-radius: 16px;
+  background: var(--card);
+}
+
+.rg-table { display: flex; flex-direction: column; min-width: 760px; }
+
+.rg-row {
+  display: grid;
+  grid-template-columns: 108px minmax(180px, 2fr) 150px minmax(120px, 1.2fr) 110px minmax(170px, 1.7fr);
+  gap: var(--sp-3);
+  align-items: center;
+  padding: var(--sp-2) var(--sp-3);
+  border-bottom: 1px solid var(--border);
+  transition: background 0.12s;
+}
+.rg-row:last-child { border-bottom: none; }
+.rg-row:hover { background: var(--muted); }
+
+.rg-row--head {
+  position: sticky;
+  top: 0;
+  z-index: 2;
+  /* --card is rgba(...,0.4); a translucent sticky header let scrolling rows
+     bleed through it ("overruns the title bar on scroll"). Composite two card
+     layers over the solid void so the header matches the panel tint but is
+     fully opaque. */
+  background: linear-gradient(var(--card), var(--card)), linear-gradient(var(--card), var(--card)), var(--bg);
+  font-size: var(--fs-micro);
+  text-transform: uppercase;
+  letter-spacing: 0.07em;
+  color: var(--muted-fg);
+  font-weight: 700;
+}
+.rg-row--head:hover {
+  background: linear-gradient(var(--card), var(--card)), linear-gradient(var(--card), var(--card)), var(--bg);
+}
+.rg-head-cell { padding: 2px 0; }
+
+/* Left accent per lifecycle state, same "left border as status signal"
+   idiom as .rc-row--quarantined / .hist-row-live. */
+.rg-row--proposed   { border-left: 2px solid var(--warning); padding-left: calc(var(--sp-3) - 2px); }
+.rg-row--active      { border-left: 2px solid var(--success); padding-left: calc(var(--sp-3) - 2px); }
+.rg-row--deprecated { border-left: 2px solid var(--destructive); padding-left: calc(var(--sp-3) - 2px); background: rgba(224, 86, 86, 0.04); }
+.rg-row--retired     { border-left: 2px solid var(--muted-fg); padding-left: calc(var(--sp-3) - 2px); opacity: 0.7; }
+.rg-row--retired:hover { opacity: 0.92; }
+
+.rg-empty { grid-column: 1 / -1; padding: var(--sp-3); }
+
+/* Kind chip, tinted per kind (color-blind-safe: text label always visible,
+   never color-only). */
+.rg-kind-chip {
+  display: inline-flex;
+  width: fit-content;
+  font-size: var(--fs-micro);
+  text-transform: uppercase;
+  letter-spacing: 0.05em;
+  padding: 3px 9px;
+  border-radius: 999px;
+  border: 1px solid var(--border);
+  background: var(--muted);
+  color: var(--muted-fg);
+  white-space: nowrap;
+}
+.rg-kind-chip--guard              { color: var(--primary); background: rgb(var(--primary-rgb) / .10); border-color: rgb(var(--primary-rgb) / .32); }
+.rg-kind-chip--skill              { color: var(--warning); background: rgba(224,162,58,.10); border-color: rgba(224,162,58,.32); }
+.rg-kind-chip--memory             { color: var(--info); background: rgb(var(--primary-rgb) / .10); border-color: rgb(var(--primary-rgb) / .32); }
+/* agent: the one hue in the house palette not already spoken for by a sibling
+   chip (guard/memory take the cyan, skill the amber, research the steel blue,
+   shared memory the rust). --st-learn is an existing token, so this adds no new
+   color literal; the two rgba() tints are the same hue at the same opacities
+   every rule here uses. */
+.rg-kind-chip--agent              { color: var(--st-learn); background: rgba(63,182,160,.12); border-color: rgba(63,182,160,.35); }
+.rg-kind-chip--instructions,
+.rg-kind-chip--harness            { color: var(--muted-fg); background: var(--muted); border-color: var(--border); }
+.rg-kind-chip--cross-agent-memory { color: var(--accent); background: rgba(150,71,52,.12); border-color: rgba(150,71,52,.35); }
+
+.rg-name-wrap { display: flex; flex-direction: column; gap: 2px; min-width: 0; }
+.rg-name { font-size: var(--fs-small); font-weight: 600; color: var(--fg); line-height: 1.35; }
+.rg-detail {
+  font-size: var(--fs-micro);
+  color: var(--muted-fg);
+  line-height: 1.4;
+  margin: 0;
+  display: -webkit-box;
+  -webkit-line-clamp: 2;
+  -webkit-box-orient: vertical;
+  overflow: hidden;
+}
+
+/* State chip, mirrors .sb-decision's text+color pairing exactly. */
+.rg-state-chip {
+  display: inline-flex;
+  align-items: center;
+  width: fit-content;
+  font-size: var(--fs-micro);
+  font-weight: 700;
+  text-transform: uppercase;
+  letter-spacing: 0.06em;
+  padding: 3px 9px;
+  border-radius: 12px;
+  white-space: nowrap;
+}
+.rg-state-chip--proposed   { color: var(--warning); background: rgba(224,162,58,.12); border: 1px solid rgba(224,162,58,.30); }
+.rg-state-chip--active      { color: var(--success); background: rgb(var(--primary-rgb) / .12); border: 1px solid rgb(var(--primary-rgb) / .30); }
+.rg-state-chip--deprecated { color: var(--destructive); background: rgba(224,86,86,.12); border: 1px solid rgba(224,86,86,.30); }
+.rg-state-chip--retired     { color: var(--muted-fg); background: rgba(138,150,163,.12); border: 1px solid rgba(138,150,163,.30); }
+
+.rg-provenance {
+  font-size: var(--fs-small);
+  color: var(--muted-fg);
+  overflow: hidden;
+  text-overflow: ellipsis;
+  white-space: nowrap;
+}
+
+.rg-lastused { font-size: var(--fs-small); white-space: nowrap; }
+.rg-stale--fresh   { color: var(--muted-fg); }
+.rg-stale--stale    { color: var(--warning); }
+.rg-stale--old       { color: var(--destructive); }
+.rg-stale--unknown  { color: var(--muted-fg); font-style: italic; }
+
+.rg-actions-host { display: flex; flex-direction: column; align-items: flex-start; gap: 4px; min-width: 0; }
+.rg-no-actions { color: var(--muted-fg); font-size: var(--fs-small); }
+
+.rg-actions { display: flex; flex-wrap: wrap; align-items: center; gap: var(--sp-1); }
+
+.rg-action-btn {
+  font-family: inherit;
+  font-size: var(--fs-small);
+  padding: var(--sp-1) var(--sp-2);
+  border-radius: 8px;
+  border: 1px solid var(--border);
+  background: var(--muted);
+  color: var(--fg);
+  white-space: nowrap;
+  transition: background 0.12s, border-color 0.12s, color 0.12s;
+}
+.rg-action-btn:disabled { opacity: 0.5; }
+
+.rg-action-btn--approve { color: var(--success); background: rgb(var(--primary-rgb) / .10); border-color: rgb(var(--primary-rgb) / .32); }
+.rg-action-btn--approve:hover:not(:disabled) { background: rgb(var(--primary-rgb) / .20); border-color: rgb(var(--primary-rgb) / .5); }
+
+.rg-action-btn--release,
+.rg-action-btn--trial,
+.rg-action-btn--save { color: var(--primary); background: rgb(var(--primary-rgb) / .08); border-color: rgb(var(--primary-rgb) / .28); }
+.rg-action-btn--release:hover:not(:disabled),
+.rg-action-btn--trial:hover:not(:disabled),
+.rg-action-btn--save:hover:not(:disabled) { background: rgb(var(--primary-rgb) / .18); border-color: rgb(var(--primary-rgb) / .45); }
+
+.rg-action-btn--discard,
+.rg-action-btn--reject,
+.rg-action-btn--retire { color: var(--destructive); background: rgba(224,86,86,.08); border-color: rgba(224,86,86,.28); }
+.rg-action-btn--discard:hover:not(:disabled),
+.rg-action-btn--reject:hover:not(:disabled),
+.rg-action-btn--retire:hover:not(:disabled) { background: rgba(224,86,86,.16); border-color: rgba(224,86,86,.45); }
+
+.rg-action-btn--prune { color: var(--muted-fg); background: rgba(138,150,163,.08); border-color: rgba(138,150,163,.25); }
+.rg-action-btn--prune:hover:not(:disabled) { background: rgba(138,150,163,.16); border-color: rgba(138,150,163,.4); }
+
+.rg-action-btn--promote,
+.rg-action-btn--more { color: var(--warning); background: rgba(224,162,58,.08); border-color: rgba(224,162,58,.28); }
+.rg-action-btn--promote:hover:not(:disabled),
+.rg-action-btn--more:hover:not(:disabled) { background: rgba(224,162,58,.16); border-color: rgba(224,162,58,.45); }
+
+.rg-row-status { font-size: var(--fs-micro); color: var(--muted-fg); min-height: 14px; }
+.rg-row-status--error { color: var(--destructive); }
+
+/* Full proposed-guard rule text, shown next to Approve rather than clamped
+   like .rg-detail (the operator needs to read the whole thing before
+   approving it, not the 80-char truncated title). */
+.rg-proposed-rule {
+  max-width: 320px;
+  white-space: normal;
+  -webkit-line-clamp: unset;
+  overflow: visible;
+}
+
+/* "More" (guard Alternative/Promote) expandable panel */
+.rg-more { display: flex; flex-direction: column; gap: var(--sp-1); margin-top: 4px; }
+.rg-more-hidden { display: none; }
+.rg-alt-textarea {
+  font-family: inherit;
+  font-size: var(--fs-small);
+  padding: var(--sp-1) var(--sp-2);
+  border-radius: 8px;
+  border: 1px solid var(--border);
+  background: var(--bg);
+  color: var(--fg);
+  resize: vertical;
+  min-width: 220px;
+}
+
+/* Skill-adopt resolve-trial mini form */
+.rg-resolve-form { display: flex; flex-wrap: wrap; align-items: center; gap: var(--sp-2); }
+.rg-numfield { display: inline-flex; align-items: center; gap: 6px; }
+.rg-numfield-label { font-size: var(--fs-micro); color: var(--muted-fg); white-space: nowrap; }
+.rg-numfield-input {
+  width: 70px;
+  font-family: inherit;
+  font-size: var(--fs-small);
+  padding: 4px 6px;
+  border-radius: 6px;
+  border: 1px solid var(--border);
+  background: var(--bg);
+  color: var(--fg);
+}
+
+.rg-pager {
+  display: flex;
+  align-items: center;
+  justify-content: center;
+  gap: var(--sp-3);
+  padding: var(--sp-2) 0;
+}
+.rg-pager-info { font-size: var(--fs-small); color: var(--muted-fg); }
+.rg-pager-btn {
+  font-family: inherit;
+  font-size: var(--fs-small);
+  padding: var(--sp-1) var(--sp-3);
+  border-radius: 8px;
+  border: 1px solid var(--border);
+  background: var(--muted);
+  color: var(--fg);
+}
+.rg-pager-btn:disabled { opacity: 0.4; }
+
+/* Touch target floor, same 40px precedent as .sb-label-btn/.rc-action-btn
+   at coarse pointer. */
+
+/* Lesson ledger (ADR-0001)
+   The A0 provenance ledger, surfaced beside the proposals table. Reuses the
+   pillar's existing row/chip/button idiom deliberately - the only new visual
+   device is .rg-ledger-strength, a thin meter for the lesson's remaining
+   strength. Decay is the one continuous quantity in this pillar and the one
+   fact the proposals queue cannot express, so it is the single place this
+   panel spends any visual invention.
+
+   Bounded height on purpose: .rg-root gives every remaining pixel to the
+   capability list, so this panel scrolls internally rather than pushing the
+   list off the view. */
+/* flex:0 0 auto is load-bearing, and so is the one-line resting form.
+   .rg-root is a fixed-height flex column whose ONLY growing child is
+   .rg-table-scroll (flex:1, basis 0), so every pixel this takes comes out of
+   the list. A headless render check measured the first cut (a full .an-panel
+   band) taking 136px of the list's 186px. This is a strip, not a panel: no
+   card chrome, no title block, no padding of its own beyond the rule that
+   separates it. */
+.rg-ledger-panel {
+  display: flex;
+  flex-direction: column;
+  gap: var(--sp-2);
+  flex: 0 0 auto;
+  border-top: 1px solid var(--border);
+  padding-top: var(--sp-2);
+}
+/* Open, the ledger becomes a second scroll region and SHARES the leftover
+   height with the list instead of taking a fixed slab out of it. `1 1 0%`
+   (a ZERO basis, matching .rg-table-scroll's flex:1) is what makes that a
+   share rather than a claim: with an auto basis it took its content height
+   first and left the list 2px.
+
+   Measured headless at 1440 wide against the real 52-row ledger:
+     content height 1308 - resting: ledger 33px, list 539 (vs 586 with no
+       ledger at all); open: ledger 221, list 282, pager still visible.
+     content height  908 - resting: ledger 33px, list 139 (vs 186);
+       open: ledger 21, list 82. Cramped, but nothing disappears and the
+       operator asked for it. */
+.rg-ledger-panel--open { flex: 1 1 0%; min-height: 0; }
+
+.rg-ledger-line {
+  display: flex;
+  flex-wrap: wrap;
+  align-items: baseline;
+  gap: var(--sp-3);
+}
+.rg-ledger-label {
+  font-size: var(--fs-micro);
+  font-weight: 700;
+  text-transform: uppercase;
+  letter-spacing: 0.08em;
+  color: var(--muted-fg);
+  padding-left: 8px;
+  border-left: 2px solid var(--primary);
+}
+.rg-ledger-unavailable { font-size: var(--fs-small); color: var(--muted-fg); font-style: italic; }
+
+.rg-ledger-sub {
+  margin: 0;
+  font-size: var(--fs-small);
+  color: var(--muted-fg);
+  line-height: 1.4;
+}
+
+.rg-ledger-counts {
+  display: flex;
+  flex-wrap: wrap;
+  align-items: baseline;
+  gap: var(--sp-3);
+}
+.rg-ledger-count { display: flex; align-items: baseline; gap: 6px; }
+.rg-ledger-count-val {
+  font-size: var(--fs-small);
+  font-weight: 600;
+  color: var(--fg);
+  font-variant-numeric: tabular-nums;
+}
+.rg-ledger-count-label { font-size: var(--fs-micro); color: var(--muted-fg); }
+
+/* Sits at the end of the counts strip, so the one control is where the one
+   summary is. Same tint idiom as .rg-filter-chip. */
+.rg-ledger-toggle {
+  margin-left: auto;
+  font-family: inherit;
+  font-size: var(--fs-micro);
+  padding: 3px var(--sp-2);
+  border-radius: 999px;
+  border: 1px solid var(--border);
+  background: transparent;
+  color: var(--muted-fg);
+  cursor: pointer;
+  white-space: nowrap;
+}
+.rg-ledger-toggle:hover { background: rgb(var(--primary-rgb) / 0.12); color: var(--fg); }
+
+.rg-ledger-scroll { overflow-y: auto; flex: 1 1 auto; max-height: 264px; min-height: 0; }
+.rg-ledger-list { display: flex; flex-direction: column; }
+
+.rg-ledger-row {
+  display: grid;
+  grid-template-columns: minmax(0, 1fr) auto 132px auto;
+  align-items: center;
+  gap: var(--sp-2);
+  padding: var(--sp-2) var(--sp-2) var(--sp-2) var(--sp-3);
+  border-bottom: 1px solid var(--border);
+  border-left: 2px solid transparent;
+}
+.rg-ledger-row:last-child { border-bottom: none; }
+.rg-ledger-row:hover { background: var(--muted); }
+/* A promoted lesson is live in CLAUDE.global.md right now; the rail says so
+   without relying on the chip alone. */
+.rg-ledger-row--reflex { border-left-color: var(--primary); }
+
+.rg-ledger-name-wrap { display: flex; flex-direction: column; gap: 2px; min-width: 0; }
+.rg-ledger-name {
+  font-size: var(--fs-small);
+  font-weight: 600;
+  color: var(--fg);
+  line-height: 1.35;
+  overflow-wrap: anywhere;
+}
+.rg-ledger-meta { display: flex; flex-wrap: wrap; align-items: center; gap: var(--sp-2); }
+.rg-ledger-id {
+  font-family: ui-monospace, SFMono-Regular, Menlo, Consolas, monospace;
+  font-size: var(--fs-micro);
+  color: var(--muted-fg);
+  overflow-wrap: anywhere;
+}
+.rg-ledger-touched { font-size: var(--fs-micro); color: var(--muted-fg); }
+
+.rg-ledger-chips { display: flex; flex-wrap: wrap; align-items: center; gap: var(--sp-1); }
+.rg-ledger-chip,
+.rg-ledger-scope {
+  display: inline-flex;
+  align-items: center;
+  padding: 2px var(--sp-2);
+  border-radius: 999px;
+  border: 1px solid var(--border);
+  font-size: var(--fs-micro);
+  white-space: nowrap;
+  color: var(--muted-fg);
+}
+.rg-ledger-chip--active      { color: var(--success); background: rgb(var(--primary-rgb) / .12); border-color: rgb(var(--primary-rgb) / .30); }
+.rg-ledger-chip--dormant     { color: var(--warning); background: rgba(224,162,58,.12); border-color: rgba(224,162,58,.30); }
+.rg-ledger-chip--invalidated { color: var(--destructive);        background: rgba(224,86,86,.12);  border-color: rgba(224,86,86,.30); }
+.rg-ledger-chip--reflex      { color: var(--primary); background: rgb(var(--primary-rgb) / .10); border-color: rgb(var(--primary-rgb) / .32); }
+.rg-ledger-scope--global     { color: var(--accent);  background: rgba(150,71,52,.12);  border-color: rgba(150,71,52,.35); }
+
+/* The one new device: remaining strength, 0..1, as a thin meter plus the
+   literal number (never color or width alone). */
+.rg-ledger-strength-host { display: flex; align-items: center; gap: var(--sp-2); }
+.rg-ledger-strength {
+  flex: 1;
+  height: 4px;
+  min-width: 56px;
+  border-radius: 999px;
+  background: var(--muted);
+  overflow: hidden;
+}
+.rg-ledger-strength-bar { height: 100%; background: var(--primary); border-radius: 999px; }
+.rg-ledger-strength-num {
+  font-size: var(--fs-micro);
+  color: var(--muted-fg);
+  font-variant-numeric: tabular-nums;
+}
+
+@media (pointer: coarse) {
+  .rg-action-btn, .rg-filter-chip, .rg-pager-btn { min-height: 40px; padding: 8px 12px; }
+}
+
+@media (max-width: 980px) {
+  /* On narrow screens the rows become full-width cards, so drop the desktop
+     min-width and let the whole view scroll as one document (the fixed
+     header/deck/toolbar no longer need to stay pinned above a tiny list). */
+  .rg-root { overflow-y: auto; }
+  .rg-table-scroll { flex: none; overflow: visible; }
+  .rg-table { min-width: 0; }
+
+  /* Stack the deck (digest over the two action panels) and the digest's own
+     value grid into a single column. */
+  .rg-deck { grid-template-columns: 1fr; }
+  .rg-digest-panel .digest { grid-template-columns: 1fr; }
+  .rg-digest-panel .digest li:nth-last-child(-n+2) { border-bottom: 1px solid var(--border); }
+  .rg-digest-panel .digest li:last-child { border-bottom: none; }
+
+  .rg-row--head { display: none; }
+  .rg-row {
+    grid-template-columns: 1fr;
+    gap: 6px;
+    padding: var(--sp-2);
+    border-radius: 16px;
+    margin: 0 var(--sp-2) var(--sp-2);
+    border: 1px solid var(--border);
+  }
+  .rg-row > * { min-width: 0; }
+  .rg-actions-host { align-items: flex-start; }
+
+  /* Digest values (e.g. a long "CLOSED: <reason>" gate string) can outrun a
+     narrow viewport's width; stack label above value here rather than
+     truncating or forcing the page to scroll horizontally. */
+  .rg-digest-panel .digest li { flex-direction: column; align-items: flex-start; gap: 2px; }
+  .rg-digest-panel .digest .v { text-align: left; white-space: normal; }
+
+  .rg-ledger-row {
+    grid-template-columns: 1fr;
+    gap: 6px;
+    padding: var(--sp-2);
+    border-left-width: 0;
+  }
+  .rg-ledger-row--reflex { border-left-width: 2px; }
+  .rg-ledger-scroll { max-height: none; }
+}

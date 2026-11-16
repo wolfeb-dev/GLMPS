@@ -1,0 +1,26 @@
+{
+  "guide": {
+    "audience": "Anyone using GLMPS day to day",
+    "headings": ["What it is for", "Before you start", "Steps", "What you should see", "If it goes wrong"],
+    "lengthWords": [350, 800],
+    "diagrams": 0
+  },
+  "admin": {
+    "audience": "Whoever installs, configures and runs the GLMPS service",
+    "headings": ["What it is for", "Before you start", "Steps", "If it goes wrong"],
+    "lengthWords": [350, 900],
+    "diagrams": 0
+  },
+  "concept": {
+    "audience": "Anyone who needs to know why GLMPS behaves the way it does",
+    "headings": ["What it is", "How it works", "Where you see it"],
+    "lengthWords": [350, 800],
+    "diagrams": 1
+  },
+  "code": {
+    "audience": "Engineers and agents changing the code",
+    "headings": ["Purpose", "Entry points", "Key modules", "How it connects"],
+    "lengthWords": [250, 600],
+    "diagrams": 0
+  }
+}

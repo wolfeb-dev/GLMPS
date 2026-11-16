@@ -1,0 +1,9 @@
+{
+  "type": "tool",
+  "tool": "bash",
+  "state": {
+    "input": {
+      "command": "npm test"
+    }
+  }
+}

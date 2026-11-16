@@ -1,0 +1,105 @@
+/* web/observability/alerts.css: the Signals alert list. Uses house tokens; reuses the
+   .alert-sev-chip / .alert-src / .alert-ack / .alert-title / .alert-detail and
+   .diff-old/.diff-new classes from styles.css. */
+/* #view-alerts deleted (not retargeted): no element
+   carries that id any more. Every .alerts-* / .alert-* class below is LIVE:
+   web/evaluation/alerts.js renderAlerts() builds them for the Learning
+   lens's Loop band, Signals tab (substrate-loop.js mountSignals), and
+   Surface's Alert history panel. Do not delete them as 1.x leftovers. */
+.alerts-shell { display: flex; flex-direction: column; flex: 1; min-width: 0; height: 100%; }
+.alerts-loading { margin: auto; font-family: ui-monospace, SFMono-Regular, Menlo, Consolas, monospace; font-size: var(--fs-small); color: var(--muted-fg); }
+
+.alerts-head {
+  display: flex; align-items: center; gap: var(--sp-3);
+  padding: var(--sp-3) var(--sp-4); border-bottom: 1px solid var(--border);
+}
+.alerts-eyebrow {
+  display: flex; align-items: center; gap: 7px;
+  font-family: ui-monospace, SFMono-Regular, Menlo, Consolas, monospace;
+  font-size: var(--fs-micro); font-weight: 700; text-transform: uppercase; letter-spacing: .16em; color: var(--primary);
+}
+.alerts-eyebrow svg { flex-shrink: 0; }
+.alerts-sub { display: flex; gap: 8px; flex-wrap: wrap; }
+.alerts-count {
+  font-family: ui-monospace, SFMono-Regular, Menlo, Consolas, monospace;
+  font-size: var(--fs-micro); border: 1px solid var(--border); border-radius: 999px;
+  padding: 2px 9px; color: var(--muted-fg);
+}
+.alerts-count.sev-critical { color: var(--red); border-color: rgba(185,28,28,.4); background: rgba(185,28,28,.08); }
+.alerts-count.sev-warn { color: var(--warning); border-color: rgba(224,162,58,.4); background: rgba(224,162,58,.08); }
+.alerts-count.sev-info { color: var(--info); border-color: rgba(74,140,216,.4); background: rgba(74,140,216,.08); }
+
+/* Show/hide dismissed toggle - persisted server-side ack (glmps-70). Pinned to
+   the right of the head via margin-left:auto so it never shifts the counts. */
+.alerts-toggle {
+  margin-left: auto; flex-shrink: 0; cursor: pointer;
+  font-family: 'Roboto Mono', ui-monospace, monospace; font-size: var(--fs-micro);
+  color: var(--muted-fg); background: var(--muted); border: 1px solid var(--border);
+  border-radius: 999px; padding: 4px 11px; transition: color .18s, border-color .18s, background .18s;
+}
+.alerts-toggle:hover { color: var(--fg); border-color: rgba(212,164,55,.4); }
+.alerts-toggle:focus-visible { outline: 2px solid var(--primary); outline-offset: 1px; }
+.alerts-toggle.is-active { color: var(--primary); background: rgba(212,164,55,.1); border-color: rgba(212,164,55,.35); }
+
+.alerts-main { flex: 1; min-height: 0; overflow-y: auto; padding: var(--sp-4); width: 100%; max-width: 1040px; }
+.alerts-group-label {
+  font-family: ui-monospace, SFMono-Regular, Menlo, Consolas, monospace;
+  font-size: var(--fs-micro); font-weight: 700; letter-spacing: .1em; text-transform: uppercase;
+  color: var(--muted-fg); margin: var(--sp-3) 0 var(--sp-2);
+}
+.alerts-group-label.sev-critical { color: var(--red); }
+.alerts-group-label.sev-warn { color: var(--warning); }
+.alerts-group-label.sev-info { color: var(--info); }
+
+.alert-card {
+  border: 1px solid var(--border); border-left: 3px solid var(--muted-fg);
+  border-radius: 12px; background: var(--card); padding: var(--sp-3); margin-bottom: var(--sp-3);
+  transition: opacity .18s;
+}
+.alert-card.sev-critical { border-left-color: var(--red); }
+.alert-card.sev-warn { border-left-color: var(--warning); }
+.alert-card.sev-info { border-left-color: var(--info); }
+/* Dismissed rows (shown only via "Show dismissed"): muted but still legible,
+   no color desaturation on the severity chip so the original severity reads
+   clearly even at reduced opacity. */
+.alert-card.is-acked { opacity: .55; }
+.alert-card.is-acked:hover { opacity: .85; }
+.alert-card-head { display: flex; align-items: center; gap: var(--sp-2); margin-bottom: 8px; flex-wrap: wrap; }
+.alert-ts { font-family: ui-monospace, SFMono-Regular, Menlo, Consolas, monospace; font-size: var(--fs-micro); color: var(--muted-fg); }
+.alert-spacer { flex: 1; min-width: 12px; }
+.alert-jump {
+  font-family: ui-monospace, SFMono-Regular, Menlo, Consolas, monospace; font-size: var(--fs-micro);
+  color: var(--primary); background: rgba(212,164,55,.08); border: 1px solid rgba(212,164,55,.3);
+  border-radius: 5px; padding: 3px 9px; cursor: pointer; transition: background .15s, border-color .15s;
+}
+.alert-jump:hover { background: rgba(212,164,55,.18); border-color: rgba(212,164,55,.6); }
+.alert-jump:focus-visible, .alert-ack:focus-visible { outline: 2px solid var(--primary); outline-offset: 1px; }
+.alert-card .alert-title { font-size: var(--fs-md); font-weight: 600; color: var(--fg); line-height: 1.35; }
+.alert-card .alert-detail { margin-top: 4px; }
+.alert-path { display: flex; align-items: center; gap: 8px; margin-top: 8px; }
+.alert-path-lab {
+  font-family: ui-monospace, SFMono-Regular, Menlo, Consolas, monospace; font-size: var(--fs-micro);
+  text-transform: uppercase; letter-spacing: .08em; color: var(--muted-fg);
+}
+.alert-path code { font-family: ui-monospace, SFMono-Regular, Menlo, Consolas, monospace; font-size: var(--fs-small); color: var(--fg); word-break: break-all; }
+
+.alert-evidence { margin-top: var(--sp-3); border-top: 1px solid var(--border); padding-top: var(--sp-2); }
+.alert-evidence-lab {
+  font-family: ui-monospace, SFMono-Regular, Menlo, Consolas, monospace; font-size: var(--fs-micro);
+  font-weight: 700; letter-spacing: .08em; text-transform: uppercase; color: var(--muted-fg); margin-bottom: 8px;
+}
+.alert-evfile { border: 1px solid var(--border); border-radius: 8px; margin-bottom: 10px; overflow: hidden; }
+.alert-evfile-head {
+  display: flex; align-items: center; gap: 8px; padding: 7px 10px;
+  background: rgba(255,255,255,.02); border-bottom: 1px solid var(--border);
+}
+.alert-evfile-path { font-family: ui-monospace, SFMono-Regular, Menlo, Consolas, monospace; font-size: var(--fs-micro); color: var(--fg); word-break: break-all; }
+.alert-evfile-tool { margin-left: auto; font-family: ui-monospace, SFMono-Regular, Menlo, Consolas, monospace; font-size: var(--fs-micro); color: var(--muted-fg); }
+.alert-evdiff { padding: 8px 10px; overflow-x: auto; }
+.alert-evfile-none, .alert-evnone { font-size: var(--fs-micro); color: var(--muted-fg); font-style: italic; }
+.alert-evnone { margin-top: 8px; }
+
+.alerts-zero { margin: auto; display: flex; flex-direction: column; align-items: center; gap: var(--sp-3); padding: 60px var(--sp-4); text-align: center; }
+.alerts-zero-icon { color: var(--success); opacity: .5; }
+.alerts-zero-msg { font-size: var(--fs-md); font-weight: 600; color: var(--fg); }
+.alerts-zero-hint { font-size: var(--fs-small); color: var(--muted-fg); max-width: 42ch; }

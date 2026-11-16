@@ -1,0 +1,1274 @@
+/* board.css - the Work lens board band (Tasks 5-7) */
+
+/* This board renders inside the Work lens's Board band; the band's own
+   flex row plus bounded height (work.css, carry C1) is what gives
+   .kanban-main a real ancestor height for its own height: 100% to resolve
+   against. #view-kanban was that ancestor's id in the 1.x dashboard and no
+   longer exists here, so it and its rule were removed. */
+
+.kanban-main {
+  flex: 1;
+  min-width: 0;
+  height: 100%;
+  overflow-y: auto;
+  display: flex;
+  flex-direction: column;
+  padding: var(--sp-3) var(--sp-3) var(--sp-4);
+  gap: 0;
+}
+
+.backlog-input {
+  flex: 1;
+  background: var(--muted);
+  border: 1px solid var(--border);
+  color: var(--fg);
+  padding: 5px var(--sp-2);
+  border-radius: 6px;
+  font-size: var(--fs-small);
+  font-family: inherit;
+  outline: none;
+  transition: border-color .12s;
+}
+.backlog-input:focus { border-color: var(--info); }
+.backlog-input::placeholder { color: var(--muted-fg); }
+
+/* One labelled runner control (card glmps-2-0-137): the label names the
+   group, each switch keeps its own state colour (green armed, amber held). */
+.board-runner {
+  display: inline-flex;
+  align-items: center;
+  gap: var(--sp-1);
+  padding: 2px 2px 2px var(--sp-2);
+  border: 1px solid var(--border);
+  border-radius: 8px;
+  flex-shrink: 0;
+}
+.board-runner-label {
+  color: var(--muted-fg);
+  font-size: var(--fs-small);
+  font-weight: 500;
+  white-space: nowrap;
+}
+.board-runner .backlog-pause, .board-runner .backlog-runner { height: 28px; padding-block: 0; }
+.backlog-runner:focus-visible, .backlog-pause:focus-visible { outline: 2px solid var(--info); outline-offset: 1px; }
+
+.backlog-pause {
+  display: inline-flex;
+  align-items: center;
+  gap: var(--sp-1);
+  background: var(--muted);
+  border: 1px solid var(--border);
+  color: var(--muted-fg);
+  cursor: pointer;
+  padding: 4px 12px;
+  border-radius: 6px;
+  font-size: var(--fs-small);
+  font-family: inherit;
+  white-space: nowrap;
+  transition: background .12s, color .12s, border-color .12s;
+  flex-shrink: 0;
+}
+.backlog-pause:hover { color: var(--fg); }
+.backlog-pause.on {
+  color: var(--warning);
+  background: rgba(224,162,58,.10);
+  border-color: rgba(224,162,58,.45);
+}
+.backlog-pause.on .backlog-runner-dot { background: var(--warning); border-color: var(--warning); }
+
+/* Queue-runner toggle: mirrors the pause control but reads as "live" (green,
+   like the live-session status dot) when armed, vs pause's amber caution. */
+.backlog-runner {
+  display: inline-flex;
+  align-items: center;
+  gap: var(--sp-1);
+  background: var(--muted);
+  border: 1px solid var(--border);
+  color: var(--muted-fg);
+  cursor: pointer;
+  padding: 4px 12px;
+  border-radius: 6px;
+  font-size: var(--fs-small);
+  font-family: inherit;
+  white-space: nowrap;
+  transition: background .12s, color .12s, border-color .12s;
+  flex-shrink: 0;
+}
+.backlog-runner:hover { color: var(--fg); }
+.backlog-runner-dot {
+  width: 7px;
+  height: 7px;
+  border-radius: 50%;
+  border: 1px solid var(--muted-fg);
+  background: transparent;
+  flex-shrink: 0;
+  transition: background .12s, border-color .12s, box-shadow .12s;
+}
+.backlog-runner.on {
+  color: var(--success);
+  background: rgba(63,184,127,.10);
+  border-color: rgba(63,184,127,.45);
+}
+.backlog-runner.on .backlog-runner-dot {
+  background: var(--success);
+  border-color: var(--success);
+  box-shadow: 0 0 0 3px rgba(63,184,127,.18);
+}
+@media (prefers-reduced-motion: no-preference) {
+  .backlog-runner.on .backlog-runner-dot { animation: runner-pulse 2.4s ease-in-out infinite; }
+}
+@keyframes runner-pulse {
+  0%, 100% { box-shadow: 0 0 0 3px rgba(63,184,127,.16); }
+  50%      { box-shadow: 0 0 0 4px rgba(63,184,127,.32); }
+}
+
+.board-toolbar-select {
+  background: var(--muted);
+  border: 1px solid var(--border);
+  color: var(--fg);
+  padding: 4px var(--sp-2);
+  border-radius: 6px;
+  font-size: var(--fs-small);
+  font-family: inherit;
+  outline: none;
+  cursor: pointer;
+  transition: border-color .12s;
+  appearance: auto;
+}
+.board-toolbar-select:focus { border-color: var(--info); }
+
+.board-toolbar-search {
+  flex: 1;
+  min-width: 140px;
+  background: var(--muted);
+  border: 1px solid var(--border);
+  color: var(--fg);
+  padding: 4px var(--sp-2);
+  border-radius: 6px;
+  font-size: var(--fs-small);
+  font-family: inherit;
+  outline: none;
+  transition: border-color .12s;
+}
+.board-toolbar-search:focus { border-color: var(--info); }
+.board-toolbar-search::placeholder { color: var(--muted-fg); }
+
+.board-toolbar-checkbox-label {
+  display: flex;
+  align-items: center;
+  gap: 5px;
+  font-size: var(--fs-small);
+  color: var(--muted-fg);
+  cursor: pointer;
+  white-space: nowrap;
+  user-select: none;
+}
+.board-toolbar-checkbox-label:hover { color: var(--fg); }
+.board-toolbar-checkbox { accent-color: var(--info); cursor: pointer; }
+
+.backlog-board-wrap {
+  flex: 1;
+  overflow-y: auto;
+  display: flex;
+  flex-direction: column;
+  gap: var(--sp-2);
+}
+
+.backlog-columns {
+  display: flex;
+  gap: var(--sp-2);
+  overflow-x: auto;
+  overflow-y: visible;
+  align-items: flex-start;
+  padding-bottom: var(--sp-1);
+  flex-shrink: 0;
+}
+
+.backlog-col {
+  flex: 0 0 252px;
+  min-width: 220px;
+  display: flex;
+  flex-direction: column;
+  background: var(--card);
+  border: 1px solid var(--border);
+  border-radius: 10px;
+  overflow: hidden;
+  max-height: 70vh;
+}
+
+.backlog-col-head {
+  display: flex;
+  align-items: center;
+  justify-content: space-between;
+  font-size: var(--fs-micro);
+  font-weight: 700;
+  text-transform: uppercase;
+  letter-spacing: .08em;
+  color: var(--muted-fg);
+  padding: var(--sp-2) var(--sp-2) var(--sp-2) calc(var(--sp-2) + 6px);
+  border-bottom: 1px solid var(--border);
+  flex-shrink: 0;
+  border-left: 3px solid var(--border);
+}
+
+.col-head-label {
+  flex: 1;
+  min-width: 0;
+  overflow: hidden;
+  text-overflow: ellipsis;
+  white-space: nowrap;
+}
+
+/* Per-column accent colors */
+.backlog-col[data-col="queued"]      .backlog-col-head { border-left-color: var(--primary); color: var(--primary); }
+.backlog-col[data-col="in_progress"] .backlog-col-head { border-left-color: var(--info);    color: var(--info); }
+.backlog-col[data-col="in_review"]   .backlog-col-head { border-left-color: var(--warning); color: var(--warning); }
+.backlog-col[data-col="done"]        .backlog-col-head { border-left-color: var(--success);  color: var(--success); }
+.backlog-col[data-col="held"]        .backlog-col-head { opacity: .7; }
+.backlog-col[data-col="archived"]    .backlog-col-head { opacity: .5; }
+.backlog-col[data-col="cancelled"]   .backlog-col-head { opacity: .5; }
+/* Idle is paused, not deprioritized: it stays reopenable by a Slack reply, so
+   it gets a dim accent rail (quieter than queued/in_progress/in_review) rather
+   than the opacity fade used for held/archived/cancelled. */
+.backlog-col[data-col="idle"]        .backlog-col-head { border-left-color: color-mix(in srgb, var(--primary) 45%, var(--border)); }
+
+.col-wip-badge {
+  background: none;
+  border: 1px solid var(--border);
+  color: var(--muted-fg);
+  font-family: ui-monospace, Menlo, Consolas, monospace;
+  font-size: var(--fs-micro);
+  min-width: 24px;
+  min-height: 24px;
+  padding: 1px 6px;
+  border-radius: 999px;
+  cursor: pointer;
+  transition: border-color .12s, color .12s, background .12s;
+  flex-shrink: 0;
+  margin-left: var(--sp-1);
+  white-space: nowrap;
+}
+.col-wip-badge:hover { border-color: var(--info); color: var(--fg); }
+.col-wip-badge.over {
+  color: var(--warning);
+  background: rgba(224,162,58,.12);
+  border-color: rgba(224,162,58,.5);
+}
+
+.backlog-col-cards {
+  flex: 1;
+  overflow-y: auto;
+  padding: var(--sp-2);
+  display: flex;
+  flex-direction: column;
+  gap: var(--sp-1);
+}
+
+.backlog-col-empty {
+  font-size: var(--fs-micro);
+  color: var(--muted-fg);
+  font-style: italic;
+  padding: var(--sp-1) 0;
+  opacity: .5;
+  text-align: center;
+}
+
+.backlog-card {
+  background: var(--muted);
+  border: 1px solid var(--border);
+  border-left: 3px solid var(--border);
+  border-radius: 8px;
+  padding: var(--sp-2);
+  display: flex;
+  flex-direction: column;
+  gap: 4px;
+  transition: border-color .1s, background .1s;
+  cursor: pointer;
+}
+.backlog-card:hover {
+  background: rgba(255,255,255,.03);
+  border-color: rgba(255,255,255,.12);
+}
+
+.backlog-card.live {
+  border-left-color: var(--success);
+  background: rgba(63,184,127,.05);
+}
+
+/* Drag states */
+.backlog-card[draggable="true"] { cursor: grab; }
+.backlog-card[draggable="true"]:active { cursor: grabbing; }
+
+.backlog-card-ghost {
+  opacity: .3;
+  outline: 1px dashed var(--primary);
+  border-radius: 8px;
+}
+
+.backlog-card-title-row {
+  display: flex;
+  align-items: flex-start;
+  gap: 6px;
+  justify-content: space-between;
+}
+
+.backlog-card-title {
+  font-size: var(--fs-small);
+  font-weight: 500;
+  color: var(--fg);
+  line-height: 1.4;
+  word-break: break-word;
+  flex: 1;
+}
+
+.backlog-card-meta {
+  font-size: var(--fs-micro);
+  color: var(--fg); /* was --muted-fg (~3.5:1 on this surface); --fg reads at 9.5:1 - carry C2 */
+  font-family: ui-monospace, Menlo, Consolas, monospace;
+  white-space: nowrap;
+  overflow: hidden;
+  text-overflow: ellipsis;
+}
+
+.board-priority-pill {
+  display: inline-block;
+  font-size: var(--fs-micro);
+  font-family: ui-monospace, Menlo, Consolas, monospace;
+  font-weight: 700;
+  text-transform: uppercase;
+  letter-spacing: .04em;
+  padding: 1px 6px;
+  border-radius: 999px;
+  flex-shrink: 0;
+  align-self: flex-start;
+  margin-top: 1px;
+}
+/* Carry C2: pill-low/pill-normal/pill-urgent read below 4.5:1 at their old
+   backgrounds (~3.2, ~3.9, ~2.0:1 - the destructive token itself tops out
+   near 3:1 as foreground text on this dark theme, so --fg carries the text
+   there instead and --destructive stays as the identifying background/border
+   tint). pill-high already reads at 5.15:1 unchanged. See board-state-pill
+   and gate-* below for the same two fixes repeated. */
+.pill-low    { color: var(--fg); background: rgba(138,146,156,.15); border: 1px solid rgba(138,146,156,.3); }
+.pill-normal { color: var(--info);    background: color-mix(in srgb, var(--bg) 45%, transparent); border: 1px solid rgba(74,140,216,.35); }
+.pill-high   { color: var(--warning); background: rgba(224,162,58,.12);   border: 1px solid rgba(224,162,58,.35); }
+.pill-urgent { color: var(--fg); background: color-mix(in srgb, var(--destructive) 24%, transparent); border: 1px solid rgba(224,86,86,.35); }
+
+/* --fg carries the text on every destructive-identity pill
+   (its border/background alone reads too easily as "just another muted
+   pill" at a glance), so each also gets a small solid --destructive dot -
+   the same small-circle-indicator idiom .goal-dot/.backlog-runner-dot
+   already use - so danger is never signalled by color-on-text alone. A
+   left border was the other option the review offered; a dot was chosen
+   because these pills are fully rounded (border-radius: 999px) and a
+   border-left would be clipped into an unreadable sliver by that radius. */
+.pill-urgent::before, .board-due-pill.due-overdue::before,
+.board-blocked-pill::before, .gate-fail::before {
+  content: '';
+  display: inline-block;
+  width: 6px;
+  height: 6px;
+  border-radius: 50%;
+  background: var(--destructive);
+  margin-right: 4px;
+  vertical-align: middle;
+}
+
+/* Card pill row (id chip + state/assignee/due/blocked/gate/aging)
+   Deliberately quiet: small, low-alpha fills, no border on the informational
+   pills - only the blocked pill borders, so real urgency still reads first.
+   State-pill colors reuse the exact accents the column headers use above
+   (queued=primary, in_progress=info, in_review=warning, done=success) so a
+   card's state always matches its column at a glance. */
+.backlog-card-pills {
+  display: flex;
+  flex-wrap: wrap;
+  gap: 4px;
+  align-items: center;
+  margin-top: 1px;
+}
+
+.board-id-chip {
+  font-family: ui-monospace, Menlo, Consolas, monospace;
+  font-size: var(--fs-micro);
+  color: var(--fg); /* was --muted-fg (~3.5:1); --fg reads at 9.5:1 - carry C2 */
+  background: none;
+  border: 1px dashed rgba(138,146,156,.4);
+  border-radius: 4px;
+  min-height: 24px;
+  padding: 1px 6px;
+  line-height: 1.6;
+  cursor: copy;
+  flex-shrink: 0;
+  transition: border-color .12s, color .12s;
+}
+.board-id-chip:hover { border-color: var(--info); color: var(--fg); }
+.board-id-chip.copied { border-style: solid; border-color: var(--success); color: var(--success); }
+
+.board-pill, .board-state-pill {
+  display: inline-block;
+  max-width: 100%;
+  font-size: var(--fs-micro);
+  color: var(--fg); /* was --muted-fg (~3.3:1); --fg reads at 8.3:1 - carry C2 */
+  background: rgba(138,146,156,.10);
+  border-radius: 999px;
+  padding: 1px 8px;
+  line-height: 1.6;
+  flex-shrink: 0;
+}
+
+/* State pill - column-matched accents. Carry C2: state-held/archived/cancelled
+   moved to --fg (was --muted-fg, ~3.2:1); state-queued/in_progress/done and
+   gate-pass moved their background from a stale pre-cyan-theme tint (a leftover
+   gold/blue/green rgba that no longer matches --primary/--info/--success's
+   actual hex) to color-mix(var(--bg)) - both a hue fix and a contrast fix,
+   landing at 5.6:1. state-in_review and gate-concerns already used the real
+   --warning hex and already read at 5.15:1, unchanged. */
+.board-state-pill.state-held        { color: var(--fg); background: rgba(138,146,156,.12); }
+.board-state-pill.state-queued      { color: var(--primary);  background: color-mix(in srgb, var(--bg) 45%, transparent); }
+.board-state-pill.state-in_progress { color: var(--info);     background: color-mix(in srgb, var(--bg) 45%, transparent); }
+.board-state-pill.state-in_review   { color: var(--warning);  background: rgba(224,162,58,.12); }
+/* Idle: calm, not alarmed - recessed (darkened toward --bg, not lit up like
+   an active column) reads as dormant/reopenable rather than urgent. Primary-
+   colored text (not muted-fg) so it clears 4.5:1 on this background: review
+   round 1 measured muted-fg here at ~3.51:1, below the 11px type floor's AA
+   requirement; --primary lands at ~5.16:1 with this darkened wash (a lighter
+   primary-tinted wash reads calmer but only clears ~4.6:1, too thin a
+   margin). */
+.board-state-pill.state-idle        { color: var(--primary); background: color-mix(in srgb, var(--bg) 25%, transparent); }
+.board-state-pill.state-done        { color: var(--success);  background: color-mix(in srgb, var(--bg) 45%, transparent); }
+.board-state-pill.state-archived,
+.board-state-pill.state-cancelled   { color: var(--fg); background: rgba(138,146,156,.10); }
+
+.board-due-pill.due-soon    { color: var(--warning); background: rgba(224,162,58,.14); }
+/* due-overdue: --destructive tops out near 3:1 as foreground text on this
+   theme (see pill-urgent above) - --fg carries the text (8.51:1 on this
+   background), --destructive stays the background/border/dot tint. Carry C2. */
+.board-due-pill.due-overdue { color: var(--fg); background: color-mix(in srgb, var(--destructive) 24%, transparent); }
+
+/* Release chip: why an idle card paused, in the operator's own words. Reuses
+   the dashed-border vocabulary .board-id-chip already established for
+   "provisional/interactive" rather than inventing a new visual language.
+   Same recessed treatment and AA reasoning as .state-idle above (~5.16:1). */
+.board-release-chip {
+  display: inline-block;
+  align-self: flex-start;
+  margin-top: 1px;
+  padding: 1px var(--sp-2);
+  font-size: var(--fs-micro);
+  color: var(--primary);
+  background: color-mix(in srgb, var(--bg) 25%, transparent);
+  border: 1px dashed var(--border);
+  border-radius: 999px;
+}
+
+.board-blocked-pill {
+  color: var(--fg); /* 8.51:1, same background as due-overdue/gate-fail above */
+  background: color-mix(in srgb, var(--destructive) 24%, transparent);
+  border: 1px solid rgba(224,86,86,.35);
+}
+
+.gate-pass     { color: var(--success);     background: color-mix(in srgb, var(--bg) 45%, transparent); }
+.gate-concerns { color: var(--warning);     background: rgba(224,162,58,.12); }
+.gate-fail     { color: var(--fg);          background: color-mix(in srgb, var(--destructive) 24%, transparent); } /* 8.51:1 */
+.gate-waived   { color: var(--fg);          background: rgba(138,146,156,.12); }
+
+.board-aging-pill, .board-assignee-pill { color: var(--fg); background: rgba(138,146,156,.10); }
+
+.backlog-card-actions {
+  display: flex;
+  gap: 4px;
+  justify-content: flex-end;
+  margin-top: 2px;
+}
+
+.backlog-card-action {
+  background: none;
+  border: 1px solid var(--border);
+  color: var(--muted-fg);
+  cursor: pointer;
+  padding: 2px 8px;
+  border-radius: 4px;
+  font-size: var(--fs-micro);
+  font-family: inherit;
+  transition: background .1s, color .1s, border-color .1s;
+}
+
+.backlog-card-action.hold:hover {
+  color: var(--warning);
+  background: rgba(224,162,58,.10);
+  border-color: rgba(224,162,58,.4);
+}
+
+.backlog-card-action.queue:hover {
+  color: var(--info);
+  background: rgba(74,140,216,.10);
+  border-color: rgba(74,140,216,.4);
+}
+
+/* Poison-quarantine flag
+   A ticket auto-held by the poison-scanner. Reads as a danger state, visually
+   distinct from the priority pills (filled, not outlined) and accented on the
+   card edge so a held ticket is obvious at a glance. */
+.backlog-card.quarantined {
+  border-left: 3px solid var(--destructive);
+}
+.backlog-card-flag {
+  display: inline-block;
+  font-size: var(--fs-micro);
+  font-family: ui-monospace, Menlo, Consolas, monospace;
+  font-weight: 700;
+  text-transform: uppercase;
+  letter-spacing: .04em;
+  padding: 1px 6px;
+  border-radius: 999px;
+  flex-shrink: 0;
+  align-self: flex-start;
+  margin-top: 1px;
+  /* plain --destructive read 3.04:1 against
+     --bg text either way round; --destructive-strong (styles.css) reads
+     5.24:1 with --bg text on top. */
+  color: var(--bg);
+  background: var(--destructive-strong);
+  border: 1px solid var(--destructive-strong);
+  cursor: help;
+}
+.backlog-card-action.approve {
+  /* --destructive as text on the card's ambient surface read 2.15:1; --fg
+     reads 9.48:1. The red border alone still carries the danger cue. */
+  color: var(--fg);
+  border-color: rgba(224,86,86,.4);
+}
+.backlog-card-action.approve:hover {
+  color: var(--bg);
+  background: var(--destructive-strong);
+  border-color: var(--destructive-strong);
+}
+
+.backlog-swimlane {
+  display: flex;
+  flex-direction: column;
+  gap: var(--sp-2);
+}
+
+.swimlane-header {
+  display: flex;
+  align-items: center;
+  gap: var(--sp-2);
+  padding: var(--sp-1) var(--sp-2);
+  border-left: 3px solid var(--accent);
+  background: rgba(168,120,216,.06);
+  border-radius: 0 6px 6px 0;
+}
+
+.swimlane-label {
+  font-size: var(--fs-micro);
+  font-weight: 700;
+  text-transform: uppercase;
+  letter-spacing: .08em;
+  font-family: ui-monospace, Menlo, Consolas, monospace;
+  color: var(--accent);
+}
+
+.swimlane-count {
+  font-size: var(--fs-micro);
+  color: var(--muted-fg);
+  font-family: ui-monospace, Menlo, Consolas, monospace;
+  background: rgba(168,120,216,.15);
+  border: 1px solid rgba(168,120,216,.3);
+  padding: 1px 7px;
+  border-radius: 999px;
+}
+
+.backlog-drawer-scrim {
+  position: fixed;
+  inset: 0;
+  background: rgba(10,13,18,.6);
+  z-index: 1000;
+  opacity: 0;
+  transition: opacity .18s ease-out;
+  backdrop-filter: blur(1px);
+}
+.backlog-drawer-scrim.open { opacity: 1; }
+
+.backlog-drawer {
+  position: fixed;
+  top: 0;
+  right: 0;
+  bottom: 0;
+  width: 400px;
+  max-width: 94vw;
+  background: var(--card);
+  border-left: 1px solid var(--border);
+  display: flex;
+  flex-direction: column;
+  transform: translateX(100%);
+  transition: transform .18s ease-out;
+  z-index: 1001;
+}
+.backlog-drawer.open { transform: translateX(0); }
+
+/* Drawer header - left rule in primary gold (instrument identity) */
+.drawer-header {
+  display: flex;
+  align-items: flex-start;
+  gap: var(--sp-2);
+  padding: var(--sp-3) var(--sp-3) var(--sp-2);
+  border-bottom: 1px solid var(--border);
+  border-left: 3px solid var(--primary);
+  background: var(--card);
+  flex-shrink: 0;
+}
+
+.drawer-header-left {
+  flex: 1;
+  min-width: 0;
+  display: flex;
+  flex-direction: column;
+  gap: 4px;
+}
+
+.drawer-title-input {
+  background: transparent;
+  border: none;
+  border-bottom: 1px solid var(--border);
+  color: var(--fg);
+  font-size: var(--fs-md);
+  font-weight: 600;
+  font-family: inherit;
+  padding: 2px 0 4px;
+  width: 100%;
+  outline: none;
+  transition: border-color .12s;
+}
+.drawer-title-input:focus { border-bottom-color: var(--primary); }
+
+.drawer-id-tag {
+  font-size: var(--fs-micro);
+  font-family: ui-monospace, Menlo, Consolas, monospace;
+  color: var(--muted-fg);
+}
+
+.drawer-close-btn {
+  background: none;
+  border: none;
+  color: var(--muted-fg);
+  cursor: pointer;
+  font-size: var(--fs-md);
+  min-width: 24px;
+  min-height: 24px;
+  padding: 2px 6px;
+  border-radius: 4px;
+  transition: color .12s, background .12s;
+  flex-shrink: 0;
+  line-height: 1;
+}
+.drawer-close-btn:hover { color: var(--fg); background: var(--muted); }
+
+/* Drawer body */
+.drawer-body {
+  flex: 1;
+  overflow-y: auto;
+  padding: var(--sp-3);
+  display: flex;
+  flex-direction: column;
+  gap: var(--sp-3);
+}
+
+.drawer-field {
+  display: flex;
+  flex-direction: column;
+  gap: 4px;
+}
+
+.drawer-label {
+  font-size: var(--fs-micro);
+  font-weight: 700;
+  text-transform: uppercase;
+  letter-spacing: .06em;
+  color: var(--muted-fg);
+}
+
+.drawer-input,
+.drawer-textarea,
+.drawer-select {
+  background: var(--muted);
+  border: 1px solid var(--border);
+  color: var(--fg);
+  padding: 5px var(--sp-2);
+  border-radius: 6px;
+  font-size: var(--fs-small);
+  font-family: inherit;
+  outline: none;
+  transition: border-color .12s;
+  width: 100%;
+}
+.drawer-input:focus,
+.drawer-textarea:focus,
+.drawer-select:focus { border-color: var(--info); }
+
+.drawer-textarea { resize: vertical; min-height: 72px; line-height: 1.5; }
+
+.drawer-select { cursor: pointer; appearance: auto; }
+
+/* Read-only meta block */
+.drawer-meta-block {
+  padding: var(--sp-2);
+  background: var(--muted);
+  border: 1px solid var(--border);
+  border-radius: 6px;
+  display: flex;
+  flex-direction: column;
+  gap: 4px;
+}
+
+.drawer-meta-row {
+  display: flex;
+  gap: var(--sp-2);
+  font-size: var(--fs-micro);
+}
+
+.drawer-meta-key {
+  font-family: ui-monospace, Menlo, Consolas, monospace;
+  color: var(--muted-fg);
+  min-width: 70px;
+  flex-shrink: 0;
+}
+
+.drawer-meta-val {
+  color: var(--fg);
+  word-break: break-all;
+}
+
+/* Section title */
+.drawer-section-title {
+  font-size: var(--fs-micro);
+  font-weight: 700;
+  text-transform: uppercase;
+  letter-spacing: .06em;
+  color: var(--muted-fg);
+  margin-bottom: 6px;
+}
+
+/* Activity log */
+.drawer-activity-list {
+  list-style: none;
+  display: flex;
+  flex-direction: column;
+  gap: 6px;
+}
+
+.drawer-activity-item {
+  display: flex;
+  flex-direction: column;
+  gap: 2px;
+  padding: 6px var(--sp-2);
+  background: var(--muted);
+  border: 1px solid var(--border);
+  border-radius: 6px;
+}
+
+.drawer-activity-ts {
+  font-size: var(--fs-micro);
+  font-family: ui-monospace, Menlo, Consolas, monospace;
+  color: var(--muted-fg);
+}
+
+.drawer-activity-text {
+  font-size: var(--fs-small);
+  color: var(--fg);
+  line-height: 1.4;
+  word-break: break-word;
+}
+
+/* Drawer footer */
+.drawer-footer {
+  display: flex;
+  align-items: center;
+  gap: var(--sp-1);
+  padding: var(--sp-2) var(--sp-3);
+  border-top: 1px solid var(--border);
+  background: var(--card);
+  flex-shrink: 0;
+  flex-wrap: wrap;
+}
+
+.drawer-footer-right { margin-left: auto; }
+
+.drawer-btn {
+  cursor: pointer;
+  padding: 5px 14px;
+  border-radius: 6px;
+  font-size: var(--fs-small);
+  font-family: inherit;
+  font-weight: 500;
+  border: 1px solid var(--border);
+  transition: background .12s, color .12s, border-color .12s;
+}
+
+.drawer-btn-primary {
+  background: rgba(212,164,55,.15);
+  color: var(--link-hover);
+  border-color: rgba(212,164,55,.5);
+}
+.drawer-btn-primary:hover {
+  background: rgba(212,164,55,.25);
+}
+
+/* Run now - the live/go action, tied to the same green as the Auto-run dot. */
+.drawer-btn-run {
+  background: rgba(63,184,127,.15);
+  color: var(--success);
+  border-color: rgba(63,184,127,.5);
+}
+.drawer-btn-run:hover { background: rgba(63,184,127,.25); }
+.drawer-btn-run:disabled {
+  opacity: .45;
+  cursor: not-allowed;
+  background: rgba(63,184,127,.15);
+}
+
+.drawer-btn-warning {
+  background: none;
+  color: var(--warning);
+  border-color: rgba(224,162,58,.4);
+}
+.drawer-btn-warning:hover {
+  background: rgba(224,162,58,.12);
+}
+
+.drawer-btn-danger {
+  background: none;
+  /* --destructive tops out near 3:1 as foreground text on this theme (see
+     pill-urgent/due-overdue above); --destructive-strong reads at 5.24:1
+     here, AA. */
+  color: var(--destructive-strong);
+  border-color: rgba(224,86,86,.35);
+}
+/* the hover wash shifts the effective surface enough that
+   --destructive-strong text drops to 4.27:1 here (measured), below AA;
+   --fg carries the text on hover instead (same move as due-overdue above,
+   8.51:1 on this background), the wash stays the only destructive tint. */
+.drawer-btn-danger:hover {
+  background: rgba(224,86,86,.12);
+  color: var(--fg);
+}
+
+.drawer-btn-muted {
+  background: none;
+  color: var(--muted-fg);
+  border-color: var(--border);
+}
+.drawer-btn-muted:hover { color: var(--fg); background: var(--muted); }
+
+.drawer-ac-list {
+  display: flex;
+  flex-direction: column;
+  gap: 4px;
+}
+
+.drawer-ac-row {
+  display: flex;
+  align-items: center;
+  gap: 6px;
+}
+
+.drawer-ac-checkbox { accent-color: var(--success); cursor: pointer; flex-shrink: 0; }
+
+.drawer-ac-text { flex: 1; min-width: 0; }
+
+.drawer-ac-remove {
+  background: none;
+  border: none;
+  color: var(--muted-fg);
+  cursor: pointer;
+  padding: 3px 7px;
+  border-radius: 4px;
+  font-size: var(--fs-small);
+  line-height: 1;
+  flex-shrink: 0;
+  transition: color .12s, background .12s;
+}
+/* measured 4.36:1 with --destructive-strong on this hover
+   wash, below AA; --fg carries the text instead (same reasoning as
+   .drawer-btn-danger:hover above). */
+.drawer-ac-remove:hover { color: var(--fg); background: rgba(224,86,86,.10); }
+
+.drawer-ac-add {
+  align-self: flex-start;
+  background: none;
+  border: 1px dashed var(--border);
+  color: var(--muted-fg);
+  cursor: pointer;
+  min-height: 24px;
+  padding: 3px 10px;
+  border-radius: 6px;
+  font-size: var(--fs-small);
+  font-family: inherit;
+  margin-top: 2px;
+  transition: border-color .12s, color .12s;
+}
+.drawer-ac-add:hover { border-color: var(--info); color: var(--fg); }
+
+.drawer-chip-row {
+  display: flex;
+  flex-wrap: wrap;
+  gap: 4px;
+}
+.drawer-chip {
+  font-family: ui-monospace, Menlo, Consolas, monospace;
+  font-size: var(--fs-micro);
+  color: var(--muted-fg);
+  background: none;
+  border: 1px dashed rgba(138,146,156,.4);
+  border-radius: 4px;
+  padding: 1px 6px;
+  line-height: 1.6;
+}
+
+.drawer-devlog-list {
+  display: flex;
+  flex-direction: column;
+  gap: 6px;
+  margin-bottom: 6px;
+}
+.drawer-devlog-empty {
+  font-size: var(--fs-micro);
+  color: var(--muted-fg);
+  font-style: italic;
+}
+.drawer-devlog-row {
+  display: flex;
+  align-items: baseline;
+  flex-wrap: wrap;
+  gap: 6px;
+  padding: 5px var(--sp-2);
+  background: var(--muted);
+  border: 1px solid var(--border);
+  border-radius: 6px;
+  font-size: var(--fs-micro);
+}
+.drawer-devlog-ts {
+  font-family: ui-monospace, Menlo, Consolas, monospace;
+  color: var(--muted-fg);
+  flex-shrink: 0;
+}
+.drawer-devlog-by {
+  color: var(--info);
+  font-weight: 600;
+  flex-shrink: 0;
+  white-space: nowrap;
+}
+.drawer-devlog-text {
+  color: var(--fg);
+  font-size: var(--fs-small);
+  line-height: 1.4;
+  word-break: break-word;
+  flex-basis: 100%;
+}
+.drawer-devlog-add {
+  display: flex;
+  gap: 6px;
+}
+.drawer-devlog-add .drawer-input { flex: 1; }
+.drawer-devlog-add-btn { flex-shrink: 0; padding: 5px 12px; }
+
+.drawer-gate-block {
+  display: flex;
+  flex-direction: column;
+  gap: 6px;
+  padding: var(--sp-2);
+  background: var(--muted);
+  border: 1px solid var(--border);
+  border-radius: 6px;
+}
+.drawer-gate-top {
+  display: flex;
+  align-items: center;
+  gap: 6px;
+  flex-wrap: wrap;
+}
+.drawer-gate-risk {
+  font-size: var(--fs-micro);
+  font-family: ui-monospace, Menlo, Consolas, monospace;
+  color: var(--muted-fg);
+  background: rgba(138,146,156,.10);
+  padding: 1px 8px;
+  border-radius: 999px;
+}
+.drawer-gate-by {
+  font-size: var(--fs-micro);
+  color: var(--muted-fg);
+}
+.drawer-gate-evidence {
+  list-style: none;
+  display: flex;
+  flex-direction: column;
+  gap: 3px;
+  font-size: var(--fs-small);
+  color: var(--fg);
+  padding-left: 0;
+  width: 100%;
+}
+.drawer-gate-evidence li {
+  padding-left: 12px;
+  position: relative;
+  line-height: 1.4;
+  word-break: break-word;
+}
+.drawer-gate-evidence li::before {
+  content: '\2013';
+  position: absolute;
+  left: 0;
+  color: var(--muted-fg);
+}
+
+/* Surface ledger treatment (phase 2, Q3)
+   Tokens only: --card/--border are the Surface glass panel and edge. Chips are
+   bordered mono rectangles so id, age and gate read as data, not decoration. */
+
+/* Project scope: a chip strip leading the board toolbar (glmps-2-0-148). It
+   wraps rather than scrolls, so every scope and its count stay visible. */
+.board-scope { display: flex; align-items: center; flex-wrap: wrap; gap: var(--sp-1) var(--sp-2); min-width: 0; }
+.board-scope-list { list-style: none; margin: 0; padding: 0; display: flex; flex-wrap: wrap; gap: var(--sp-1); min-width: 0; }
+.board-scope-row {
+  display: inline-flex;
+  align-items: center;
+  gap: var(--sp-2);
+  max-width: 240px;
+  min-height: 32px;
+  padding: 0 var(--sp-2);
+  background: none;
+  border: 1px solid var(--border);
+  border-radius: 6px;
+  color: var(--fg);
+  font: inherit;
+  font-size: var(--fs-small);
+  text-align: left;
+  cursor: pointer;
+}
+.board-scope-row:hover { background: var(--muted); }
+.board-scope-row:focus-visible { outline: 2px solid var(--info); outline-offset: 2px; }
+.board-scope-sq { flex: none; }
+.board-scope-sq { width: 10px; height: 10px; border-radius: 2px; background: var(--sq, var(--muted-fg)); }
+.board-scope-name { overflow: hidden; text-overflow: ellipsis; white-space: nowrap; }
+.board-scope-count {
+  font-family: ui-monospace, Menlo, Consolas, monospace;
+  font-size: var(--fs-micro);
+  color: var(--muted-fg);
+  font-variant-numeric: tabular-nums;
+}
+
+/* The four columns share the width so Done is not cut off at 1440 px; below
+   220 px each the board scrolls inside its row as before. */
+.backlog-col { flex: 1 1 220px; min-width: 220px; background: var(--card); border-color: var(--border); }
+.backlog-card { background: var(--muted); }
+
+.board-id-chip, .board-pill {
+  font-family: ui-monospace, Menlo, Consolas, monospace;
+  border: 1px solid var(--border);
+  border-radius: 4px;
+  background: none;
+  color: var(--fg);
+  padding: 0 6px;
+  line-height: 1.6;
+}
+.board-id-chip { border-style: solid; }
+.board-age-pill { color: var(--muted-fg); font-variant-numeric: tabular-nums; }
+.board-gate-pill.gate-pass { color: var(--success); border-color: color-mix(in srgb, var(--success) 55%, transparent); background: none; }
+.board-gate-pill.gate-concerns { color: var(--warning); border-color: color-mix(in srgb, var(--warning) 55%, transparent); background: none; }
+.board-gate-pill.gate-fail { border-color: color-mix(in srgb, var(--destructive) 60%, transparent); }
+.board-gate-pill.gate-waived { color: var(--muted-fg); background: none; }
+
+.backlog-col-more {
+  flex-shrink: 0;
+  min-height: 32px;
+  margin: 0 var(--sp-2) var(--sp-2);
+  background: none;
+  border: 1px dashed var(--border);
+  border-radius: 6px;
+  color: var(--muted-fg);
+  font: inherit;
+  font-size: var(--fs-small);
+}
+.backlog-col-more:hover { color: var(--fg); border-color: var(--info); }
+.backlog-col-more[hidden] { display: none; }
+.backlog-col-note {
+  padding: 0 var(--sp-2) var(--sp-2);
+  font-size: var(--fs-micro);
+  color: var(--muted-fg);
+  font-family: ui-monospace, Menlo, Consolas, monospace;
+}
+.backlog-col-foot { border-top: 1px solid var(--border); flex-shrink: 0; display: flex; flex-direction: column; }
+.backlog-col-foot-head {
+  display: flex; align-items: center; justify-content: space-between;
+  padding: var(--sp-1) var(--sp-2);
+  font-size: var(--fs-micro); font-weight: 600; text-transform: uppercase; letter-spacing: .08em;
+  color: var(--muted-fg);
+}
+
+@media (max-width: 760px) {
+  .board-scope-row { min-height: 44px; }
+  .backlog-input { flex-basis: 100%; min-height: 44px; }
+  .backlog-col-more { min-height: 44px; }
+}
+
+/* Round 2 fidelity (glmps-2-0-63 R3): the WorkSurface layout
+   Sidebar and main column side by side; one header line; five Surface panels
+   with row-style cards. Selection is the interactive blue (--info), never the
+   brand teal; column headers are neutral because a column colour would be a
+   second meaning for the status colours. Tokens only. */
+
+.board-scope-row[aria-pressed="true"] {
+  background: color-mix(in srgb, var(--info) 22%, transparent);
+  border-color: color-mix(in srgb, var(--info) 45%, transparent);
+}
+.board-scope-surface {
+  font-size: var(--fs-small);
+  color: var(--link-hover);
+  white-space: nowrap;
+}
+
+.kanban-main { padding: var(--sp-2) var(--sp-3) var(--sp-3); gap: var(--sp-2); overflow: hidden; }
+
+/* Header controls: quick-add takes the free width, the rest stay one size. */
+.work-controls { display: flex; align-items: center; gap: var(--sp-2); flex-wrap: wrap; margin-left: auto; min-width: 0; }
+.backlog-input {
+  flex: 0 1 340px;
+  width: 340px;
+  min-width: 140px;
+  height: 32px;
+  padding: 0 var(--sp-2);
+  background: var(--bg);
+  border-color: var(--edge-ui);
+}
+.board-toolbar-search {
+  flex: 0 1 170px;
+  width: 170px;
+  min-width: 110px;
+  height: 32px;
+  padding: 0 var(--sp-2);
+  background: var(--bg);
+  border: 1px solid var(--edge-ui);
+  border-radius: 6px;
+  color: var(--fg);
+  font: inherit;
+  font-size: var(--fs-small);
+}
+.board-toolbar-search:focus { border-color: var(--info); outline: none; }
+.backlog-runner { height: 32px; padding: 0 var(--sp-2); background: none; border-color: var(--edge-ui); }
+.backlog-runner.on { background: none; border-color: color-mix(in srgb, var(--success) 60%, transparent); color: var(--success); }
+
+.board-more { position: relative; }
+.board-more-summary {
+  display: inline-flex;
+  align-items: center;
+  height: 32px;
+  padding: 0 var(--sp-2);
+  list-style: none;
+  border: 1px solid var(--edge-ui);
+  border-radius: 6px;
+  color: var(--muted-fg);
+  font-size: var(--fs-small);
+  cursor: pointer;
+}
+.board-more-summary::-webkit-details-marker { display: none; }
+.board-more-summary:hover, .board-more[open] > .board-more-summary { color: var(--fg); border-color: var(--info); }
+.board-more-pop {
+  position: absolute;
+  right: 0;
+  top: calc(100% + 4px);
+  z-index: 20;
+  min-width: 220px;
+  display: flex;
+  flex-direction: column;
+  gap: var(--sp-2);
+  padding: var(--sp-2);
+  background: var(--raise-1);
+  border: 1px solid var(--border);
+  border-radius: 8px;
+}
+.board-more-field { display: flex; flex-direction: column; gap: 2px; font-size: var(--fs-micro); color: var(--muted-fg); }
+.board-more-pop .backlog-pause { align-self: flex-start; }
+
+/* Columns: five equal Surface panels filling the height; more than five
+   (archived shown) scroll sideways instead of squeezing. */
+.backlog-board-wrap { flex: 1 1 auto; min-height: 0; gap: var(--sp-2); }
+.backlog-columns {
+  display: grid;
+  grid-auto-flow: column;
+  grid-auto-columns: minmax(200px, 1fr);
+  grid-template-rows: minmax(0, 1fr);
+  gap: var(--sp-2);
+  align-items: stretch;
+  padding-bottom: 0;
+}
+.backlog-board-wrap > .backlog-columns:only-child { height: 100%; }
+.backlog-col { flex: none; min-width: 0; border-radius: 8px; max-height: none; }
+.backlog-board-wrap > .backlog-columns:not(:only-child) .backlog-col { max-height: 70vh; }
+
+.backlog-col[data-col] .backlog-col-head {
+  padding: var(--sp-1) var(--sp-2);
+  border-left: 0;
+  border-bottom: 1px solid color-mix(in srgb, var(--border) 60%, transparent);
+  color: var(--fg);
+  opacity: 1;
+  font-size: var(--fs-small);
+  font-weight: 600;
+  letter-spacing: .04em;
+}
+.col-wip-badge { border-color: transparent; font-size: var(--fs-small); background: none; }
+.col-wip-badge:hover { border-color: var(--info); }
+.col-wip-badge.over { background: color-mix(in srgb, var(--warning) 12%, transparent); border-color: color-mix(in srgb, var(--warning) 50%, transparent); }
+
+.backlog-col-cards { padding: var(--sp-1); gap: var(--sp-1); }
+.backlog-col-empty {
+  padding: var(--sp-1);
+  color: var(--muted-fg);
+  font-size: var(--fs-small);
+  font-style: normal;
+  opacity: 1;
+  text-align: left;
+}
+
+/* Cards are rows, not boxes: no outline, a tint on hover. */
+.backlog-card {
+  gap: var(--sp-1);
+  padding: var(--sp-1) var(--sp-2);
+  background: var(--muted);
+  border: 0;
+  border-radius: 6px;
+}
+.backlog-card:hover { background: color-mix(in srgb, var(--info) 14%, var(--muted)); border-color: transparent; }
+.backlog-card.live { background: var(--muted); box-shadow: inset 2px 0 0 var(--success); }
+.backlog-card-title { font-size: var(--fs-base); }
+.board-id-chip { color: var(--link-hover); }
+.board-agent-pill { color: var(--muted-fg); }
+.board-gate-pill.gate-concerns { background: color-mix(in srgb, var(--warning) 10%, transparent); }
+
+/* Triage buttons appear on hover or focus, always where there is no hover. */
+.backlog-card-actions { display: none; }
+.backlog-card:hover .backlog-card-actions, .backlog-card:focus-within .backlog-card-actions { display: flex; }
+@media (hover: none) { .backlog-card-actions { display: flex; } }
+
+.backlog-col-more { border: 0; margin: 0 var(--sp-1) var(--sp-1); min-height: 28px; text-align: left; padding: 0 var(--sp-1); color: var(--link-hover); }
+.backlog-col-more:hover { color: var(--fg); }
+
+/* Done with its Paused footer scrolls as one region. As two sibling scrollers
+   the unshrinkable footer took the column's whole height and squeezed the done
+   list above it down to a bare scrollbar. */
+.backlog-col:has(> .backlog-col-foot) { overflow-y: auto; }
+.backlog-col:has(> .backlog-col-foot) > .backlog-col-cards,
+.backlog-col-foot > .backlog-col-cards { flex: none; overflow: visible; }
+.backlog-col:has(> .backlog-col-foot) > .backlog-col-head { position: sticky; top: 0; z-index: 1; background: var(--card); }
+
+@media (max-width: 760px) {
+  .kanban-main { overflow: visible; }
+  .work-controls { margin-left: 0; width: 100%; }
+  .backlog-input { flex: 1 1 100%; width: auto; }
+  .board-toolbar-search { flex: 1 1 100%; width: auto; }
+  .backlog-columns { grid-auto-flow: row; grid-auto-columns: minmax(0, 1fr); grid-template-rows: none; }
+  .backlog-board-wrap > .backlog-columns:only-child { height: auto; }
+  .backlog-col, .backlog-board-wrap > .backlog-columns:not(:only-child) .backlog-col { max-height: none; }
+  .board-more-summary, .backlog-runner, .backlog-input, .board-toolbar-search { min-height: 44px; }
+}

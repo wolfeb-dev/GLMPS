@@ -1,0 +1,32 @@
+{
+  "title": "Golden hermes session",
+  "events": [
+    {
+      "kind": "user",
+      "lane": "feed",
+      "tool": "user",
+      "path": null,
+      "ts": 1751400001000,
+      "sessionId": "golden",
+      "label": "User: Run the test suite and report failures"
+    },
+    {
+      "kind": "thinking",
+      "lane": "feed",
+      "tool": "thinking",
+      "path": null,
+      "ts": 1751400002000,
+      "sessionId": "golden",
+      "label": "Plan: run tests, read output"
+    },
+    {
+      "tool": "terminal",
+      "ts": 1751400002000,
+      "sessionId": "golden",
+      "path": null,
+      "kind": "command",
+      "lane": "feed",
+      "label": "npm test"
+    }
+  ]
+}

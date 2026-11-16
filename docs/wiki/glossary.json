@@ -1,0 +1,24 @@
+{
+  "properNouns": [
+    "GLMPS", "Surface", "Learning", "Work", "Wiki", "Huddle", "Slack", "Windows", "GitHub",
+    "Claude", "Claude Code", "Gemini", "Antigravity", "Codex", "Node", "Node.js", "Electron",
+    "Mermaid", "Fleet", "SCUT", "Kanban", "Settings", "Refresh", "Ask", "Generate", "API", "HTTP",
+    "JSON", "URL", "PR", "CLI", "LLM", "OAuth", "HMAC", "WinSW", "PowerShell", "Git", "Mem0"
+  ],
+  "terms": [
+    { "term": "card", "definition": "One unit of work on the board. A card has a status, labels, a devlog and a gate verdict.", "avoid": ["ticket", "backlog item", "kanban item"], "allow": ["wiki ticket", "access ticket", "ticket channel", "ticket channels"] },
+    { "term": "board", "definition": "The list of cards for every project, shown in Work and served at /api/backlog.", "avoid": ["kanban board", "issue tracker"] },
+    { "term": "lens", "definition": "One of the four top-level views: Surface, Learning, Work and Wiki.", "avoid": [] },
+    { "term": "session", "definition": "One run of a coding agent, captured from the logs the agent already writes.", "avoid": ["conversation log"] },
+    { "term": "loop", "definition": "A scheduled or event-driven job the kernel owns, with a maker, an independent checker and a ceiling.", "avoid": ["cron job"] },
+    { "term": "obligation", "definition": "A durable promise a loop opens and closes, so a missed job shows as overdue instead of silently not happening.", "avoid": [] },
+    { "term": "kernel", "definition": "The GLMPS server process. In production it runs as the GLMPS2 Windows service.", "avoid": ["backend server"] },
+    { "term": "state directory", "definition": "Where GLMPS keeps everything it writes: the board, loop records, wiki builds and logs. Not the repository.", "avoid": ["data folder"] },
+    { "term": "gate", "definition": "The verification verdict recorded on a card: PASS, CONCERNS, FAIL or WAIVED, with evidence and a risk level.", "avoid": [] },
+    { "term": "devlog", "definition": "The progress notes on a card. Each one is relayed into the card's Slack thread.", "avoid": ["status update log"] },
+    { "term": "merge queue", "definition": "The server-side path a pull request takes to main: tests, an independent review against the acceptance criteria, then the merge.", "avoid": ["auto-merge"] },
+    { "term": "runner", "definition": "The queue runner. It launches queued cards as agent sessions, each in its own git worktree.", "avoid": [] },
+    { "term": "huddle", "definition": "A voice or text conversation with several specialist agents taking turns on one floor.", "avoid": ["group chat"] },
+    { "term": "deploy", "definition": "Moving merged work onto the live service: a fast-forward of the runtime checkout and a service restart.", "avoid": ["release"] }
+  ]
+}

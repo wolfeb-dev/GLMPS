@@ -1,0 +1,14 @@
+{
+  "id": "glmps",
+  "objective": { "measurableId": "north-star" },
+  "sourceAllowlist": [
+    { "name": "anthropic-engineering-blog", "kind": "url", "ref": "https://www.anthropic.com/engineering" },
+    { "name": "arxiv-cs-ai-recent", "kind": "url", "ref": "https://arxiv.org/list/cs.AI/recent" },
+    { "name": "storm-research-skill", "kind": "skill", "ref": "storm-research" }
+  ],
+  "verifier": {
+    "kind": "replay-set",
+    "config": { "metricField": "turns", "direction": "lower", "minSamples": 5 }
+  },
+  "cadenceMs": 86400000
+}

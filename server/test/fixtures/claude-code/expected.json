@@ -1,0 +1,43 @@
+{
+  "events": [
+    {
+      "kind": "tool",
+      "lane": "feed",
+      "tool": "user",
+      "path": null,
+      "ts": "2026-07-01T10:00:00Z",
+      "sessionId": "golden",
+      "label": "User: Fix the failing adapter test"
+    },
+    {
+      "tool": "Skill",
+      "ts": "2026-07-01T10:00:05Z",
+      "sessionId": "golden",
+      "path": null,
+      "kind": "skill",
+      "lane": "context",
+      "label": "superpowers:test-driven-development"
+    },
+    {
+      "tool": "Edit",
+      "ts": "2026-07-01T10:00:10Z",
+      "sessionId": "golden",
+      "path": "D:\\proj\\lib\\parser.js",
+      "kind": "file-edit",
+      "lane": "feed",
+      "label": "D:\\proj\\lib\\parser.js",
+      "add": 2,
+      "del": 1
+    },
+    {
+      "tool": "Bash",
+      "ts": "2026-07-01T10:00:20Z",
+      "sessionId": "golden",
+      "path": null,
+      "kind": "git",
+      "lane": "context",
+      "gitOp": "commit",
+      "label": "commit: fix: parser default"
+    }
+  ]
+}

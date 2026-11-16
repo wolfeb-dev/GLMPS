@@ -1,0 +1,91 @@
+/* apps/shell/renderer/picker.css
+   A contact sheet, not a gallery: the operator is scanning thumbnails for one
+   second, not browsing. Same tokens as offline.css and splitter.css (the
+   shell's one palette), a left-aligned header like the offline page, a
+   scrolling grid of flat framed tiles, and a fixed footer so Share/Cancel
+   never move while the grid scrolls. Selection reads as a stroke and a small
+   mark, not a shadow or a color change. */
+:root {
+  --bg: #0a0b0d;
+  --fg: #afdde5;
+  --muted-fg: rgba(175, 221, 229, 0.6);
+  --primary: #0fa4af;
+  --card: rgba(0, 49, 53, 0.4);
+  --line: rgba(175, 221, 229, 0.14);
+  --fs-small: 12px;
+  --fs-base: 13px;
+  --fs-md: 15px;
+  --fs-xl: 24px;
+}
+html, body { margin: 0; height: 100%; background: var(--bg); color: var(--fg); overflow: hidden; }
+body { font-family: "Segoe UI Variable Text", "Segoe UI", system-ui, sans-serif; font-size: var(--fs-base); line-height: 1.5; }
+.sheet { display: flex; flex-direction: column; height: 100%; }
+.head { padding: 32px 40px 20px; flex: none; }
+.head h1 { font-size: var(--fs-xl); font-weight: 500; line-height: 1.25; margin: 0 0 6px; }
+.lead { font-size: var(--fs-md); color: var(--muted-fg); margin: 0; }
+
+.groups { flex: 1 1 auto; overflow-y: auto; padding: 0 40px 24px; }
+.group + .group { margin-top: 28px; }
+.group h2 { font-size: var(--fs-small); font-weight: 400; color: var(--muted-fg); margin: 0 0 12px; }
+.grid { display: grid; grid-template-columns: repeat(auto-fill, minmax(220px, 1fr)); gap: 16px; }
+
+.tile {
+  display: flex; flex-direction: column; gap: 8px;
+  background: transparent; border: none; padding: 0; margin: 0;
+  font: inherit; color: inherit; text-align: left; cursor: pointer;
+}
+.frame {
+  position: relative; aspect-ratio: 16 / 9; border-radius: 4px;
+  border: 1px solid var(--line); background: var(--card); overflow: hidden;
+  transition: border-color 120ms linear;
+}
+.tile img { width: 100%; height: 100%; object-fit: cover; display: block; }
+.tile .name {
+  font-size: var(--fs-small); color: var(--muted-fg);
+  overflow: hidden; text-overflow: ellipsis; white-space: nowrap;
+  transition: color 120ms linear;
+}
+.tile:hover .frame { border-color: rgba(175, 221, 229, 0.4); }
+.tile:focus-visible { outline: none; }
+.tile:focus-visible .frame { border-color: var(--primary); box-shadow: inset 0 0 0 1px var(--primary); }
+.tile[aria-pressed="true"] .frame { border-color: var(--primary); box-shadow: inset 0 0 0 1px var(--primary); }
+.tile[aria-pressed="true"] .name { color: var(--fg); }
+.mark {
+  position: absolute; top: 8px; right: 8px; width: 20px; height: 20px;
+  border-radius: 50%; background: var(--primary);
+  display: none; align-items: center; justify-content: center;
+}
+/* Drawn, not a Unicode glyph (PR #29 review, minor): a rotated two-sided
+   border reads as a checkmark at any size without depending on font coverage. */
+.mark::after {
+  content: ''; width: 7px; height: 11px;
+  border: solid var(--bg); border-width: 0 2px 2px 0;
+  transform: rotate(45deg) translate(-1px, -2px);
+}
+.tile[aria-pressed="true"] .mark { display: flex; }
+
+.empty { margin: 0 40px 24px; color: var(--muted-fg); }
+
+.foot {
+  flex: none; display: flex; align-items: center; justify-content: space-between;
+  gap: 16px; padding: 16px 40px; border-top: 1px solid var(--line);
+}
+/* [hidden] first, so its higher specificity wins over the plain class rule
+   below regardless of source order: an author `display` declaration on the
+   same element as a toggled `hidden` attribute otherwise beats the browser's
+   own `[hidden] { display: none }` default (same origin, author always wins
+   ties with a UA rule), so the row would never actually hide. */
+.audio-row[hidden] { display: none; }
+.audio-row { display: flex; flex-direction: column; gap: 4px; }
+.audio-label { display: flex; align-items: center; gap: 8px; font-size: var(--fs-base); color: var(--fg); }
+.audio-label input { accent-color: var(--primary); width: 15px; height: 15px; }
+.audio-warn { font-size: var(--fs-small); color: var(--muted-fg); margin: 0 0 0 23px; }
+.actions { display: flex; gap: 12px; align-items: center; margin-left: auto; }
+button { font: inherit; font-size: var(--fs-base); border-radius: 6px; padding: 7px 16px; cursor: pointer; min-height: 32px; }
+button.primary { background: transparent; color: var(--primary); border: 1px solid var(--primary); }
+button.primary:hover:not(:disabled) { background: rgba(15, 164, 175, 0.12); }
+button.primary:disabled { color: var(--muted-fg); border-color: var(--line); cursor: default; }
+button.quiet { background: transparent; color: var(--fg); border: 1px solid transparent; text-decoration: underline; text-underline-offset: 3px; }
+button:focus-visible { outline: 2px solid var(--primary); outline-offset: 2px; }
+
+@media (prefers-reduced-motion: reduce) { .frame, .tile .name { transition: none; } }

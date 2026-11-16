@@ -1,0 +1,21 @@
+{
+  "title": "Golden agy session about refactoring the parser module",
+  "events": [
+    {
+      "kind": "command",
+      "lane": "feed",
+      "tool": "run_command",
+      "path": null,
+      "ts": null,
+      "label": "git status"
+    },
+    {
+      "kind": "tool",
+      "lane": "feed",
+      "tool": "view_file",
+      "path": "D:\\proj\\parser.js",
+      "ts": null,
+      "label": "view parser.js"
+    }
+  ]
+}

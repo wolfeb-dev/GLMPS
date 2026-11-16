@@ -1,0 +1,47 @@
+{
+  "port": 8123,
+  "host": "127.0.0.1",
+  "approvals": { "phrase": "", "actions": {} },
+  "antigravityCommand": null,
+  "openInEditorArgs": ["-g", "{path}"],
+  "editableRoots": [],
+  "workingThresholdMs": 10000,
+  "idleThresholdMs": 60000,
+  "inventoryScanMs": 60000,
+  "searchResultCap": 200,
+  "backfillBytes": 2097152,
+  "backtestProjects": [],
+  "agentRoutes": {
+    "debug": "debugger",
+    "feature": "tdd-implementer",
+    "refactor": "tdd-implementer",
+    "ops": "tdd-implementer",
+    "review": "code-critic",
+    "docs": "docs-writer",
+    "research": "web-researcher",
+    "ui": "ui-designer"
+  },
+  "agentRouteMinConfidence": 0.5,
+  "agentRouteMinScore": 1,
+  "agentLifecycle": { "exempt": [], "minObservationDays": 180 },
+  "graphifyUpdate": {
+    "enabled": true,
+    "autoUpgrade": true,
+    "tickMs": 86400000,
+    "minRatio": 0.8,
+    "pinned": "0.9.95",
+    "requiredCommands": ["query", "explain", "path", "update", "watch", "affected", "install"]
+  },
+  "graph": { "ship": { "corpusRoot": null, "corpusRemote": "wolfeb-dev/glmps-2.0" }, "machine": { "enabled": false, "scanRoots": [], "include": [], "exclude": [] } },
+  "graphMachineScan": { "enabled": true, "checkMs": 1800000 },
+  "platformAutonomy": { "enabled": false, "tickMs": 86400000 },
+  "learningIntegrity": { "freeze": true, "halfLifeDays": { "repo": 30, "desk": 90, "global": 90 }, "strengthFloor": 0.2, "frozenActors": ["nightly-runner"] },
+  "nightly": { "enabled": false, "hour": 22, "repoAllowlist": [], "maxItems": 1, "budget": { "maxUsd": null, "maxTokens": null }, "killFile": "nightly.kill" },
+  "reconciliation": { "checks": {} },
+  "terminals": [
+    { "label": "Claude", "command": "claude", "icon": "claude" },
+    { "label": "Gemini", "command": "gemini", "icon": "gemini" },
+    { "label": "Codex", "command": "codex", "icon": "codex" },
+    { "label": "Blank", "command": "", "icon": "terminal" }
+  ]
+}

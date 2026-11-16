@@ -1,0 +1,9 @@
+{
+  "type": "tool",
+  "tool": "edit",
+  "state": {
+    "input": {
+      "filePath": "D:/proj/fetch.ts"
+    }
+  }
+}

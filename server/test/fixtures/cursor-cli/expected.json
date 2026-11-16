@@ -1,0 +1,59 @@
+{
+  "events": [
+    {
+      "kind": "tool",
+      "lane": "feed",
+      "tool": "user",
+      "path": null,
+      "ts": null,
+      "sessionId": "golden",
+      "label": "User: add a health check endpoint to the server"
+    },
+    {
+      "kind": "tool",
+      "lane": "feed",
+      "tool": "Read",
+      "path": "/home/ada/proj/server.js",
+      "ts": null,
+      "sessionId": "golden",
+      "label": "/home/ada/proj/server.js"
+    },
+    {
+      "kind": "file-edit",
+      "lane": "feed",
+      "tool": "StrReplace",
+      "path": "/home/ada/proj/server.js",
+      "ts": null,
+      "sessionId": "golden",
+      "label": "/home/ada/proj/server.js"
+    },
+    {
+      "kind": "command",
+      "lane": "feed",
+      "tool": "Bash",
+      "path": null,
+      "ts": null,
+      "sessionId": "golden",
+      "label": "npm test"
+    },
+    {
+      "kind": "git",
+      "lane": "context",
+      "gitOp": "commit",
+      "label": "commit: feat: add health endpoint",
+      "tool": "Bash",
+      "path": null,
+      "ts": null,
+      "sessionId": "golden"
+    },
+    {
+      "kind": "tool",
+      "lane": "feed",
+      "tool": "user",
+      "path": null,
+      "ts": null,
+      "sessionId": "golden",
+      "label": "User: now document it in the README"
+    }
+  ]
+}

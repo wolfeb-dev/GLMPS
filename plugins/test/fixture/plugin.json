@@ -1,0 +1,1 @@
+{ "name": "fixture", "contract": "embed@1", "upstream": [], "shims": { "left-pad": "shims/leftpad.js" }, "patches": [] }

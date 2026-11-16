@@ -1,0 +1,18 @@
+<!DOCTYPE html>
+<html lang="en"><head>
+  <meta charset="utf-8">
+  <meta name="viewport" content="width=device-width, initial-scale=1">
+  <meta name="referrer" content="no-referrer">
+  <title>GLMPS: authorize this browser</title>
+  <link rel="icon" type="image/svg+xml" href="/favicon.svg">
+  <link rel="stylesheet" href="/styles.css">
+  <style>
+    .local-auth { max-width: 36rem; margin: 20vh auto 0; padding: 0 16px; color: var(--fg); line-height: 1.5; }
+    .local-auth code { color: var(--fg); }
+  </style>
+</head><body>
+  <main class="local-auth">
+    <p id="local-auth-status" role="status">Authorizing this browser for file and terminal actions.</p>
+  </main>
+  <script type="module" src="/local-auth.js"></script>
+</body></html>

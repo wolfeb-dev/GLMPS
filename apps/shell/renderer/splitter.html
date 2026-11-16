@@ -1,0 +1,17 @@
+<!doctype html>
+<html lang="en">
+<head>
+<meta charset="utf-8">
+<meta http-equiv="Content-Security-Policy" content="default-src 'none'; style-src 'self'; script-src 'self'">
+<link rel="stylesheet" href="splitter.css">
+<title>Pane divider</title>
+</head>
+<body>
+<div id="bar" role="separator" aria-orientation="vertical" aria-label="Resize the dashboard and Slack panes"
+     aria-valuemin="0" aria-valuemax="100" aria-valuenow="62" tabindex="0" title="Drag to resize. Double-click resets to 62 / 38.">
+  <span class="grip" aria-hidden="true"><i></i><i></i><i></i><i></i><i></i></span>
+</div>
+<span id="readout" class="readout" aria-hidden="true"></span>
+<script src="splitter.js"></script>
+</body>
+</html>

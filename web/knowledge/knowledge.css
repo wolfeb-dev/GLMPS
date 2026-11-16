@@ -1,0 +1,22 @@
+/* web/knowledge/knowledge.css
+   Knowledge pillar (card glmps-2-0-137). The Wiki tab fills the pillar the
+   way the old /wiki/ page filled the screen: the tab panel is a flex column
+   so .wiki-root's height: 100% resolves. */
+.knowledge-root { gap: var(--sp-2); }
+.knowledge-root .pillar-tabs-panels { flex: 1 1 auto; min-height: 0; display: flex; flex-direction: column; }
+.knowledge-root .pillar-tabs-panel { flex: 1 1 auto; min-height: 0; display: flex; flex-direction: column; }
+.knowledge-root .pillar-tabs-panel[hidden] { display: none; }
+/* Architecture graph and Decisions scroll inside their panel; the wiki keeps
+   its own two-pane scroll. */
+.knowledge-root #kn-panel-architecture,
+.knowledge-root #kn-panel-decisions { overflow-y: auto; }
+.knowledge-root #kn-panel-decisions { padding: var(--sp-3) var(--sp-4); }
+.kn-map { flex: none; display: flex; align-items: flex-start; }
+.kn-map .map-roster-rail { position: sticky; top: 0; max-height: 80vh; }
+.kn-map .map-main { height: auto; overflow: visible; }
+.kn-graphs { padding: 0 var(--sp-4) var(--sp-4); }
+/* Graph controls moved from Settings (card glmps-2-0-140): the buttons size to
+   their labels here, side by side, instead of the dialog's full-width stack. */
+.kn-graph-controls { gap: 0; }
+.kn-graph-controls .set-graph-footer { display: flex; flex-wrap: wrap; gap: var(--sp-2); }
+.kn-graph-controls .set-action-btn { width: auto; display: inline-block; }

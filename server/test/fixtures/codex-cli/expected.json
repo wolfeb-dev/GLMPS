@@ -1,0 +1,63 @@
+{
+  "events": [
+    {
+      "kind": "meta",
+      "lane": "feed",
+      "label": "cwd",
+      "path": "D:\\proj",
+      "sessionId": "golden"
+    },
+    {
+      "kind": "meta",
+      "lane": "feed",
+      "label": "cwd",
+      "path": "D:\\proj",
+      "sessionId": "golden"
+    },
+    {
+      "kind": "meta",
+      "lane": "feed",
+      "label": "model",
+      "model": "gpt-5.5",
+      "sessionId": "golden"
+    },
+    {
+      "kind": "tool",
+      "lane": "feed",
+      "tool": "user",
+      "path": null,
+      "ts": "2026-07-01T09:00:01.000Z",
+      "sessionId": "golden",
+      "label": "User: Run the linter and commit"
+    },
+    {
+      "kind": "git",
+      "lane": "context",
+      "gitOp": "commit",
+      "label": "commit: (commit)",
+      "tool": "Bash",
+      "path": null,
+      "ts": "2026-07-01T09:00:05.000Z",
+      "sessionId": "golden"
+    },
+    {
+      "kind": "tokens",
+      "lane": "feed",
+      "tool": "tokens",
+      "path": null,
+      "ts": "2026-07-01T09:00:08.000Z",
+      "sessionId": "golden",
+      "label": "tokens +8000 in / +50 out",
+      "change": {
+        "input": 8000,
+        "output": 50,
+        "cached": 1000,
+        "totalInput": 9000,
+        "totalOutput": 50,
+        "totalCached": 1000,
+        "contextWindow": 258400,
+        "lastTurnTokens": 9050
+      }
+    }
+  ]
+}

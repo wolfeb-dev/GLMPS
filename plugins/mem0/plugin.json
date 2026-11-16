@@ -1,0 +1,11 @@
+{
+  "name": "mem0",
+  "contract": "memory@1",
+  "upstream": [
+    { "kind": "npm", "name": "mem0ai", "version": "3.2.0", "files": ["package.json", "dist/oss/index.mjs"], "license": "Apache-2.0", "licenseUrl": "https://raw.githubusercontent.com/mem0ai/mem0/19f713408273fb1d657daa38d7b82ccf496d36d5/LICENSE" },
+    { "kind": "npm", "name": "zod", "version": "3.25.76", "files": ["package.json", "index.js", "v3/**/*.js"], "license": "MIT" }
+  ],
+  "shims": { "openai": "shims/openai.js", "better-sqlite3": "shims/better-sqlite3.js", "uuid": "shims/uuid.js", "axios": "shims/axios.js", "pg": "shims/pg.js" },
+  "patches": [],
+  "allowCreateRequire": []
+}
